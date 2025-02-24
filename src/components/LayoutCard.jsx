@@ -31,11 +31,11 @@ const LayoutCard = ({ layout }) => {
       onMouseLeave={() => setIsHovered(false)}
     >
       {/* Image Container */}
-      <div className="relative aspect-square overflow-hidden">
+      <div className="relative overflow-hidden flex items-center justify-center">
         <img 
           src={floorPlanImage} 
           alt={`Floor plan for ${type}`}
-          className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out"
+          className="w-64 h-64 object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out p-4"
         />
         
         <div className={`absolute top-4 left-4 py-1.5 px-3 rounded-full bg-white/90 backdrop-blur-sm 

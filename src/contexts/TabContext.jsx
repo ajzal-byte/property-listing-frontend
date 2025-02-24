@@ -4,7 +4,7 @@ import { tabs } from "./../enums/enums";
 const MainTabContext = createContext();
 
 export function MainTabProvider({ children }) {
-  const [mainTab, setMainTab] = useState(tabs.ACADEMY);
+  const [mainTab, setMainTab] = useState(tabs.OFFPLAN);
 
   return (
     <MainTabContext.Provider value={{ mainTab, setMainTab }}>

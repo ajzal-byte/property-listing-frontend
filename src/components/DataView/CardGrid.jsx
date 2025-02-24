@@ -5,8 +5,10 @@ import ClassicCard from './ClassicCard'
 import ViewContext from '../../contexts/ViewContext';
 import ListView from '../ListView';
 import MainContentContext from '../../contexts/MainContentContext';
+import MainTabContext from '../../contexts/TabContext';
 import { layouts } from '../../mockdata/mockData';
 import LayoutGrid from '../LayoutGrid';
+import { tabs } from '../../enums/enums';
 
 const CardGrid = ({ cards }) => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -14,6 +16,9 @@ const CardGrid = ({ cards }) => {
 
   const { viewType } = useContext(ViewContext);
   const { mainContent } = useContext(MainContentContext);
+  const {setMainTab} = useContext(MainTabContext)
+
+  setMainTab(tabs.OFFPLAN)
 
   const isClassicView = (viewType === 'classic');
   const isListView = (viewType === 'list');
@@ -44,7 +49,7 @@ const CardGrid = ({ cards }) => {
           <div className={`
             ${isClassicView 
             ? 'space-y-6' 
-            : 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-y-6 gap-x-16'
+            : 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-y-6 gap-x-3'
               }
               `}>
             {currentCards.map((card, index) => (

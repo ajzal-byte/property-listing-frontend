@@ -215,7 +215,7 @@ const { mainContent, setMainContent } = useContext(MainContentContext);
       {/* <div className="flex items-center justify-between m-0 bg-blue-100 rounded-3xl hover:border border-blue-800">
         <h1 className="text-3xl font-bold text-blue-900 pl-108 p-2 fit-content">Off Plan Listing</h1>
       </div> */}
-      <TitleComponent/>
+      {/* <TitleComponent/> */}
 
       {/* Tabs */}
       <div className="flex border-b border-gray-200">

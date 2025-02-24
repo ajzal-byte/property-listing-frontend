@@ -1,16 +1,15 @@
 import React, { useState } from 'react';
 import { CircleChevronLeft, CircleChevronRight, Home, Building2, Users, Calculator, BarChart3, GraduationCap, FileStack, HeadphonesIcon, Share2, MessageCircleMore } from 'lucide-react';
-
-
+import { useNavigate } from 'react-router-dom';
 
 const MenuItem = ({ icon: Icon, label, isCollapsed, isActive, onClick }) => {
   return (
     <div 
-      onClick={onClick}
+    onClick={onClick}
       className={`flex items-center px-4 py-3 cursor-pointer transition-colors duration-200
         ${isActive ? 'text-blue-600 bg-blue-50' : 'text-gray-700 hover:bg-gray-100'}
-      `}
-    >
+      `}  
+      >
       <Icon size={20} className={`${isActive ? 'text-blue-600 bg-blue-50' : 'text-gray-500'}`} />
       {!isCollapsed && (
         <span className="ml-3 text-sm font-medium transition-opacity duration-200">
@@ -22,6 +21,7 @@ const MenuItem = ({ icon: Icon, label, isCollapsed, isActive, onClick }) => {
 };
 
 const MenuSection = ({ items, isCollapsed, activeItem, onItemClick }) => {
+  const navigate = useNavigate();
   return (
     <div className="py-2">
       {items.map((item) => (
@@ -31,7 +31,12 @@ const MenuSection = ({ items, isCollapsed, activeItem, onItemClick }) => {
           label={item.label}
           isCollapsed={isCollapsed}
           isActive={activeItem === item.label}
-          onClick={() => onItemClick(item.label)}
+          onClick={() => {
+            onItemClick(item.label)
+            navigate(`/${item.label.toLowerCase()}`)
+            console.log(item.label)
+          }
+          }
         />
       ))}
     </div>
@@ -59,7 +64,7 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
 
   return (
     <div 
-    className={`fixed left-0 top-0 h-screen bg-white border-r transition-all duration-300 ease-in-out flex flex-col
+    className={`fixed left-0 top-0 h-screen bg-white border-r transition-all duration-300 ease-in-out flex flex-col z-[999]
       ${isCollapsed ? 'w-20' : 'w-60'}
     `}
   >
@@ -78,9 +83,11 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
             setIsCollapsed(!isCollapsed)
         }
         }
-        className="rounded-full bg-white text-gray-400 transition-transform duration-300 hover:bg-blue-800 hover:text-white cursor-pointer border-0"
+        className={`rounded-full bg-white text-gray-400 transition-transform duration-300 hover:bg-blue-800 hover:text-white cursor-pointer border-0 ${isCollapsed? '': 'ml-30' }`}
       >
-        <CircleChevronLeft size={23} className="rounded-full text-white-600" />
+        {
+        isCollapsed ? <CircleChevronRight size={23} className="rounded-full text-white-600" /> : <CircleChevronLeft size={23} className="rounded-full text-white-600" />
+        }
       </div>
     </div>
 

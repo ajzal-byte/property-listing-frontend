@@ -9,7 +9,7 @@ const PageHeader = () => {
 
   return (
     <div
-      className="relative overflow-hidden transform transition-all duration-300 ease-in-out"
+      className="relative mx-5 transform transition-all duration-300 ease-in-out"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -22,6 +22,8 @@ const PageHeader = () => {
           ? "bg-gradient-to-r from-orange-600 to-orange-800 "
           : mainTab == tabs.ACADEMY
           ? "bg-gradient-to-r from-green-600 to-green-800 "
+          : mainTab == tabs.ANALYTICS
+          ? "bg-gradient-to-r from-blue-400 to-blue-500 "
           : "bg-gradient-to-r from-yellow-600 to-yellow-800 "
       }
         bg-gradient-to-r from-blue-600 to-blue-800 
@@ -77,9 +79,10 @@ const PageHeader = () => {
                     ? "Secondary Listings"
                     : mainTab == tabs.ACADEMY
                     ? "Welcome to our Academy"
-                    : ""}
+                    : mainTab == tabs.ANALYTICS
+                    ? "Take insight into Analytics":
+                    "" }
                 </h1>
-
                 {/* Description - Slides down on hover */}
                 <div
                   className={`
@@ -116,13 +119,13 @@ const PageHeader = () => {
       </div>
 
       {/* Hover Indicator */}
-      <ChevronDown
+      {/* <ChevronDown
         className={`
         w-6 h-6 text-blue-500 mx-auto mt-2
         transition-all duration-300
         ${isHovered ? "opacity-0" : "opacity-50 animate-bounce"}
       `}
-      />
+      /> */}
     </div>
   );
 };
