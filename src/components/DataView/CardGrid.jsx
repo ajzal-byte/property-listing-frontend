@@ -34,6 +34,10 @@ const CardGrid = ({ cards }) => {
   const currentCards = mainContent == 'Projects' ? cards.slice(indexOfFirstItem, indexOfLastItem) : layouts.slice(indexOfFirstItem,indexOfLastItem);
 
 
+  const handleCardClick = (id) => {
+    window.location.href = `/off-plan/${id}`;
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className={`
@@ -61,8 +65,9 @@ const CardGrid = ({ cards }) => {
                 : 'h-full'
                 }
                 transition-transform duration-200 hover:scale-102
-                hover:shadow-lg rounded-lg
+                hover:shadow-lg rounded-lg cursor-pointer
                 `}
+                onClick={() => handleCardClick(card.id)}
                 >
                 {isClassicView ? (
                   <ClassicCard {...card} />

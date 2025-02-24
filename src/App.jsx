@@ -14,6 +14,7 @@ import CourseGrid from "./components/Academy/CourseGrid";
 import LessonsPage from "./components/Academy/Lessons";
 import LessonContent from "./components/Academy/Content/LessonContent";
 import Analytics from './pages/Analytics'
+import IndividualOffPlan from "./pages/IndividualOffPlan";
 
 const App = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -35,6 +36,9 @@ const App = () => {
               <MainContentProvider>
                 <TitleComponent />
                 <Routes>
+                  {/* Individual Off-Plan page */}
+                  <Route path="/off-plan/:id" element={<IndividualOffPlan />} />
+
                   {/* Academy Main Page */}
                   <Route path="/academy" element={<Academy />} />
 
@@ -42,7 +46,6 @@ const App = () => {
                   <Route path="/academy/courses" element={<CourseGrid />} />
                   <Route path="/academy/courses/:courseId" element={<LessonsPage />} />
                   <Route path="/academy/courses/:courseId/lessons/:lessonId" element={<LessonContent youtubeUrl={"https://www.youtube.com/watch?v=9B4CvtzXRpc"} pdfUrl={"https://www.newline.co/fullstack-react/assets/media/sGEMe/MNzue/30-days-of-react-ebook-fullstackio.pdf"} courseTitle={"ReactJS Beginner to Advanced"}/>} />
-                  
                   <Route path="/analytics" element={<Analytics />} />
                   <Route path="/analytics?agentId=" element={<Analytics />} />
 
