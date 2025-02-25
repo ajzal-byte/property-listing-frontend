@@ -20,21 +20,7 @@ const SourceCharts = ({leadData}) => {
     })).sort((a, b) => b.count - a.count);
   };
 
-  // Process data for channel pie chart
-  const getChannelData = () => {
-    const channelCounts = {};
-    leadData.forEach(lead => {
-      channelCounts[lead.channel] = (channelCounts[lead.channel] || 0) + 1;
-    });
-    
-    return Object.entries(channelCounts).map(([channel, value]) => ({
-      channel,
-      value
-    }));
-  };
-
   const sourceData = getSourceData();
-  const channelData = getChannelData();
 
   // Colors for charts
   const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8', '#82ca9d'];

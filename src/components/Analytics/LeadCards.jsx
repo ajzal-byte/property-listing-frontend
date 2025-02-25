@@ -7,6 +7,11 @@ const LeadCards = ({leadData}) => {
   const convertedLeads = leadData.filter(lead => lead.status === "Closed").length;
   const junkLeads = leadData.filter(lead => lead.status === "Junk").length;
   
+    // Calculate total amounts
+  const totalAmount = leadData.reduce((sum, lead) => sum + (lead.amount || 0), 0);
+  const convertedAmount = leadData.filter(lead => lead.status === "Closed").reduce((sum, lead) => sum + (lead.amount || 0), 0);
+  const junkAmount = leadData.filter(lead => lead.status === "Junk").reduce((sum, lead) => sum + (lead.amount || 0), 0);
+
   const conversionRate = totalLeads > 0 ? ((convertedLeads / totalLeads) * 100).toFixed(1) : 0;
   const lostRate = totalLeads > 0 ? ((junkLeads / totalLeads) * 100).toFixed(1) : 0;
 
@@ -16,9 +21,13 @@ const LeadCards = ({leadData}) => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Active Leads Card */}
           <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-lg shadow-md overflow-hidden">
-            <div className="p-4 flex justify-between items-center">
-              <h3 className="text-white font-medium text-lg">Number of active leads</h3>
-              <div className="text-white opacity-70">
+          <div className="p-4 flex items-center gap-28">
+              <h3 className="text-white font-medium text-lg">Number of Active leads</h3>
+              <div className="text-white opacity-80 mt-2">
+              <div className='font-semibold text-white'>
+              Amount:
+              </div>
+               AED {(totalAmount)}
               </div>
             </div>
             <div className="px-6 pb-6 flex justify-center items-center">
@@ -42,8 +51,14 @@ const LeadCards = ({leadData}) => {
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           {/* Converted Leads Card */}
           <div className="bg-gradient-to-br from-blue-300 to-blue-400 rounded-lg shadow-md overflow-hidden">
-            <div className="p-4">
-              <h3 className="text-white font-medium text-lg">Number of converted leads</h3>
+          <div className="p-4 flex items-center gap-28">
+              <h3 className="text-white font-medium text-lg">Number of Converted leads</h3>
+              <div className="text-white opacity-80 mt-2">
+              <div className='font-semibold text-white'>
+              Amount:
+              </div>
+               AED {(convertedAmount)}
+              </div>
             </div>
             <div className="px-6 pb-6 flex justify-center items-center">
               <span className="text-6xl font-light text-white">{convertedLeads}</span>
@@ -52,8 +67,14 @@ const LeadCards = ({leadData}) => {
           
           {/* Junk Leads Card */}
           <div className="bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-lg shadow-md overflow-hidden">
-            <div className="p-4">
-              <h3 className="text-white font-medium text-lg">Number of junk leads</h3>
+          <div className="p-4 flex items-center gap-28">
+              <h3 className="text-white font-medium text-lg">Junk leads</h3>
+              <div className="text-white opacity-80 mt-2">
+              <div className='font-semibold text-white'>
+              Amount:
+              </div>
+               AED {(junkAmount)}
+              </div>
             </div>
             <div className="px-6 pb-6 flex justify-center items-center">
               <span className="text-6xl font-light text-white">{junkLeads}</span>

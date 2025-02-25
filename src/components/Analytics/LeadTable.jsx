@@ -2,6 +2,7 @@ import React, { useState, useMemo } from "react";
 import { Search, ArrowDownUp, ArrowDown01, ArrowDown10 } from "lucide-react";
 import { mockLeads as leadsData } from "../../mockdata/mockData";
 import { useNavigate } from "react-router-dom";
+import Pagination from "../Pagination";
 
 const AgentLeadTable = () => {
   const [searchQuery, setSearchQuery] = useState("");
