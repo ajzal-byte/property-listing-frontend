@@ -1586,10 +1586,7 @@ export const lessonsData = [
 
 export const mockLeads = [
   {
-<<<<<<< HEAD
     id: 1,
-=======
->>>>>>> a57364f (Implemented Secondary Indiviadual Page and some minor updates:)
     agent_name: "Alice Johnson",
     lead_name: "John Doe",
     status: "New Lead",
