@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import {
   Heart,
   ChevronLeft,
@@ -17,8 +17,8 @@ import {
   Phone,
   Mail,
   Landmark,
-  Eye,
 } from "lucide-react";
+import TabContext from "./../contexts/TabContext";
 
 const images = [
   "https://images.pexels.com/photos/280222/pexels-photo-280222.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
@@ -93,6 +93,9 @@ export default function IndividualOffPlan() {
         return "bg-gray-100 text-gray-800";
     }
   };
+
+  const { setMainTab } = useContext(TabContext);
+  setMainTab("Hidden");
 
   return (
     <div className="min-h-screen bg-gray-50">

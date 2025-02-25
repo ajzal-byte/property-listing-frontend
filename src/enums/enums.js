@@ -1,4 +1,5 @@
 export const tabs = {
+    HIDDEN: "Hidden",
     ACADEMY: 'Academy',
     OFFPLAN: 'Offplan', 
     ANALYTICS: 'Analytics', 

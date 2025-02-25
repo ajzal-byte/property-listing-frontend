@@ -7,6 +7,10 @@ const PageHeader = () => {
   const [isHovered, setIsHovered] = useState(false);
   const { mainTab } = useContext(TabContext);
 
+  if (mainTab === tabs.HIDDEN) {
+    return null;
+  }
+
   return (
     <div
       className="relative mx-5 transform transition-all duration-300 ease-in-out"
