@@ -6,7 +6,7 @@ import CourseGrid from '../components/Academy/CourseGrid';
 import TitleComponent from '../components/TitleComponent'
 import MainTabContext from '../contexts/TabContext';
 import { useContext } from 'react';
-import { tabs } from '../enums/enums';
+import { tabs } from '../enums/sidebarTabsEnums';
 import { useNavigate } from 'react-router-dom';
 import LessonsPage from '../components/Academy/Lessons';
 import LessonContent from '../components/Academy/Content/LessonContent';

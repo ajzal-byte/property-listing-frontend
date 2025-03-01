@@ -16,6 +16,10 @@ import LessonContent from "./components/Academy/Content/LessonContent";
 import Analytics from "./pages/Analytics";
 import IndividualOffPlan from "./pages/IndividualOffPlan";
 import IndividualSecondary from "./pages/IndividualSecondary";
+import CurrentUserRoles from './components/RoleAccess/CurrentUserRoles'
+import {mockUsers} from './mockdata/mockData'
+import PermissionManager from "./components/RoleAccess/PermissionManager";
+
 
 const App = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -71,6 +75,8 @@ const App = () => {
                   />
                   <Route path="/analytics" element={<Analytics />} />
                   <Route path="/analytics?agentId=" element={<Analytics />} />
+                  <Route path="/permissions" element={<CurrentUserRoles initialData={mockUsers}/>} />
+                  <Route path="/permissions/edit" element={<PermissionManager/>} />
 
                   {/* Default Route */}
                   <Route

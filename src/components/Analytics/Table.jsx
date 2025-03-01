@@ -217,7 +217,11 @@ const ReusableTable = ({
   );
   
   // Render cell based on column type
+  const [moreActive, setMoreActive] = useState("")
   const renderCell = (row, column) => {
+  
+
+
     switch(column.key) {
       case 'agent':
         return (
@@ -250,6 +254,7 @@ const ReusableTable = ({
         );
       case 'category':
         case 'location':
+            
             const entries = Object.entries(row[column.key]);
             const primaryValue = entries.length > 0 ? entries[0] : ['', 0];
             
@@ -262,9 +267,12 @@ const ReusableTable = ({
                   <span className="font-semibold text-black px-3 py-1 rounded-full text-sm cursor-help">
                     {primaryValue[0]} {entries.length > 1 ? `+${entries.length - 1}` : ''}
                   </span>
-                  
-                  {entries.length > 1 && (
-                    <div className="absolute z-10 invisible group-hover:visible bg-gray-800 text-white text-sm rounded p-2 shadow-lg 
+                  {
+                    column.key == 'location' &&
+                  <button className="text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 px-2 py-1 rounded-md transition-colors" onClick={()=>{setMoreActive(row.agent)}}>show more</button>
+                  }
+                  {moreActive==row.agent && entries.length > 1 && (
+                    <div className="absolute z-10 bg-gray-800 text-white text-sm rounded p-2 shadow-lg 
                                     -mt-1 left-1/2 transform -translate-x-1/2 min-w-max whitespace-pre">
                       {tooltipContent}
                     </div>
@@ -307,7 +315,11 @@ const ReusableTable = ({
   };
   
   return (
-    <div className="bg-gradient-to-r from-blue-50 to-blue-100 p-6 rounded-lg shadow-lg relative">
+    <div className="bg-gradient-to-r from-blue-50 to-blue-100 p-6 rounded-lg shadow-lg relative" onClick={()=>{
+        if(moreActive != ""){
+            setMoreActive("")
+        }
+    }}>
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold text-blue-800">
           {title}

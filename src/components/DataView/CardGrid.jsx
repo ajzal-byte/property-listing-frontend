@@ -8,7 +8,7 @@ import MainContentContext from '../../contexts/MainContentContext';
 import MainTabContext from '../../contexts/TabContext';
 import { layouts } from '../../mockdata/mockData';
 import LayoutGrid from '../LayoutGrid';
-import { tabs } from '../../enums/enums';
+import { tabs } from '../../enums/sidebarTabsEnums';
 
 const CardGrid = ({ cards }) => {
   const [currentPage, setCurrentPage] = useState(1);

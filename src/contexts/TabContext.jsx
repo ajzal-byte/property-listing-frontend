@@ -1,5 +1,5 @@
 import { createContext, useState } from "react";
-import { tabs } from "./../enums/enums";
+import { tabs } from "../enums/sidebarTabsEnums";
 
 const MainTabContext = createContext();
 

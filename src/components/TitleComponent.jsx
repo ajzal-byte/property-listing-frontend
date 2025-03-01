@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import { Building, GraduationCap , ChevronDown } from "lucide-react";
 import TabContext from "./../contexts/TabContext";
-import { tabs } from "./../enums/enums";
+import { tabs } from "../enums/sidebarTabsEnums";
 
 const PageHeader = () => {
   const [isHovered, setIsHovered] = useState(false);

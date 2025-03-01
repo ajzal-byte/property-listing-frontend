@@ -1,3 +1,76 @@
+export const mockUsers = [
+  {
+    id: 1,
+    name: "Alice Johnson",
+    totalleads: 1,
+    totaldeals: 5,
+    role: "agent",
+  },
+  {
+    id: 2,
+    name: "Michael Smith",
+    totalleads: 11,
+    totaldeals: 5,
+    role: "admin",
+  },
+  {
+    id: 3,
+    name: "Jessica Brown",
+    totalleads: 1,
+    totaldeals: 5,
+    role: "superadmin",
+  },
+  {
+    id: 4,
+    name: "Robert Wilson",
+    totalleads: 1,
+    totaldeals: 5,
+    role: "agent",
+  },
+  {
+    id: 5,
+    name: "Emma Thompson",
+    totalleads: 1,
+    totaldeals: 5,
+    role: "admin",
+  },
+  {
+    id: 6,
+    name: "Daniel Martinez",
+    totalleads: 1,
+    totaldeals: 5,
+    role: "superadmin",
+  },
+  {
+    id: 7,
+    name: "Sophia Anderson",
+    totalleads: 1,
+    totaldeals: 5,
+    role: "agent",
+  },
+  {
+    id: 8,
+    name: "David Scott",
+    totalleads: 11,
+    totaldeals: 5,
+    role: "admin",
+  },
+  {
+    id: 9,
+    name: "Olivia King",
+    totalleads: 11,
+    totaldeals: 5,
+    role: "superadmin",
+  },
+  {
+    id: 10,
+    name: "Lucas Walker",
+    totalleads: 11,
+    totaldeals: 5,
+    role: "agent",
+  }
+];
+
 // mockdata for property cards
 
 export const cards = [

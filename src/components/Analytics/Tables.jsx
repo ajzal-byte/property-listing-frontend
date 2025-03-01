@@ -1,6 +1,6 @@
 import React from "react";
-import ReusableTable from "./../../components/Analytics/Table";
-import { mockLeads, mockDeals } from "./../../mockdata/mockData";
+import ReusableTable from "./Table";
+import { mockLeads, mockDeals } from "../../mockdata/mockData";
 
 const AgentTablePage = ({ statType }) => {
   return (

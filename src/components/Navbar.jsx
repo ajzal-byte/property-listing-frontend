@@ -9,12 +9,15 @@ import {
   MapPin,
   Heart,
   Globe,
-  Share2
+  Share2,
+  Hand
 } from "lucide-react";
 import Flag from "react-world-flags";
+import { useNavigate } from "react-router-dom";
 
 const Dropdown = ({ trigger, items, align = "right" }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
 
   return (
     <div className="relative">
@@ -40,8 +43,12 @@ const Dropdown = ({ trigger, items, align = "right" }) => {
               <div
                 key={index}
                 onClick={() => {
-                  item.onClick?.();
-                  setIsOpen(false);
+                  // item.onClick?.();
+                  // setIsOpen(false);
+                  if(item.label == 'Permission Management'){
+                    navigate('/permissions')
+                  }
+
                 }}
                 className={`px-4 py-3.5 text-sm cursor-pointer transition-all duration-200 rounded-2xl
                   ${
@@ -84,6 +91,7 @@ const Navbar = () => {
     { icon: Link2, label: "My integrations" },
     { icon: Building2, label: "My properties" },
     { icon: Share2, label: "Invite" },
+    { icon: Hand, label: "Permission Management"},
     { icon: LogOut, label: "Log Out", danger: true },
 
   ];

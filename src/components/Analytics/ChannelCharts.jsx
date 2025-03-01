@@ -14,6 +14,7 @@ import {
   Sector,
 } from "recharts";
 // import { mockLeads as leadData } from "../../mockdata/mockData";
+import ToggleButton from "./ToggleButton";
 
 const LeadDataCharts = ({leadData}) => {
   const getChannelData = () => {
@@ -130,9 +131,7 @@ const LeadDataCharts = ({leadData}) => {
 
   return (
     <div className="p-6 bg-white rounded-xl shadow-md lg:w-[1200px] md:w-[400px] 300px">
-      <button className="w-fit h-fit px-2 py-1 ml-2 cursor-pointer bg-blue-200 rounded-r-2xl font-thin" onClick={handleChartToggle}>
-        Toggle to {channelChartType == 'bar' ? 'PIE' : 'BAR'} view
-      </button>
+        <ToggleButton mode={channelChartType} toggleMode={handleChartToggle}/>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {channelChartType === "bar" ? (
           <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-xl shadow-sm">
