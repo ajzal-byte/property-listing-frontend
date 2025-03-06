@@ -48,6 +48,15 @@ const Dropdown = ({ trigger, items, align = "right" }) => {
                   if(item.label == 'Permission Management'){
                     navigate('/permissions')
                   }
+                  if(item.label == 'My profile'){
+                    navigate('/profile')
+                  }
+                  if(item.label == 'My company'){
+                    navigate('/company')
+                  }
+                  if(item.label == 'My subscriptions'){
+                    navigate('/pricing')
+                  }
 
                 }}
                 className={`px-4 py-3.5 text-sm cursor-pointer transition-all duration-200 rounded-2xl

@@ -19,6 +19,9 @@ import IndividualSecondary from "./pages/IndividualSecondary";
 import CurrentUserRoles from './components/RoleAccess/CurrentUserRoles'
 import {mockUsers} from './mockdata/mockData'
 import PermissionManager from "./components/RoleAccess/PermissionManager";
+import ProfilePage from "./pages/Profile";
+import MyCompany from "./pages/MyCompany";
+import Subscription from './pages/Subscription'
 
 
 const App = () => {
@@ -73,10 +76,13 @@ const App = () => {
                       />
                     }
                   />
+                  <Route path="/company" element={<MyCompany />} />
                   <Route path="/analytics" element={<Analytics />} />
                   <Route path="/analytics?agentId=" element={<Analytics />} />
                   <Route path="/permissions" element={<CurrentUserRoles initialData={mockUsers}/>} />
                   <Route path="/permissions/edit" element={<PermissionManager/>} />
+                  <Route path="/pricing" element={<Subscription/>} />
+                  <Route path="/profile" element={<ProfilePage />} />
 
                   {/* Default Route */}
                   <Route

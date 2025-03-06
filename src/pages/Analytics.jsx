@@ -20,8 +20,7 @@ import DealActivityCharts from '../components/Analytics/DealActivityCharts';
 import DealStatusCharts from '../components/Analytics/DealStatusCharts';
 import { mockUsers as userData } from '../mockdata/mockData';
 import CurrentUserRoles from './../components/RoleAccess/CurrentUserRoles'
-import PermissionManager from '../components/RoleAccess/PermissionManager';
-
+import ProfilePage from './Profile';
 const PropertyAnalyticsDashboard = () => {
   // Add statType state
   const [statType, setStatType] = useState("lead");
@@ -121,7 +120,6 @@ const PropertyAnalyticsDashboard = () => {
           </>
         )
         }
-      <PermissionManager />
 
       </div>
 

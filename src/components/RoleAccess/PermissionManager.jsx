@@ -6,22 +6,17 @@ import {
   PermissionValues,
   ListingSubCategory,
   CommonPermissionName,
-} from './../../enums/rolePermissionsEnums'; // Import the enums and default structure
+} from './../../enums/rolePermissionsEnums';
 
 import { defaultPermissions } from './DefaultRolePermissions';
-import { LockKeyhole, RotateCcw, Save, UserRoundPen, ChevronDown, Check } from 'lucide-react';
+import { LockKeyhole, RotateCcw, Save, ChevronDown, Check, X, PlusCircle } from 'lucide-react';
 
 const PermissionManager = () => {
-    
   // State to track current permissions (initialized from default or localStorage)
   const [permissions, setPermissions] = useState(null);
-  // Track which role is currently being edited
-  const [selectedRole, setSelectedRole] = useState(Roles.AGENT);
-  // Track if "Change Permission By Roles" modal is open
-  const [isRoleModalOpen, setIsRoleModalOpen] = useState(false);
-  // Track which categories are enabled/disabled via toggle  
-  const [enabledCategories, setEnabledCategories] = useState({});
-
+  // Track which categories are expanded/collapsed
+  const [expandedCategories, setExpandedCategories] = useState({});
+  
   // Load permissions from localStorage or use defaults on component mount
   useEffect(() => {
     const savedPermissions = localStorage.getItem('permissions');
@@ -31,25 +26,18 @@ const PermissionManager = () => {
       setPermissions(defaultPermissions);
     }
     
-    // Initialize all categories as enabled
-    const initialEnabledState = {};
+    // Initialize all categories as expanded
+    const initialExpandedState = {};
     Object.keys(defaultPermissions.permissionCategories).forEach(category => {
-      initialEnabledState[category] = true;
-      
-      // For complex categories, also enable all subcategories
-      if (defaultPermissions.permissionCategories[category].type === PermissionType.COMPLEX) {
-        Object.keys(defaultPermissions.permissionCategories[category].subCategories).forEach(subCategory => {
-          initialEnabledState[`${category}.${subCategory}`] = true;
-        });
-      }
+      initialExpandedState[category] = true;
     });
-    setEnabledCategories(initialEnabledState);
+    setExpandedCategories(initialExpandedState);
   }, []);
 
   // If permissions not loaded yet, show loading
   if (!permissions) {
     return (
-      <div className="flex justify-center items-center h-screen bg-gradient-to-br from-blue-50 to-indigo-50">
+      <div className="flex justify-center items-center h-screen bg-gray-50">
         <div className="animate-pulse flex flex-col items-center">
           <div className="h-12 w-12 rounded-full bg-blue-500 animate-spin mb-4"></div>
           <p className="text-blue-700 font-medium">Loading permissions...</p>
@@ -58,107 +46,26 @@ const PermissionManager = () => {
     );
   }
 
-  // Get all unique permission names across all categories
-  const getAllPermissionNames = () => {
-    const permissionNames = new Set();
-    
-    Object.keys(permissions.permissionCategories).forEach(categoryKey => {
-      const category = permissions.permissionCategories[categoryKey];
-      
-      if (category.type === PermissionType.SIMPLE) {
-        Object.keys(category.permissions).forEach(permName => {
-          permissionNames.add(permName);
-        });
-      } else if (category.type === PermissionType.COMPLEX) {
-        Object.keys(category.subCategories).forEach(subCatKey => {
-          Object.keys(category.subCategories[subCatKey].permissions).forEach(permName => {
-            permissionNames.add(permName);
-          });
-        });
-      }
-    });
-    
-    return Array.from(permissionNames);
-  };
-
-  // Handle toggle for category or subcategory - prevent default to avoid page jumps
-  const handleToggle = (category, subCategory = null, e) => {
-    // Prevent default behavior to avoid page scrolling
-    if (e) e.preventDefault();
-    
-    const key = subCategory ? `${category}.${subCategory}` : category;
-    
-    // Create a deep copy of permissions to modify
-    const updatedPermissions = JSON.parse(JSON.stringify(permissions));
-    const categoryData = updatedPermissions.permissionCategories[category];
-    
-    // Update enabled categories state
-    setEnabledCategories(prev => ({
-      ...prev,
-      [key]: !prev[key]
-    }));
-    
-    // If disabling, set all permissions to negative values
-    if (enabledCategories[key]) {
-      if (!subCategory) {
-        // Disable entire category
-        if (categoryData.type === PermissionType.SIMPLE) {
-          Object.keys(categoryData.permissions).forEach(permName => {
-            const possibleValues = categoryData.permissions[permName].possibleValues;
-            // Set to most negative value (NO, or last value if no NO)
-            const negativeValue = possibleValues.includes(PermissionValues.NO) 
-              ? PermissionValues.NO 
-              : possibleValues[possibleValues.length - 1];
-            
-            categoryData.permissions[permName].defaultValues[selectedRole] = negativeValue;
-          });
-        } else {
-          // For complex categories, disable all subcategories
-          Object.keys(categoryData.subCategories).forEach(subCat => {
-            Object.keys(categoryData.subCategories[subCat].permissions).forEach(permName => {
-              const possibleValues = categoryData.subCategories[subCat].permissions[permName].possibleValues;
-              const negativeValue = possibleValues.includes(PermissionValues.NO) 
-                ? PermissionValues.NO 
-                : possibleValues[possibleValues.length - 1];
-              
-              categoryData.subCategories[subCat].permissions[permName].defaultValues[selectedRole] = negativeValue;
-            });
-            
-            // Also update subcategory toggle state
-            setEnabledCategories(prev => ({
-              ...prev,
-              [`${category}.${subCat}`]: false
-            }));
-          });
-        }
-      } else {
-        // Disable specific subcategory
-        Object.keys(categoryData.subCategories[subCategory].permissions).forEach(permName => {
-          const possibleValues = categoryData.subCategories[subCategory].permissions[permName].possibleValues;
-          const negativeValue = possibleValues.includes(PermissionValues.NO) 
-            ? PermissionValues.NO 
-            : possibleValues[possibleValues.length - 1];
-          
-          categoryData.subCategories[subCategory].permissions[permName].defaultValues[selectedRole] = negativeValue;
-        });
-      }
-    }
-    
-    setPermissions(updatedPermissions);
-  };
-
-  // Handle change of permission value
-  const handlePermissionChange = (category, permissionName, value, subCategory = null) => {
+  // Handle permission value change
+  const handlePermissionChange = (category, permissionName, roleKey, value, subCategory = null) => {
     // Create a deep copy of permissions to modify
     const updatedPermissions = JSON.parse(JSON.stringify(permissions));
     
     if (subCategory) {
-      updatedPermissions.permissionCategories[category].subCategories[subCategory].permissions[permissionName].defaultValues[selectedRole] = value;
+      updatedPermissions.permissionCategories[category].subCategories[subCategory].permissions[permissionName].defaultValues[roleKey] = value;
     } else {
-      updatedPermissions.permissionCategories[category].permissions[permissionName].defaultValues[selectedRole] = value;
+      updatedPermissions.permissionCategories[category].permissions[permissionName].defaultValues[roleKey] = value;
     }
     
     setPermissions(updatedPermissions);
+  };
+
+  // Toggle category expansion
+  const toggleCategoryExpansion = (category) => {
+    setExpandedCategories(prev => ({
+      ...prev,
+      [category]: !prev[category]
+    }));
   };
 
   // Save permissions to localStorage
@@ -181,18 +88,6 @@ const PermissionManager = () => {
   // Reset permissions to default
   const resetPermissions = () => {
     setPermissions(defaultPermissions);
-    // Also reset all toggles to enabled
-    const resetEnabledState = {};
-    Object.keys(defaultPermissions.permissionCategories).forEach(category => {
-      resetEnabledState[category] = true;
-      
-      if (defaultPermissions.permissionCategories[category].type === PermissionType.COMPLEX) {
-        Object.keys(defaultPermissions.permissionCategories[category].subCategories).forEach(subCategory => {
-          resetEnabledState[`${category}.${subCategory}`] = true;
-        });
-      }
-    });
-    setEnabledCategories(resetEnabledState);
     
     // Create a notification element
     const notification = document.createElement('div');
@@ -207,230 +102,230 @@ const PermissionManager = () => {
     }, 3000);
   };
 
-  // For rendering permissions dropdown
-  const renderDropdown = (category, permissionName, currentValue, possibleValues, subCategory = null) => {
-    const key = subCategory ? `${category}.${subCategory}` : category;
-    const isDisabled = !enabledCategories[key];
+  // For rendering permission cell with dropdown
+  const renderPermissionCell = (category, permissionName, roleKey, subCategory = null) => {
+    let currentValue, possibleValues;
     
+    if (subCategory) {
+      const subCategoryData = permissions.permissionCategories[category].subCategories[subCategory];
+      if (!subCategoryData?.permissions[permissionName]) {
+        return (
+          <td key={`${category}-${subCategory}-${permissionName}-${roleKey}`} className="p-3 text-center border border-gray-200">
+            <X className="h-4 w-4 text-gray-300 mx-auto" />
+          </td>
+        );
+      }
+      currentValue = subCategoryData.permissions[permissionName].defaultValues[roleKey];
+      possibleValues = subCategoryData.permissions[permissionName].possibleValues;
+    } else {
+      const categoryData = permissions.permissionCategories[category];
+      if (!categoryData?.permissions[permissionName]) {
+        return (
+          <td key={`${category}-${permissionName}-${roleKey}`} className="p-3 text-center border border-gray-200">
+            <X className="h-4 w-4 text-gray-300 mx-auto" />
+          </td>
+        );
+      }
+      currentValue = categoryData.permissions[permissionName].defaultValues[roleKey];
+      possibleValues = categoryData.permissions[permissionName].possibleValues;
+    }
+
     // Determine background color based on value
     const getBgColor = (value) => {
-      if (value === PermissionValues.YES || value === PermissionValues.OWN) return 'bg-green-50 border-green-300';
-      if (value === PermissionValues.NO) return 'bg-red-50 border-red-300';
-      return 'bg-yellow-50 border-yellow-300'; // For "undefined" or other values
+      if (value === PermissionValues.YES || value === PermissionValues.ALL) return 'bg-green-50 text-green-800 border-green-200';
+      if (value === PermissionValues.OWN) return 'bg-blue-50 text-blue-800 border-blue-200';
+      if (value === PermissionValues.AGENTS) return 'bg-yellow-50 text-yellow-800 border-yellow-200';
+      if (value === PermissionValues.NO) return 'bg-red-50 text-red-800 border-red-200';
+      return 'bg-gray-50 border-gray-200'; // Default
     };
     
     return (
-      <div className="relative">
-        <select 
-          className={`appearance-none w-full px-4 py-2 rounded-lg text-sm transition-all duration-300 
-            border-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-blue-300
-            ${isDisabled ? 'bg-gray-100 text-gray-400 border-gray-200' : getBgColor(currentValue)}`}
-          value={currentValue}
-          onChange={(e) => handlePermissionChange(category, permissionName, e.target.value, subCategory)}
-          disabled={isDisabled}
-        >
-          {possibleValues.map(value => (
-            <option key={value} value={value}>{value}</option>
-          ))}
-        </select>
-        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-          <ChevronDown className="h-4 w-4" />
+      <td key={`${category}-${subCategory || ""}-${permissionName}-${roleKey}`} className="p-2 text-center border border-gray-200">
+        <div className="relative">
+          <select 
+            className={`appearance-none w-full px-3 py-1 rounded text-sm ${getBgColor(currentValue)} border focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-blue-300`}
+            value={currentValue}
+            onChange={(e) => handlePermissionChange(category, permissionName, roleKey, e.target.value, subCategory)}
+          >
+            {possibleValues.map(value => (
+              <option key={value} value={value}>{value}</option>
+            ))}
+          </select>
+          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+            <ChevronDown className="h-3 w-3" />
+          </div>
         </div>
-      </div>
+      </td>
     );
   };
 
-  // Create a simpler toggle switch component
-  const ToggleSwitch = ({ checked, onChange }) => {
-    return (
-     <label className="inline-flex items-center cursor-pointer">
-  <div className="relative">
-    <input
-      type="checkbox"
-      className="sr-only"
-      checked={checked}
-      onChange={onChange}
-    />
-    <div className={`block w-10 h-6 rounded-full transition ${checked ? 'bg-blue-600' : 'bg-gray-300'}`}></div>
-    <div className={`absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition transform ${checked ? 'translate-x-4' : ''}`}></div>
-  </div>
-</label>
-    );
+  // Format the permission name for display
+  const formatPermissionName = (category, permissionName, subCategory = null) => {
+    // Combine the category name with permission action
+    let displayName = permissionName;
+    
+    if (category === PermissionCategory.PROPERTY_LISTING) {
+      displayName = `${permissionName} Listings`;
+    } else if (category === PermissionCategory.USER_MANAGEMENT) {
+      displayName = `${permissionName} Users`;
+    } else if (category === PermissionCategory.FINANCIAL) {
+      displayName = `${permissionName} Financial Data`;
+    } else if (category === PermissionCategory.SETTINGS) {
+      displayName = `${permissionName} Settings`;
+    }
+    
+    // If it's a subcategory, make it more specific
+    if (subCategory) {
+      if (subCategory === ListingSubCategory.POCKET) {
+        displayName = `${permissionName} Pocket Listings`;
+      } else if (subCategory === ListingSubCategory.LIVE) {
+        displayName = `${permissionName} Live Listings`;
+      } else if (subCategory === ListingSubCategory.DRAFT) {
+        displayName = `${permissionName} Draft Listings`;
+      } else if (subCategory === ListingSubCategory.PUBLISH) {
+        if (permissionName === CommonPermissionName.PUBLISH) {
+          displayName = "Publish Listings";
+        } else if (permissionName === CommonPermissionName.UNPUBLISH) {
+          displayName = "Unpublish Listings";
+        }
+      }
+    }
+    
+    return displayName;
   };
 
-  // Get all unique permission names to use as table headers
-  const allPermissionNames = getAllPermissionNames();
+  // Generate the permission rows
+  const generatePermissionRows = () => {
+    const rows = [];
+    
+    Object.entries(permissions.permissionCategories).forEach(([categoryKey, categoryData]) => {
+      // Category header row
+      rows.push(
+        <tr key={categoryKey} className="bg-gray-100 cursor-pointer" onClick={() => toggleCategoryExpansion(categoryKey)}>
+          <td colSpan={permissions.roles.length + 1} className="p-3 font-bold text-gray-800 border border-gray-300">
+            <div className="flex items-center">
+              <ChevronDown 
+                className={`h-4 w-4 mr-2 transform transition-transform ${expandedCategories[categoryKey] ? 'rotate-180' : ''}`} 
+              />
+              {categoryKey}
+            </div>
+          </td>
+        </tr>
+      );
+      
+      // Only show permission rows if category is expanded
+      if (expandedCategories[categoryKey]) {
+        if (categoryData.type === PermissionType.SIMPLE) {
+          // Simple permission rows
+          Object.entries(categoryData.permissions).forEach(([permName, permData]) => {
+            rows.push(
+              <tr key={`${categoryKey}-${permName}`} className="hover:bg-blue-50">
+                <td className="p-3 pl-8 text-gray-700 border border-gray-200 font-medium">
+                  {formatPermissionName(categoryKey, permName)}
+                </td>
+                {permissions.roles.map(roleKey => (
+                  renderPermissionCell(categoryKey, permName, roleKey)
+                ))}
+              </tr>
+            );
+          });
+        } else if (categoryData.type === PermissionType.COMPLEX) {
+          // Complex category with subcategories
+          Object.entries(categoryData.subCategories).forEach(([subCatKey, subCatData]) => {
+            // Subcategory header
+            rows.push(
+              <tr key={`${categoryKey}-${subCatKey}`} className="bg-gray-50">
+                <td colSpan={permissions.roles.length + 1} className="p-2 pl-8 text-gray-700 border border-gray-200 font-medium">
+                  {subCatKey} {subCatData.description ? `(${subCatData.description})` : ''}
+                </td>
+              </tr>
+            );
+            
+            // Subcategory permissions
+            Object.entries(subCatData.permissions).forEach(([permName, permData]) => {
+              rows.push(
+                <tr key={`${categoryKey}-${subCatKey}-${permName}`} className="hover:bg-blue-50">
+                  <td className="p-3 pl-12 text-gray-700 border border-gray-200">
+                    {formatPermissionName(categoryKey, permName, subCatKey)}
+                  </td>
+                  {permissions.roles.map(roleKey => (
+                    renderPermissionCell(categoryKey, permName, roleKey, subCatKey)
+                  ))}
+                </tr>
+              );
+            });
+          });
+        }
+      }
+    });
+    
+    return rows;
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 py-8 mb-6">
-      <div className="container mx-auto px-4 max-w-7xl mb-6">
-        <div className="flex justify-between items-center mb-10">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-blue-600 flex items-center justify-center shadow-lg">
-              <LockKeyhole className="h-6 w-6 text-white" />
-            </div>
-            <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">Permission Manager</h1>
+    <div className="min-h-screen bg-gray-50 py-8">
+      <div className="container mx-auto px-4 max-w-7xl">
+        <div className="mb-8">
+          <div className='flex items-center gap-3'>
+          <LockKeyhole className='text-3xl font-bold text-blue-800'/>
+          <h1 className="text-3xl font-bold text-blue-800 mb-2">Roles & Permissions</h1>
           </div>
-          
-          <div className="relative">
-            <button 
-              onClick={() => setIsRoleModalOpen(!isRoleModalOpen)}
-              className="p-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 flex items-center gap-2"
-            >
-              <UserRoundPen className="h-5 w-5" />
-              Change Role: 
-              <div className='font-bold'>{selectedRole}</div>
-              <ChevronDown className="h-4 w-4 ml-1" />
-            </button>
-            
-            {isRoleModalOpen && (
-              <div className="absolute right-0 mt-2 bg-white rounded-xl border border-blue-100 shadow-xl z-10 w-full min-w-[200px] overflow-hidden">
-                {Object.values(Roles).map(role => (
-                  <button
-                    key={role}
-                    className=" w-full text-left px-5 py-3 hover:bg-blue-50 transition-colors duration-150 border-b border-blue-50 last:border-0 flex items-center gap-3"
-                    onClick={() => {
-                      setSelectedRole(role);
-                      setIsRoleModalOpen(false);
-                    }}
-                  >
-                    <div className={`w-2 h-2 rounded-full ${selectedRole === role ? 'bg-blue-500' : 'bg-gray-300'}`}></div>
-                    {role}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
+          <p className="text-gray-600">
+            Permissions available for default roles. Create a custom role to upgrade the capabilities of a default role. 
+            <a href="#" className="text-blue-600 ml-1 hover:underline">Learn more</a>
+          </p>
         </div>
         
-        <div className="bg-white rounded-2xl shadow-xl overflow-hidden mb-8 border border-blue-100">
+        <div className="bg-white rounded-lg shadow-md overflow-hidden mb-6">
           <div className="overflow-x-auto">
-            <table className="w-full border-collapse mb-6">
+            <table className="w-full border-collapse">
               <thead>
-                <tr className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white">
-                  <th className="p-5 text-left font-semibold text-lg rounded-tl-lg w-64 border border-blue-400">Permission Categories</th>
-                  {allPermissionNames.map((permName, index) => (
-                    <th 
-                      key={permName} 
-                      className={`p-4 text-center font-medium border border-blue-400 ${index === allPermissionNames.length - 1 ? 'rounded-tr-lg' : ''}`}
-                    >
-                      {permName}
+                <tr className="bg-gray-50 border-b border-gray-200">
+                  <th className="p-4 text-left font-medium text-gray-500 w-1/3">List of Permissions</th>
+                  {permissions.roles.map(role => (
+                    <th key={role} className="p-4 text-center font-medium text-gray-700 border-l border-gray-200">
+                      {role}
                     </th>
                   ))}
                 </tr>
               </thead>
               <tbody>
-                {Object.keys(permissions.permissionCategories).map((categoryKey, categoryIndex) => {
-                  const category = permissions.permissionCategories[categoryKey];
-                  
-                  if (category.type === PermissionType.SIMPLE) {
-                    // Render simple category
-                    return (
-                      <tr key={categoryKey} className={`hover:bg-blue-50 transition-colors duration-200 ${categoryIndex % 2 === 0 ? 'bg-gray-50' : 'bg-white'}`}>
-                        <td className="p-5 flex items-center gap-4 border border-gray-200">
-                          <ToggleSwitch 
-                            checked={enabledCategories[categoryKey]}
-                            onChange={(e) => handleToggle(categoryKey, null, e)}
-                          />
-                          <span className="font-medium text-gray-800">{categoryKey}</span>
-                        </td>
-                        
-                        {allPermissionNames.map(permName => {
-                          // Check if this permission exists in this category
-                          if (category.permissions[permName]) {
-                            const currentValue = category.permissions[permName].defaultValues[selectedRole];
-                            const possibleValues = category.permissions[permName].possibleValues;
-                            
-                            return (
-                              <td key={`${categoryKey}-${permName}`} className="p-4 text-center border border-gray-200">
-                                {renderDropdown(categoryKey, permName, currentValue, possibleValues)}
-                              </td>
-                            );
-                          }
-                          return <td key={`${categoryKey}-${permName}`} className="p-4 text-center border border-gray-200 text-gray-500 italic text-sm">NO ACCESS</td>;
-                        })}
-                      </tr>
-                    );
-                  } else {
-                    // Render complex category with subcategories
-                    return (
-                      <React.Fragment key={categoryKey}>
-                        {/* Category Header */}
-                        <tr className="bg-blue-100 font-bold">
-                          <td className="p-4 flex items-center gap-4 border border-blue-200">
-                            <ToggleSwitch 
-                              checked={enabledCategories[categoryKey]}
-                              onChange={(e) => handleToggle(categoryKey, null, e)}
-                            />
-                            <span className="font-bold text-blue-800">{categoryKey}</span>
-                          </td>
-                          {allPermissionNames.map(permName => (
-                            <td key={`${categoryKey}-header-${permName}`} className="p-4 border border-blue-200"></td>
-                          ))}
-                        </tr>
-                        
-                        {/* Subcategories */}
-                        {Object.keys(category.subCategories).map((subCatKey, subIndex) => {
-                          const subCategory = category.subCategories[subCatKey];
-                          return (
-                            <tr 
-                              key={`${categoryKey}-${subCatKey}`} 
-                              className={`hover:bg-blue-50 transition-colors duration-200 ${subIndex % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}
-                            >
-                              <td className="p-4 pl-12 flex items-center gap-4 border border-gray-200">
-                                <ToggleSwitch 
-                                  checked={enabledCategories[`${categoryKey}.${subCatKey}`]}
-                                  onChange={(e) => handleToggle(categoryKey, subCatKey, e)}
-                                />
-                                <div>
-                                  <span className="font-medium text-gray-800">{subCatKey}</span>
-                                  {subCategory.description && (
-                                    <p className="text-xs text-gray-500 mt-1">{subCategory.description}</p>
-                                  )}
-                                </div>
-                              </td>
-                              
-                              {allPermissionNames.map(permName => {
-                                // Check if this permission exists in this subcategory
-                                if (subCategory.permissions[permName]) {
-                                  const currentValue = subCategory.permissions[permName].defaultValues[selectedRole];
-                                  const possibleValues = subCategory.permissions[permName].possibleValues;
-                                  
-                                  return (
-                                    <td key={`${categoryKey}-${subCatKey}-${permName}`} className="p-4 text-center border border-gray-200">
-                                      {renderDropdown(categoryKey, permName, currentValue, possibleValues, subCatKey)}
-                                    </td>
-                                  );
-                                }
-                                return <td key={`${categoryKey}-${subCatKey}-${permName}`} className="p-4 text-center border border-gray-200 text-gray-500 italic text-sm">NO ACCESS</td>;
-                              })}
-                            </tr>
-                          );
-                        })}
-                      </React.Fragment>
-                    );
-                  }
-                })}
+                {generatePermissionRows()}
               </tbody>
             </table>
           </div>
         </div>
         
-        <div className="flex justify-end gap-4 pb-6">
-          <button 
-            onClick={resetPermissions}
-            className="px-6 py-3 bg-white text-gray-700 rounded-lg hover:bg-gray-100 border border-gray-300 transition-all duration-300 hover:shadow-md flex items-center gap-2"
+        <div className="flex justify-between items-center">
+
+          {/* Open custom role creation dialog  */}
+          {/* <button 
+            className="px-6 py-3 rounded-lg border border-blue-600 text-blue-600 hover:bg-blue-50 transition-colors"
+            onClick={() => {}} 
           >
-            <RotateCcw className="h-5 w-5" />
-            Reset
-          </button>
-          <button 
-            onClick={savePermissions}
-            className="px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 flex items-center gap-2"
-          >
-            <Save className="h-5 w-5" />
-            Save Changes
-          </button>
+            <div className="flex items-center">
+              <PlusCircle className="h-4 w-4 mr-2" />
+              Add Custom Role
+            </div>
+          </button> */}
+          
+          <div className="flex gap-4 mb-6 ml-auto">
+            
+            <button 
+              onClick={resetPermissions}
+              className="px-5 py-2 bg-white text-gray-700 rounded-lg hover:bg-gray-100 border border-gray-300 transition-all hover:shadow-sm flex items-center"
+            >
+              <RotateCcw className="h-4 w-4 mr-2" />
+              Reset
+            </button>
+            <button 
+              onClick={savePermissions}
+              className="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all hover:shadow-sm flex items-center"
+            >
+              <Save className="h-4 w-4 mr-2" />
+              Save Changes
+            </button>
+          </div>
         </div>
       </div>
     </div>
