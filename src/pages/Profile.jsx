@@ -410,8 +410,8 @@ const ProfilePage = () => {
         </div>
 
         {/* Information Fields */}
-        <div className="space-y-4 flex justify-center">
-            <div className="w-[87%]">
+        <div className="gap-y-24 flex justify-center">
+            <div className="w-[95%]">
           <div className="flex justify-between pb-2 border-b">
             <div className="text-gray-700">Position</div>
             <div>{userInfo.position || "—"}</div>

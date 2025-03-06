@@ -55,7 +55,7 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
     { icon: Calculator, label: 'Mortgage' },
     { icon: BarChart3, label: 'Analytics' },
     // { icon: GraduationCap, label: 'Education' },
-    { icon: FileStack, label: 'Subscriptions' },
+    { icon: FileStack, label: 'Pricing' },
   ];
 
   const bottomMenuItems = [

@@ -112,7 +112,7 @@ const PresentationSettings = () => {
   const [selectedPosition, setSelectedPosition] = useState('personal-manager');
 
   return (
-    <div className="p-6 max-w-6xl mx-auto">
+    <div className="p-6 max-w-8xl mx-auto">
       <h1 className="text-2xl font-bold text-gray-800 mb-6">Presentation settings</h1>
       
       <div className="mb-6">
