@@ -4,7 +4,7 @@ import { tabs } from "../enums/sidebarTabsEnums";
 const MainTabContext = createContext();
 
 export function MainTabProvider({ children }) {
-  const [mainTab, setMainTab] = useState(tabs.OFFPLAN);
+  const [mainTab, setMainTab] = useState(tabs.HIDDEN);
 
   return (
     <MainTabContext.Provider value={{ mainTab, setMainTab }}>

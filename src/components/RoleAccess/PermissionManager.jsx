@@ -10,12 +10,15 @@ import {
 
 import { defaultPermissions } from './DefaultRolePermissions';
 import { LockKeyhole, RotateCcw, Save, ChevronDown, Check, X, PlusCircle } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const PermissionManager = () => {
   // State to track current permissions (initialized from default or localStorage)
   const [permissions, setPermissions] = useState(null);
   // Track which categories are expanded/collapsed
   const [expandedCategories, setExpandedCategories] = useState({});
+
+  const navigate = useNavigate()
   
   // Load permissions from localStorage or use defaults on component mount
   useEffect(() => {
@@ -270,10 +273,25 @@ const PermissionManager = () => {
           <LockKeyhole className='text-3xl font-bold text-blue-800'/>
           <h1 className="text-3xl font-bold text-blue-800 mb-2">Roles & Permissions</h1>
           </div>
+          <div className='flex items-center'>
+
           <p className="text-gray-600">
-            Permissions available for default roles. Create a custom role to upgrade the capabilities of a default role. 
-            <a href="#" className="text-blue-600 ml-1 hover:underline">Learn more</a>
+            Permissions available for default roles. Create a custom role to upgrade the capabilities of a default role: {" "}{" "} 
           </p>
+          <div href="#" className="text-blue-600 ml-1 hover:underline hover:cursor-pointer">
+              
+            <button 
+            className="p-2  text-blue-600 hover:bg-blue-100 transition-colors"
+            onClick={() => {navigate("add-role")}} 
+          >
+            <div className="flex items-center">
+              <PlusCircle className="h-4 w-4 mr-2" />
+              Add Custom Role
+            </div>
+          </button>
+
+            </div>
+            </div>
         </div>
         
         <div className="bg-white rounded-lg shadow-md overflow-hidden mb-6">
@@ -297,17 +315,6 @@ const PermissionManager = () => {
         </div>
         
         <div className="flex justify-between items-center">
-
-          {/* Open custom role creation dialog  */}
-          {/* <button 
-            className="px-6 py-3 rounded-lg border border-blue-600 text-blue-600 hover:bg-blue-50 transition-colors"
-            onClick={() => {}} 
-          >
-            <div className="flex items-center">
-              <PlusCircle className="h-4 w-4 mr-2" />
-              Add Custom Role
-            </div>
-          </button> */}
           
           <div className="flex gap-4 mb-6 ml-auto">
             

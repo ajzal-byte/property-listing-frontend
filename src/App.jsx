@@ -17,6 +17,7 @@ import Analytics from "./pages/Analytics";
 import IndividualOffPlan from "./pages/IndividualOffPlan";
 import IndividualSecondary from "./pages/IndividualSecondary";
 import CurrentUserRoles from './components/RoleAccess/CurrentUserRoles'
+import AddNewRole from './components/RoleAccess/AddNewRole'
 import {mockUsers} from './mockdata/mockData'
 import PermissionManager from "./components/RoleAccess/PermissionManager";
 import ProfilePage from "./pages/Profile";
@@ -81,6 +82,7 @@ const App = () => {
                   <Route path="/analytics?agentId=" element={<Analytics />} />
                   <Route path="/permissions" element={<CurrentUserRoles initialData={mockUsers}/>} />
                   <Route path="/permissions/edit" element={<PermissionManager/>} />
+                  <Route path="/permissions/edit/add-role" element={<AddNewRole/>} />
                   <Route path="/pricing" element={<Subscription/>} />
                   <Route path="/profile" element={<ProfilePage />} />
 
