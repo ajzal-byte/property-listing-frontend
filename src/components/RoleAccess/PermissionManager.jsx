@@ -14,7 +14,7 @@ import { useNavigate } from 'react-router-dom';
 
 const PermissionManager = () => {
   // State to track current permissions (initialized from default or localStorage)
-  const [permissions, setPermissions] = useState(null);
+  const [permissions, setPermissions] = useState();
   // Track which categories are expanded/collapsed
   const [expandedCategories, setExpandedCategories] = useState({});
 
@@ -27,8 +27,11 @@ const PermissionManager = () => {
       setPermissions(JSON.parse(savedPermissions));
     } else {
       setPermissions(defaultPermissions);
+      localStorage.setItem('permissions', JSON.stringify(defaultPermissions));
     }
     
+    console.log(defaultPermissions)
+
     // Initialize all categories as expanded
     const initialExpandedState = {};
     Object.keys(defaultPermissions.permissionCategories).forEach(category => {

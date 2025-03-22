@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { Building, GraduationCap , ChevronDown } from "lucide-react";
+import { Building, GraduationCap , ChevronDown, BadgeHelp } from "lucide-react";
 import TabContext from "./../contexts/TabContext";
 import { tabs } from "../enums/sidebarTabsEnums";
 
@@ -20,7 +20,7 @@ const PageHeader = () => {
       <div
         className={`
       ${
-        mainTab == tabs.OFFPLAN
+        (mainTab == tabs.OFFPLAN || mainTab == tabs.SUPPORT)
           ? "bg-gradient-to-r from-blue-600 to-blue-800 "
           : mainTab == tabs.SECONDARY
           ? "bg-gradient-to-r from-orange-600 to-orange-800 "
@@ -57,6 +57,9 @@ const PageHeader = () => {
                 `}
                 />
                 :
+                (mainTab == tabs.SUPPORT)
+                ? <BadgeHelp className={`w-8 h-8 text-white transition-all duration-300 ${isHovered ? "animate-pulse" : ""}`}/>
+                :
                 <GraduationCap
                   className={`
                   w-8 h-8 text-white
@@ -84,7 +87,9 @@ const PageHeader = () => {
                     : mainTab == tabs.ACADEMY
                     ? "Welcome to our Academy"
                     : mainTab == tabs.ANALYTICS
-                    ? "Take insight into Analytics":
+                    ? "Take insight into Analytics"
+                    : mainTab == tabs.SUPPORT
+                    ? "Welcome to VortexWeb Support":
                     "" }
                 </h1>
                 {/* Description - Slides down on hover */}
@@ -105,8 +110,11 @@ const PageHeader = () => {
                       ? "Browse our top Secondary Listings "
                       : mainTab == tabs.ACADEMY
                       ? "Explore our platform to discover new opportunities for growth and learning"
-                      : " "}
+                      : mainTab == tabs.SUPPORT 
+                      ? <div className="bg-white/10 backdrop-blur-sm p-6 rounded-xl border border-white/20 max-w-md"> We're here to help you with any questions or concerns about our services.</div>
+                     : " "}
                   </p>
+                { (mainTab ==tabs.OFFPLAN || mainTab ==tabs.SECONDARY) &&
                   <div className="mt-4 flex gap-3">
                     <span className="inline-flex items-center px-3 py-1 rounded-full bg-white/10 text-sm text-blue-100">
                       Premium Listings
@@ -115,6 +123,7 @@ const PageHeader = () => {
                       New Developments
                     </span>
                   </div>
+                  }
                 </div>
               </div>
             </div>

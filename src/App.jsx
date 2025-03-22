@@ -23,6 +23,7 @@ import PermissionManager from "./components/RoleAccess/PermissionManager";
 import ProfilePage from "./pages/Profile";
 import MyCompany from "./pages/MyCompany";
 import Subscription from './pages/Subscription'
+import SupportPage from './pages/SupportPage'
 
 
 const App = () => {
@@ -85,6 +86,7 @@ const App = () => {
                   <Route path="/permissions/edit/add-role" element={<AddNewRole/>} />
                   <Route path="/pricing" element={<Subscription/>} />
                   <Route path="/profile" element={<ProfilePage />} />
+                  <Route path="/support" element={<SupportPage />} />
 
                   {/* Default Route */}
                   <Route

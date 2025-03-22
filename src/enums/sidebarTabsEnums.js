@@ -7,5 +7,6 @@ export const tabs = {
     MORTGAGE: 'Mortgage', 
     CRM: 'CRM', 
     SUBSCRIPTIONS: 'Subscriptions', 
+    SUPPORT: 'Support', 
 }
 

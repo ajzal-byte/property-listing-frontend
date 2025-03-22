@@ -66,7 +66,7 @@ const PricingPage = () => {
                 </div>
               )}
               <div className="text-3xl font-bold mb-2">
-                ${plan.price}
+                AED {plan.price}
                 <span className="text-sm font-normal ml-1">/{billingCycle === 'monthly' ? 'month' : 'year'}</span>
               </div>
               <h3 className="text-xl font-bold mb-2">{plan.name}</h3>
