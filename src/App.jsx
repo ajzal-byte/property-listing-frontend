@@ -24,6 +24,7 @@ import ProfilePage from "./pages/Profile";
 import MyCompany from "./pages/MyCompany";
 import Subscription from './pages/Subscription'
 import SupportPage from './pages/SupportPage'
+import HomePage from './pages/HomePage'
 
 
 const App = () => {
@@ -79,6 +80,7 @@ const App = () => {
                     }
                   />
                   <Route path="/company" element={<MyCompany />} />
+                  <Route path="/" element={<HomePage />} />
                   <Route path="/analytics" element={<Analytics />} />
                   <Route path="/analytics?agentId=" element={<Analytics />} />
                   <Route path="/permissions" element={<CurrentUserRoles initialData={mockUsers}/>} />

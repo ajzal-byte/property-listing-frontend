@@ -284,7 +284,7 @@ const PermissionManager = () => {
           <div href="#" className="text-blue-600 ml-1 hover:underline hover:cursor-pointer">
               
             <button 
-            className="p-2  text-blue-600 hover:bg-blue-100 transition-colors"
+            className="p-2  text-blue-600 hover:bg-blue-100 hover:rounded-full hover:cursor-pointer transition-colors"
             onClick={() => {navigate("add-role")}} 
           >
             <div className="flex items-center">
