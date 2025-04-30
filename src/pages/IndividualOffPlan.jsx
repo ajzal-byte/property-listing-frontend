@@ -19,6 +19,8 @@ import {
   Landmark,
 } from "lucide-react";
 import TabContext from "./../contexts/TabContext";
+import ProvidedByCard from "../components/IndividualProperty/ProvidedBy";
+import RegulatoryInfoCard  from "../components/IndividualProperty/RegulatoryCard";
 
 const images = [
   "https://images.pexels.com/photos/280222/pexels-photo-280222.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
@@ -491,13 +493,15 @@ export default function IndividualOffPlan() {
             </div>
           )}
 
-          <div id="developer" className="pt-12 pb-8">
+          <ProvidedByCard/>
+          <RegulatoryInfoCard/>
+          {/* <div id="developer" className="pt-12 pb-8">
             <h2 className="text-xl font-semibold mb-4 text-center">
               Developer
             </h2>
             <div className="bg-white/50 backdrop-blur-sm rounded-lg shadow-lg overflow-hidden">
               <div className="grid grid-cols-1 md:grid-cols-2">
-                {/* Image Section */}
+            
                 <div className="aspect-[4/3] relative">
                   <img
                     src="https://images.unsplash.com/photo-1483058712412-4245e9b90334"
@@ -506,7 +510,6 @@ export default function IndividualOffPlan() {
                   />
                 </div>
 
-                {/* Content Section */}
                 <div className="p-8 flex flex-col justify-center items-center h-full">
                   <div className="flex-grow text-center">
                     <h3 className="text-2xl font-semibold mb-4">
@@ -519,7 +522,7 @@ export default function IndividualOffPlan() {
                       projects from conception to completion, bringing you a
                       refined residential experience. Welcome to modern living.
                     </p>
-                    {/* Contact Buttons */}
+
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                       <button className="flex items-center gap-2 w-full py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
                         <Globe className="h-4 w-4" />
@@ -538,7 +541,7 @@ export default function IndividualOffPlan() {
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
 
           {/* More Projects */}
           <div className="mt-12">

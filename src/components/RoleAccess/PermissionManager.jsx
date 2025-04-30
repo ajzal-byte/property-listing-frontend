@@ -304,7 +304,7 @@ const PermissionManager = () => {
                 <tr className="bg-gray-50 border-b border-gray-200">
                   <th className="p-4 text-left font-medium text-gray-500 w-1/3">List of Permissions</th>
                   {permissions.roles.map(role => (
-                    <th key={role} className="p-4 text-center font-medium text-gray-700 border-l border-gray-200">
+                    <th key={role} className="p-4 text-center font-medium text-green-700 border-l border-gray-200">
                       {role}
                     </th>
                   ))}

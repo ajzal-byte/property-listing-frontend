@@ -33,6 +33,10 @@ const Dropdown = ({ trigger, items, align = "right", onSelect, selectedValue }) 
     } else if (item.label === 'My subscriptions') {
       navigate('/pricing');
     }
+    else if (item.label === 'Log Out'){
+      localStorage.removeItem("authToken")
+      window.location.reload()
+    }
     
     // Call onSelect if provided
     if (onSelect) {

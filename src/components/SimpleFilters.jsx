@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Search,
   ChevronDown,
@@ -6,13 +6,16 @@ import {
   LayoutList,
   Map,
   BarChart2,
-  List
+  List,
+  PlusCircle
 } from "lucide-react";
 
 import { useContext } from "react";
 import ViewContext from "../contexts/ViewContext";
 import TitleComponent from "./TitleComponent";
 import MainContentContext from "../contexts/MainContentContext";
+import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 
 const FilterDropdown = ({ label, options, value, onChange, className = "" }) => {
@@ -167,7 +170,7 @@ const PropertyFilters = () => {
 //   const [viewType, setViewType] = useState("card");
 const { viewType, setViewType } = useContext(ViewContext);
 const { mainContent, setMainContent } = useContext(MainContentContext);
-
+const navigate = useNavigate()
   const [showMap, setShowMap] = useState(false);
   const [showAnalytics, setShowAnalytics] = useState(false);
   const [filterForm, setFilterForm] = useState({
@@ -219,11 +222,13 @@ const { mainContent, setMainContent } = useContext(MainContentContext);
 
       {/* Tabs */}
       <div className="flex border-b border-gray-200">
+
+        <div className="flex flex-between ">
         <button
           onClick={() => setMainContent("Projects")}
           className={`px-6 py-3 -mb-px text-sm font-medium transition-colors ${
             mainContent === "Projects"
-              ? "text-blue-600 border-b-2 border-blue-600"
+            ? "text-blue-600 border-b-2 border-blue-600"
               : "text-gray-500 hover:text-gray-700"
           }`}
         >
@@ -235,10 +240,19 @@ const { mainContent, setMainContent } = useContext(MainContentContext);
             mainContent === "Layouts"
               ? "text-blue-600 border-b-2 border-blue-600"
               : "text-gray-500 hover:text-gray-700"
-          }`}
-        >
+              }`}
+              >
           Layouts
         </button>
+          </div>
+
+        <button className={`ml-auto mt-2 md:mt-0 flex items-center px-4 py-2 rounded-lg transition duration-300
+                    hover:bg-blue-600 hover:text-white
+                    bg-blue-100 text-blue-700 mb-2
+                }`} onClick={()=>{navigate("/create-listing")}}>
+                  Create Listing
+                  <PlusCircle className="ml-1 h-4 w-4" />
+                </button>
       </div>
 
       {/* Filters */}
@@ -333,11 +347,11 @@ const { mainContent, setMainContent } = useContext(MainContentContext);
                 isActive={viewType === "classic"}
                 onClick={() => setViewType("classic")}
               />
-              <ViewTypeButton
+              {/* <ViewTypeButton
                 icon={List}
                 isActive={viewType === "list"}
                 onClick={() => setViewType("list")}
-              />
+              /> */}
             </div>
 
             <FilterDropdown
