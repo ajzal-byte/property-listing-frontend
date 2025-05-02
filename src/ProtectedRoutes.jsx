@@ -22,6 +22,8 @@ import MyCompany from "./pages/MyCompany";
 import Subscription from "./pages/Subscription";
 import SupportPage from "./pages/SupportPage";
 import CreateListing from './pages/CreateListing'
+import DetailedSecondary from "./pages/DetailedSecondary";
+
 
 export default function ProtectedRoutes() {
 
@@ -32,7 +34,9 @@ export default function ProtectedRoutes() {
       {/* <Route path="/" element={<HomePage />} /> */}
       {/* Default Route */}
       <Route path="/off-plan/:id" element={<IndividualOffPlan />} />
-      <Route path="/secondary-listings/:id" element={<IndividualSecondary />} />
+      {/* <Route path="/secondary-listings/:id" element={<IndividualSecondary />} /> */}
+      <Route path="/secondary-listings/:id" element={<DetailedSecondary />} />
+      {/* <Route path="/secondary-listings/:id" element={</>} /> */}
       <Route path="/academy" element={<Academy />} />
       <Route path="/academy/courses" element={<CourseGrid />} />
       <Route path="/academy/courses/:courseId" element={<LessonsPage />} />

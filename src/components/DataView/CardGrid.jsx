@@ -152,7 +152,7 @@ const CardGrid = ({ cards }) => {
   const { loading, response, error } = Fetcher({
     url: import.meta.env.VITE_GETALL_LISTING,
     method: 'GET',
-    headers: { Authorization: `Bearer ${authToken}` },
+    headers: { Authorization: `Bearer ${authToken}`, 'Accept': 'application/json' },
     onSuccess: (res) => console.log('Data is:', res),
   });
   
@@ -174,9 +174,9 @@ const CardGrid = ({ cards }) => {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentListings = listings.slice(indexOfFirstItem, indexOfLastItem);
 
-  const handleCardClick = (id) => {
-    window.location.href = `/property/${id}`;
-  };
+  // const handleCardClick = (id) => {
+  //   window.location.href = `/property/${id}`;
+  // };
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -211,7 +211,7 @@ const CardGrid = ({ cards }) => {
                     transition-transform duration-200 hover:scale-102
                     hover:shadow-lg rounded-lg cursor-pointer
                     `}
-                    onClick={() => handleCardClick(listing.id)}
+                    // onClick={() => handleCardClick(listing.id)}
                     >
                     {isClassicView ? (
                       <ClassicCard listing={listing} />

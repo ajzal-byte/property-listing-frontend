@@ -3,7 +3,7 @@ import { Upload, Check, Loader, X, Home, Calendar, Info } from "lucide-react";
 import MainTabContext from "../contexts/TabContext";
 import { useContext } from "react";
 import { tabs } from "../enums/sidebarTabsEnums";
-import { PropertyTypeEnum, OfferingTypeEnum, StatusEnum, TimePeriodEnum  } from "../enums/createListingsEnums";
+import getAuthHeaders from "../utils/getAuthHeader";
 
 
 export default function ListingForm() {
@@ -67,12 +67,7 @@ export default function ListingForm() {
     { id: 3, name: "Bank Transfer" },
     { id: 4, name: "Payment Plan Available" },
   ];
-  const getAuthHeaders = () => {
-    return {
-      Authorization: `Bearer ${localStorage.getItem("authToken")}`,
-      "Content-Type": "application/json",
-    };
-  };
+
   // Fetch all dropdown data on component mount
   useEffect(() => {
     const fetchData = async () => {
@@ -166,6 +161,7 @@ export default function ListingForm() {
     isListingRental,
     formData.offering_type
   ]);
+
 
   // Handle input changes
   const handleChange = (e) => {

@@ -219,7 +219,9 @@ import {
   Calendar,
   Tag,
   CheckCircle,
+  Edit2Icon
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 // Property Card Component
 const PropertyCard = ({ listing = {} }) => {
@@ -242,7 +244,7 @@ const PropertyCard = ({ listing = {} }) => {
   } = listing || {};
 
   const [currentImage, setCurrentImage] = useState(0);
-
+  const navigate = useNavigate ();
   // Find main image or use first image
   const mainImageIndex = photos.findIndex((photo) => photo.is_main === 1);
   const imageUrls = photos.map((photo) => photo.image_url);
@@ -340,6 +342,7 @@ const PropertyCard = ({ listing = {} }) => {
           <button className="absolute top-4 right-4 bg-white rounded-full p-2 shadow-md">
             <Heart className="h-5 w-5 text-blue-600" />
           </button>
+
         </div>
 
         {/* Title and Status Section */}
@@ -475,6 +478,15 @@ const PropertyCard = ({ listing = {} }) => {
                 }}
               >
                 Contact
+              </button>
+
+              <button
+                className="bg-green-500 hover:bg-green-600 text-white text-xs font-medium py-2 px-3 rounded-lg transition duration-300 mx-2"
+                onClick={() => {
+                  navigate(`/secondary-listings/${listing.id}`)
+                }}
+              >
+                View
               </button>
             </div>
           )}

@@ -1,0 +1,56 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CORS Test</title>
+</head>
+<body>
+    <h1>Test CORS for Registration API</h1>
+    <button id="test-api">Test Registration API</button>
+
+    <!-- <script>
+        document.getElementById('test-api').addEventListener('click', async function () {
+            try {
+                const response = await fetch('http://3.111.31.34/api/listings', {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Authorization': 'Bearer 46|NhsRpjIAzf8Cnn5sprei9Rd2LTqjCOoRTlHDOx8V257838be'
+                    }
+                });
+        
+                const data = await response.json();
+                console.log('Response:', data);
+        
+            } catch (err) {
+                console.error('Error:', err);
+            }
+        });
+        </script> -->
+        
+    <script>
+        document.getElementById('test-api').addEventListener('click', async function () {
+            try {
+                const response = await fetch('http://3.111.31.34/api/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: "99999deshrajsingh@example.com", // already used email
+                        password: "123456",
+                    })
+                });
+        
+                const data = await response.json();
+                console.log('Response:', data);
+        
+            } catch (err) {
+                console.error('Error:', err);
+            }
+        });
+        </script>
+        
+</body>
+</html>
