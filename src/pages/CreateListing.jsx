@@ -4,7 +4,7 @@ import MainTabContext from "../contexts/TabContext";
 import { useContext } from "react";
 import { tabs } from "../enums/sidebarTabsEnums";
 import getAuthHeaders from "../utils/getAuthHeader";
-import { PropertyTypeEnum, OfferingTypeEnum, StatusEnum } from "../enums/createListingsEnums";
+import { PropertyTypeEnum, OfferingTypeEnum, StatusEnum, TimePeriodEnum } from "../enums/createListingsEnums";
 
 export default function ListingForm() {
   const { mainTab, setMainTab } = useContext(MainTabContext);
