@@ -41,7 +41,7 @@ const RegisterForm = ({setIsLoggedIn}) => {
       }
       
       try {
-        const response = await fetch('http://3.111.31.34/api/register', {
+        const response = await fetch('https://backend.myemirateshome.com/api/register', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

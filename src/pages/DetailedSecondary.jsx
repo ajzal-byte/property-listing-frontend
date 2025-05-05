@@ -278,7 +278,7 @@ export default function DetailedSecondary() {
   const [agents, setAgents] = useState([]);
 
   const { loading, response, error } = Fetcher({
-    url: `http://3.111.31.34/api/listings/${id}`,
+    url: `https://backend.myemirateshome.com/api/listings/${id}`,
     method: 'GET',
     headers: { Authorization: `Bearer ${localStorage.getItem("authToken")}` , 'Accept': 'application/json'},
     onSuccess: (res) => console.log('Data is:', res),
@@ -296,21 +296,21 @@ export default function DetailedSecondary() {
       const fetchData = async () => {
         try {
           // Fetch locations
-          const locResponse = await fetch("http://3.111.31.34/api/locations", {
+          const locResponse = await fetch("https://backend.myemirateshome.com/api/locations", {
             headers: getAuthHeaders(),
           });
           const locData = await locResponse.json();
           setLocations(locData);
   
           // Fetch developers
-          const devResponse = await fetch("http://3.111.31.34/api/developers", {
+          const devResponse = await fetch("https://backend.myemirateshome.com/api/developers", {
             headers: getAuthHeaders(),
           });
           const devData = await devResponse.json();
           setDevelopers(devData);
   
           // Fetch amenities
-          const amenResponse = await fetch("http://3.111.31.34/api/amenities", {
+          const amenResponse = await fetch("https://backend.myemirateshome.com/api/amenities", {
             headers: getAuthHeaders(),
           });
           const amenData = await amenResponse.json();
@@ -318,7 +318,7 @@ export default function DetailedSecondary() {
   
           // Fetch company and agent info
           const infoResponse = await fetch(
-            "http://3.111.31.34/api/listing/create-info",
+            "https://backend.myemirateshome.com/api/listing/create-info",
             {
               headers: getAuthHeaders(),
             }
@@ -434,7 +434,7 @@ export default function DetailedSecondary() {
 
   return (
     <>
-     {/* <ListingEditModal 
+     <ListingEditModal 
         isOpen={showEditModal}
         onClose={() => setShowEditModal(false)}
         listing={listing}
@@ -446,7 +446,7 @@ export default function DetailedSecondary() {
         amenitiesList={amenities}
         onSuccess={()=> {console.log("Updated Successfully");
         }}
-      /> */}
+      />
     <div className="min-h-screen flex flex-col bg-gray-50">
     <div className="flex-grow flex flex-col w-full max-w-screen-2xl mx-auto px-4 py-6">
       <div className="bg-white rounded-xl shadow-lg overflow-hidden flex-grow flex flex-col">

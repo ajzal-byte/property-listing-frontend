@@ -4,7 +4,7 @@ import MainTabContext from "../contexts/TabContext";
 import { useContext } from "react";
 import { tabs } from "../enums/sidebarTabsEnums";
 import getAuthHeaders from "../utils/getAuthHeader";
-
+import { PropertyTypeEnum, OfferingTypeEnum, StatusEnum } from "../enums/createListingsEnums";
 
 export default function ListingForm() {
   const { mainTab, setMainTab } = useContext(MainTabContext);
@@ -15,7 +15,7 @@ export default function ListingForm() {
   // State for form data
   const [formData, setFormData] = useState({
     title_deed: "",
-    title: "",
+    // title: "",
     title_en: "",
     title_ar: "",
     desc_en: "",
@@ -73,21 +73,21 @@ export default function ListingForm() {
     const fetchData = async () => {
       try {
         // Fetch locations
-        const locResponse = await fetch("http://3.111.31.34/api/locations", {
+        const locResponse = await fetch("https://backend.myemirateshome.com/api/locations", {
           headers: getAuthHeaders(),
         });
         const locData = await locResponse.json();
         setLocations(locData);
 
         // Fetch developers
-        const devResponse = await fetch("http://3.111.31.34/api/developers", {
+        const devResponse = await fetch("https://backend.myemirateshome.com/api/developers", {
           headers: getAuthHeaders(),
         });
         const devData = await devResponse.json();
         setDevelopers(devData);
 
         // Fetch amenities
-        const amenResponse = await fetch("http://3.111.31.34/api/amenities", {
+        const amenResponse = await fetch("https://backend.myemirateshome.com/api/amenities", {
           headers: getAuthHeaders(),
         });
         const amenData = await amenResponse.json();
@@ -95,7 +95,7 @@ export default function ListingForm() {
 
         // Fetch company and agent info
         const infoResponse = await fetch(
-          "http://3.111.31.34/api/listing/create-info",
+          "https://backend.myemirateshome.com/api/listing/create-info",
           {
             headers: getAuthHeaders(),
           }
@@ -205,7 +205,7 @@ export default function ListingForm() {
       const fileType = file.type;
 
       const presignedResponse = await fetch(
-        `http://3.111.31.34/api/s3/presigned-url?fileName=${fileName}&fileType=${fileType}`,
+        `https://backend.myemirateshome.com/api/s3/presigned-url?fileName=${fileName}&fileType=${fileType}`,
         {
           headers: getAuthHeaders(),
         }
@@ -296,7 +296,7 @@ export default function ListingForm() {
       console.log("Form data to be submitted:", JSON.stringify(formData));
 
       // Submit form data
-      const response = await fetch("http://3.111.31.34/api/listings", {
+      const response = await fetch("https://backend.myemirateshome.com/api/listings", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -317,7 +317,7 @@ export default function ListingForm() {
       if (response.ok) {
         // Reset form on success
         setFormData({
-          title: "",
+          // title: "",
           title_deed: "",
           reference_no: "",
           property_type: "",
@@ -380,7 +380,7 @@ export default function ListingForm() {
             Basic Information
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
+            {/* <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Title *
               </label>
@@ -392,7 +392,7 @@ export default function ListingForm() {
                 className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
                 required
               />
-            </div>
+            </div> */}
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
