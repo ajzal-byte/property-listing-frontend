@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import {
   Users,
   Globe,
@@ -11,6 +11,10 @@ import {
   Trash2,
 } from "lucide-react";
 import AddDeveloper from "./AddDeveloper";
+import MainTabContext from "../../contexts/TabContext";
+import { tabs } from '../../enums/sidebarTabsEnums';
+import BulkImportDeveloper from "./BulkImport";
+
 
 export default function DeveloperDirectory() {
   const [developers, setDevelopers] = useState([]);
@@ -18,6 +22,8 @@ export default function DeveloperDirectory() {
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [openAddDeveloper, setOpenAddDeveloper] = useState(false);
+  const [openBulkImportDeveloper, setOpenBulkImportDeveloper] = useState(false);
+  const { setMainTab } = useContext(MainTabContext);
 
   const fetchDevelopers = async () => {
     setLoading(true);
@@ -47,6 +53,7 @@ export default function DeveloperDirectory() {
   };
 
   useEffect(() => {
+    setMainTab(tabs.HIDDEN)
     fetchDevelopers();
   }, []);
 
@@ -157,18 +164,36 @@ export default function DeveloperDirectory() {
                 Showing {filteredDevelopers.length} developer
                 {filteredDevelopers.length !== 1 ? "s" : ""}
               </p>
+
+              <div className="absolute top-2 right-2 flex gap-4 mb-4">
               <button
                 onClick={() => setOpenAddDeveloper(true)}
-                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors flex items-center absolute top-2 right-2"
-              >
+                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors flex items-center "
+                >
                 <PlusCircle size={16} className="mr-2" />
                 Add Developer
               </button>
+
+              <button
+                onClick={() => setOpenBulkImportDeveloper(true)}
+                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors flex items-center"
+                >
+                <PlusCircle size={16} className="mr-2" />
+                Import Bulk
+              </button>
+                </div>
 
               <AddDeveloper
                 isModalOpen={openAddDeveloper}
                 onClose={() => setOpenAddDeveloper(false)}
               />
+              <BulkImportDeveloper
+                isModalOpen={openBulkImportDeveloper}
+                onClose={() => setOpenBulkImportDeveloper(false)}
+                type="developers"
+              />
+
+
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {filteredDevelopers.map((dev) => (

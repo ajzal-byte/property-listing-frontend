@@ -812,41 +812,7 @@ export default function ListingEditForm({
             </h2>
 
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {/* {formData.photo_urls?.map((photo, index) => (
-                <div key={index} className="relative group border border-gray-200 rounded-lg overflow-hidden">
-                  <img 
-                    src={photo.file_url || photo.image_url} 
-                    alt={`Property photo ${index + 1}`}
-                    className="w-full h-40 object-cover"
-                  />
-                  
-                  <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-opacity duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
-                    <button
-                      type="button"
-                      onClick={() => handleSetMainPhoto(index)}
-                      className={`p-2 mr-2 rounded-full ${photo.is_main ? 'bg-blue-600 text-white' : 'bg-white text-blue-600'}`}
-                      title={photo.is_main ? 'Main Photo' : 'Set as Main Photo'}
-                    >
-                      <Image size={16} />
-                    </button>
-                    
-                    <button
-                      type="button"
-                      onClick={() => handlePhotoDelete(index)}
-                      className="p-2 rounded-full bg-white text-red-600"
-                      title="Delete Photo"
-                    >
-                      <Trash2 size={16} />
-                    </button>
-                  </div>
-                  
-                  {photo.is_main && (
-                    <div className="absolute top-2 left-2 bg-blue-600 text-white text-xs px-2 py-1 rounded-md">
-                      Main
-                    </div>
-                  )}
-                </div>
-              ))} */}
+             
 
               {formData.photo_urls?.map((photo, index) => {
                 return (
