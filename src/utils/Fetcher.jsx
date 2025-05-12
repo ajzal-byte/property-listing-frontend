@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 const Fetcher = ({
+  isGetAll = false,
   url,
   method = 'GET',
   data = null,
@@ -19,7 +20,6 @@ const Fetcher = ({
 
   useEffect(() => {
     if (!trigger) return;
-    console.log("hea",headers);
     
     const fetchData = async () => {
       setLoading(true);
@@ -35,8 +35,15 @@ const Fetcher = ({
         };
 
         const res = await axios(requestConfig);
-        setResponse(res.data);
-        onSuccess(res.data);
+        console.log("response inside fetcher: ",res.data);
+
+        if(isGetAll){
+          setResponse(res.data.listings);
+          onSuccess(res.data.listings);
+        } else {
+          setResponse(res.data);
+          onSuccess(res.data);
+        }
         
     } catch (err) {
         let friendlyError = {

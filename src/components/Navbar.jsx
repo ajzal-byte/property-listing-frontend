@@ -10,7 +10,9 @@ import {
   Heart,
   Globe,
   Share2,
-  Hand
+  Hand,
+  Building,
+
 } from "lucide-react";
 import Flag from "react-world-flags";
 import { useNavigate } from "react-router-dom";
@@ -32,6 +34,10 @@ const Dropdown = ({ trigger, items, align = "right", onSelect, selectedValue }) 
       navigate('/company');
     } else if (item.label === 'My subscriptions') {
       navigate('/pricing');
+    } else if (item.label === 'Manage Developers') {
+      navigate('/developers');
+    } else if (item.label === 'Manage Locations') {
+      navigate('/locations');
     }
     else if (item.label === 'Log Out'){
       localStorage.removeItem("authToken")
@@ -135,6 +141,8 @@ const Navbar = () => {
     { icon: FileText, label: "My subscriptions", active: false },
     { icon: FileText, label: "My transactions", active: false },
     { icon: Link2, label: "My integrations", active: false },
+    { icon: Building, label: "Manage Developers", active: false },
+    { icon: MapPin, label: "Manage Locations", active: false },
     { icon: Building2, label: "My properties", active: false },
     { icon: Share2, label: "Invite", active: false },
     { icon: Hand, label: "Permission Management", active: false},

@@ -7,7 +7,8 @@ import {
   Map,
   BarChart2,
   List,
-  PlusCircle
+  PlusCircle,
+  Wrench,
 } from "lucide-react";
 
 import { useContext } from "react";
@@ -16,11 +17,18 @@ import TitleComponent from "./TitleComponent";
 import MainContentContext from "../contexts/MainContentContext";
 import { Navigate } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import AddCompanyModal from "./UserManagement/AddCompany";
+import CreateUserModal from "./UserManagement/CreateUser";
 
-
-const FilterDropdown = ({ label, options, value, onChange, className = "" }) => {
-    const [isOpen, setIsOpen] = useState(false);
-
+const FilterDropdown = ({
+  label,
+  options,
+  value,
+  onChange,
+  className = "",
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+  
   return (
     <div className="relative">
       <button
@@ -32,8 +40,8 @@ const FilterDropdown = ({ label, options, value, onChange, className = "" }) => 
           size={16}
           className={`ml-2 transition-transform duration-200 text-gray-500 ${
             isOpen ? "rotate-180" : ""
-          }`}
-        />
+            }`}
+            />
       </button>
       {isOpen && (
         <>
@@ -50,7 +58,7 @@ const FilterDropdown = ({ label, options, value, onChange, className = "" }) => 
                   onChange(option);
                   setIsOpen(false);
                 }}
-              >
+                >
                 {option}
               </div>
             ))}
@@ -63,7 +71,7 @@ const FilterDropdown = ({ label, options, value, onChange, className = "" }) => 
 
 const PriceFilter = ({ value, onChange }) => {
   const [isOpen, setIsOpen] = useState(false);
-
+  
   const priceOptions = [
     "Any",
     "300000 د.ا",
@@ -73,13 +81,13 @@ const PriceFilter = ({ value, onChange }) => {
     "500000 د.ا",
     "1000000 د.ا",
   ];
-
+  
   return (
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center justify-between w-full px-4 py-2.5 text-sm bg-white border border-gray-200 rounded-xl hover:border-blue-400 hover:bg-blue-50/50 transition-all duration-200"
-      >
+        >
         <span className="text-gray-700 font-medium">
           {value.from === "Any" && value.to === "Any"
             ? "Price"
@@ -97,11 +105,13 @@ const PriceFilter = ({ value, onChange }) => {
           <div
             className="fixed inset-0 z-10 bg-black/5"
             onClick={() => setIsOpen(false)}
-          />
+            />
           <div className="absolute z-20 w-72 p-4 mt-2 bg-white border border-gray-100 rounded-xl shadow-lg">
             <div className="space-y-4">
               <div>
-                <label className="block text-sm text-gray-600 mb-1.5 font-medium">From</label>
+                <label className="block text-sm text-gray-600 mb-1.5 font-medium">
+                  From
+                </label>
                 <select
                   value={value.from}
                   onChange={(e) => onChange({ ...value, from: e.target.value })}
@@ -116,7 +126,9 @@ const PriceFilter = ({ value, onChange }) => {
               </div>
 
               <div>
-                <label className="block text-sm text-gray-600 mb-1.5 font-medium">To</label>
+                <label className="block text-sm text-gray-600 mb-1.5 font-medium">
+                  To
+                </label>
                 <select
                   value={value.to}
                   onChange={(e) => onChange({ ...value, to: e.target.value })}
@@ -140,23 +152,23 @@ const PriceFilter = ({ value, onChange }) => {
 const ToggleSwitch = ({ checked, onChange }) => {
   return (
     <div
-      onClick={() => onChange(!checked)}
-      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 ease-in-out cursor-pointer ${
-        checked ? "bg-blue-500" : "bg-gray-200"
+    onClick={() => onChange(!checked)}
+    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 ease-in-out cursor-pointer ${
+      checked ? "bg-blue-500" : "bg-gray-200"
       }`}
-    >
+      >
       <span
         className={`inline-block h-4 w-4 transform rounded-full bg-white shadow-sm transition duration-200 ease-in-out ${
           checked ? "translate-x-6" : "translate-x-1"
-        }`}
-      />
+          }`}
+          />
     </div>
   );
 };
 
 const ViewTypeButton = ({ icon: Icon, isActive, onClick }) => (
   <button
-    onClick={onClick}
+  onClick={onClick}
     className={`p-2.5 transition-colors duration-200 ${
       isActive ? "bg-blue-50 text-blue-600" : "hover:bg-gray-50 text-gray-500"
     }`}
@@ -167,12 +179,14 @@ const ViewTypeButton = ({ icon: Icon, isActive, onClick }) => (
 
 const PropertyFilters = () => {
   // const [activeTab, setActiveTab] = useState("Projects");
-//   const [viewType, setViewType] = useState("card");
-const { viewType, setViewType } = useContext(ViewContext);
-const { mainContent, setMainContent } = useContext(MainContentContext);
-const navigate = useNavigate()
+  //   const [viewType, setViewType] = useState("card");
+  const { viewType, setViewType } = useContext(ViewContext);
+  const { mainContent, setMainContent } = useContext(MainContentContext);
+  const navigate = useNavigate();
   const [showMap, setShowMap] = useState(false);
   const [showAnalytics, setShowAnalytics] = useState(false);
+  const [isAddCompanyOpen, setIsAddCompanyOpen] = useState(false);
+  const [isCreateUserOpen, setIsCreateUserOpen] = useState(false);
   const [filterForm, setFilterForm] = useState({
     search: "",
     city: "",
@@ -222,38 +236,94 @@ const navigate = useNavigate()
 
       {/* Tabs */}
       <div className="flex border-b border-gray-200">
-
         <div className="flex flex-between ">
-        <button
-          onClick={() => setMainContent("Projects")}
-          className={`px-6 py-3 -mb-px text-sm font-medium transition-colors ${
-            mainContent === "Projects"
-            ? "text-blue-600 border-b-2 border-blue-600"
-              : "text-gray-500 hover:text-gray-700"
-          }`}
-        >
-          Projects
-        </button>
-        <button
-          onClick={() => setMainContent("Layouts")}
-          className={`px-6 py-3 -mb-px text-sm font-medium transition-colors ${
-            mainContent === "Layouts"
-              ? "text-blue-600 border-b-2 border-blue-600"
-              : "text-gray-500 hover:text-gray-700"
-              }`}
-              >
-          Layouts
-        </button>
-          </div>
+          <button
+            onClick={() => setMainContent("Projects")}
+            className={`px-6 py-3 -mb-px text-sm font-medium transition-colors ${
+              mainContent === "Projects"
+                ? "text-blue-600 border-b-2 border-blue-600"
+                : "text-gray-500 hover:text-gray-700"
+            }`}
+          >
+            Projects
+          </button>
+          <button
+            onClick={() => setMainContent("Layouts")}
+            className={`px-6 py-3 -mb-px text-sm font-medium transition-colors ${
+              mainContent === "Layouts"
+                ? "text-blue-600 border-b-2 border-blue-600"
+                : "text-gray-500 hover:text-gray-700"
+            }`}
+          >
+            Layouts
+          </button>
+        </div>
 
-        <button className={`ml-auto mt-2 md:mt-0 flex items-center px-4 py-2 rounded-lg transition duration-300
+        <div className="absolute gap-2 flex right-8">
+          <button
+            className={`ml-auto mt-2 md:mt-0 flex items-center px-4 py-2 rounded-lg transition duration-300
                     hover:bg-blue-600 hover:text-white
                     bg-blue-100 text-blue-700 mb-2
-                }`} onClick={()=>{navigate("/create-listing")}}>
-                  Create Listing
-                  <PlusCircle className="ml-1 h-4 w-4" />
-                </button>
+                }`}
+            onClick={() => {
+              navigate("/create-listing");
+            }}
+          >
+            Create Listing
+            <PlusCircle className="ml-1 h-4 w-4" />
+          </button>
+
+          <button
+            className={`ml-auto mt-2 md:mt-0 flex items-center px-4 py-2 rounded-lg transition duration-300
+                    hover:bg-blue-600 hover:text-white
+                    bg-blue-100 text-blue-700 mb-2
+                }`}
+            onClick={() => {
+              navigate("/manage-companies");
+            }}
+          >
+            Manage Companies
+            <Wrench className="ml-1 h-4 w-4" />
+          </button>
+
+          <button
+            className={`ml-auto mt-2 md:mt-0 flex items-center px-4 py-2 rounded-lg transition duration-300
+                    hover:bg-blue-600 hover:text-white
+                    bg-blue-100 text-blue-700 mb-2
+                }`}
+            onClick={() => {
+              setIsAddCompanyOpen(true)
+            }}
+          >
+            Add Company
+            <PlusCircle className="ml-1 h-4 w-4" />
+          </button>
+          <button
+            className={`ml-auto mt-2 md:mt-0 flex items-center px-4 py-2 rounded-lg transition duration-300
+                    hover:bg-blue-600 hover:text-white
+                    bg-blue-100 text-blue-700 mb-2
+                }`}
+            onClick={() => {
+              setIsCreateUserOpen(true)
+            }}
+          >
+            Create User
+            <PlusCircle className="ml-1 h-4 w-4" />
+          </button>
+
+        </div>
       </div>
+
+      <AddCompanyModal
+        isModalOpen={isAddCompanyOpen}
+        onClose={()=> setIsAddCompanyOpen(false)}
+        />
+
+      <CreateUserModal
+        isModalOpen={isCreateUserOpen}
+        onClose={()=> setIsCreateUserOpen(false)}
+        />
+
 
       {/* Filters */}
       <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
@@ -347,11 +417,7 @@ const navigate = useNavigate()
                 isActive={viewType === "classic"}
                 onClick={() => setViewType("classic")}
               />
-              {/* <ViewTypeButton
-                icon={List}
-                isActive={viewType === "list"}
-                onClick={() => setViewType("list")}
-              /> */}
+          
             </div>
 
             <FilterDropdown
@@ -375,7 +441,9 @@ const navigate = useNavigate()
             />
 
             <div className="flex items-center gap-3">
-              <span className="text-sm text-gray-700 font-medium">Sold Out visible</span>
+              <span className="text-sm text-gray-700 font-medium">
+                Sold Out visible
+              </span>
               <ToggleSwitch
                 checked={filterForm.soldOutVisible}
                 onChange={(checked) =>
@@ -385,34 +453,36 @@ const navigate = useNavigate()
             </div>
           </div>
 
-                {/* Map & Analytics */}
-                <div className="flex items-center gap-3 pt-2">
-          <button
-            type="button"
-            onClick={() => setShowMap(!showMap)}
-            className={`flex items-center px-4 py-2.5 text-sm rounded-xl transition-colors ${
-              showMap
-                ? "bg-blue-50 text-blue-600 font-medium"
-                : "hover:bg-gray-50 text-gray-700"
-            }`}
-          >
-            <Map size={18} className="mr-2" />
-            On map
-          </button>
-          <button
-            type="button"
-            onClick={() => setShowAnalytics(!showAnalytics)}
-            className={`flex items-center px-4 py-2.5 text-sm ${showAnalytics ? 'bg-blue-600 text-white': 'border border-blue-500 text-gray-500'} rounded-xl hover:bg-blue-700 transition-colors font-medium`}
-          >
-            <BarChart2 size={18} className="mr-2" />
-            Analytics
-          </button>
+          {/* Map & Analytics */}
+          <div className="flex items-center gap-3 pt-2">
+            <button
+              type="button"
+              onClick={() => setShowMap(!showMap)}
+              className={`flex items-center px-4 py-2.5 text-sm rounded-xl transition-colors ${
+                showMap
+                  ? "bg-blue-50 text-blue-600 font-medium"
+                  : "hover:bg-gray-50 text-gray-700"
+              }`}
+            >
+              <Map size={18} className="mr-2" />
+              On map
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowAnalytics(!showAnalytics)}
+              className={`flex items-center px-4 py-2.5 text-sm ${
+                showAnalytics
+                  ? "bg-blue-600 text-white"
+                  : "border border-blue-500 text-gray-500"
+              } rounded-xl hover:bg-blue-700 transition-colors font-medium`}
+            >
+              <BarChart2 size={18} className="mr-2" />
+              Analytics
+            </button>
+          </div>
         </div>
-
-        </div>
-
-
       </form>
+      
     </div>
   );
 };

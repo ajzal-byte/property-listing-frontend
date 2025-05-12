@@ -23,6 +23,10 @@ import Subscription from "./pages/Subscription";
 import SupportPage from "./pages/SupportPage";
 import CreateListing from './pages/CreateListing'
 import DetailedSecondary from "./pages/DetailedSecondary";
+import CompanyList from "./components/UserManagement/CompanyList";
+import DeveloperDirectory from "./components/UserManagement/DeveloperDirectory";
+import LocationManagement from "./components/UserManagement/LocationManagement";
+
 
 
 export default function ProtectedRoutes() {
@@ -41,6 +45,10 @@ export default function ProtectedRoutes() {
       <Route path="/academy/courses" element={<CourseGrid />} />
       <Route path="/academy/courses/:courseId" element={<LessonsPage />} />
       <Route path="/create-listing" element={< CreateListing/>} />
+      <Route path="/manage-companies" element={< CompanyList/>} />
+      <Route path="/manage-companies" element={< CompanyList/>} />
+      <Route path="/developers" element={< DeveloperDirectory/>} />
+      <Route path="/locations" element={< LocationManagement/>} />
 
       <Route
         path="/academy/courses/:courseId/lessons/:lessonId"

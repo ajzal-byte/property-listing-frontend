@@ -356,6 +356,8 @@ export default function DetailedSecondary() {
     ]);
   
   // Safely access the listing data
+  console.log("response from DetailedSecondary:", response);
+  
   const listing = response?.listing || null;
 
   // Check if data is still loading or there's an error
@@ -382,7 +384,9 @@ export default function DetailedSecondary() {
     );
   }
 
+  console.log(listing);
   if (!listing) {
+    
     return (
       <div className="max-w-7xl mx-auto px-4 py-8 bg-gray-50">
         <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-6 shadow-md">

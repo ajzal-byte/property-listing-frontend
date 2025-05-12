@@ -150,6 +150,7 @@ const CardGrid = ({ cards }) => {
   const [authToken, setAuthToken] = useState(localStorage.getItem("authToken"));
 
   const { loading, response, error } = Fetcher({
+    isGetAll: true,
     url: import.meta.env.VITE_GETALL_LISTING,
     method: 'GET',
     headers: { Authorization: `Bearer ${authToken}`, 'Accept': 'application/json' },
@@ -163,9 +164,12 @@ const CardGrid = ({ cards }) => {
 
   const isClassicView = (viewType === 'classic');
   const isListView = (viewType === 'list');
-
+  
   // Determine if we're using the API data or mock data
-  const listings = response?.listings ? response.listings : [];
+  const listings = response?.data ? response.data : [];
+  console.log("response outside is: ", response);
+  
+  console.log("listings are: ", listings);
   
   // Calculate pagination
   const totalItems = listings.length || 0;
