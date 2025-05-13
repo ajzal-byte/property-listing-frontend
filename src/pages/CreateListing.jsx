@@ -4,13 +4,18 @@ import MainTabContext from "../contexts/TabContext";
 import { useContext } from "react";
 import { tabs } from "../enums/sidebarTabsEnums";
 import getAuthHeaders from "../utils/getAuthHeader";
-import { PropertyTypeEnum, OfferingTypeEnum, StatusEnum, TimePeriodEnum } from "../enums/createListingsEnums";
+import {
+  PropertyTypeEnum,
+  OfferingTypeEnum,
+  StatusEnum,
+  TimePeriodEnum,
+} from "../enums/createListingsEnums";
 
 export default function ListingForm() {
   const { mainTab, setMainTab } = useContext(MainTabContext);
 
   const [isLocationDubai, setIsLocationDubai] = useState(false);
-  const [isListingRental, setIsListingRental] = useState(false)
+  const [isListingRental, setIsListingRental] = useState(false);
 
   // State for form data
   const [formData, setFormData] = useState({
@@ -47,6 +52,8 @@ export default function ListingForm() {
 
   // State for dropdown options
   const [locations, setLocations] = useState([]);
+  const [pfLocations, setPfLocations] = useState([]);
+  const [bayutLocations, setBayutLocations] = useState([]);
   const [developers, setDevelopers] = useState([]);
   const [amenities, setAmenities] = useState([]);
   const [agents, setAgents] = useState([]);
@@ -73,23 +80,47 @@ export default function ListingForm() {
     const fetchData = async () => {
       try {
         // Fetch locations
-        const locResponse = await fetch("https://backend.myemirateshome.com/api/locations", {
-          headers: getAuthHeaders(),
-        });
-        const locData = await locResponse.json();
-        setLocations(locData);
+        // Fetch 'pf' locations
+        const pfResponse = await fetch(
+          "https://backend.myemirateshome.com/api/locations?type=pf",
+          {
+            headers: getAuthHeaders(),
+          }
+        );
+        const pfData = await pfResponse.json();
+
+        // Fetch 'bayut' locations
+        const bayutResponse = await fetch(
+          "https://backend.myemirateshome.com/api/locations?type=bayut",
+          {
+            headers: getAuthHeaders(),
+          }
+        );
+        const bayutData = await bayutResponse.json();
+
+        // Merge both
+        const mergedLocations = [...pfData.data, ...bayutData.data];
+        setPfLocations(pfData.data)
+        setBayutLocations(bayutData.data)
+        setLocations(mergedLocations);
 
         // Fetch developers
-        const devResponse = await fetch("https://backend.myemirateshome.com/api/developers", {
-          headers: getAuthHeaders(),
-        });
+        const devResponse = await fetch(
+          "https://backend.myemirateshome.com/api/developers",
+          {
+            headers: getAuthHeaders(),
+          }
+        );
         const devData = await devResponse.json();
         setDevelopers(devData);
 
         // Fetch amenities
-        const amenResponse = await fetch("https://backend.myemirateshome.com/api/amenities", {
-          headers: getAuthHeaders(),
-        });
+        const amenResponse = await fetch(
+          "https://backend.myemirateshome.com/api/amenities",
+          {
+            headers: getAuthHeaders(),
+          }
+        );
         const amenData = await amenResponse.json();
         setAmenities(amenData);
 
@@ -144,11 +175,10 @@ export default function ListingForm() {
     }
 
     if (["RR", "CR"].includes(formData.offering_type)) {
-      setIsListingRental(true)
+      setIsListingRental(true);
     } else {
-      setIsListingRental(false)
+      setIsListingRental(false);
     }
-
 
     setMainTab(tabs.HIDDEN);
     fetchData();
@@ -159,9 +189,8 @@ export default function ListingForm() {
     formData.bayut_location,
     isLocationDubai,
     isListingRental,
-    formData.offering_type
+    formData.offering_type,
   ]);
-
 
   // Handle input changes
   const handleChange = (e) => {
@@ -296,14 +325,17 @@ export default function ListingForm() {
       console.log("Form data to be submitted:", JSON.stringify(formData));
 
       // Submit form data
-      const response = await fetch("https://backend.myemirateshome.com/api/listings", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
-        },
-        body: JSON.stringify(formData),
-      });
+      const response = await fetch(
+        "https://backend.myemirateshome.com/api/listings",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+          },
+          body: JSON.stringify(formData),
+        }
+      );
 
       const result = await response.json();
 
@@ -601,7 +633,7 @@ export default function ListingForm() {
                 required
               >
                 <option value="">Select Location</option>
-                {locations.map((location) => (
+                {pfLocations.map((location) => (
                   <option key={location.id} value={location.id}>
                     {location.location}
                   </option>
@@ -621,7 +653,7 @@ export default function ListingForm() {
                 required
               >
                 <option value="">Select Location</option>
-                {locations.map((location) => (
+                {bayutLocations.map((location) => (
                   <option key={location.id} value={location.id}>
                     {location.location}
                   </option>
@@ -649,29 +681,27 @@ export default function ListingForm() {
               </select>
             </div>
 
-{ isListingRental &&
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Rental Period *
-              </label>
-              <select
-                name="rental_period"
-                value={formData.rental_period}
-                onChange={handleChange}
-                className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                required = {isListingRental}
-              >
-              <option value="">Select Period</option>
-                {TimePeriodEnum.map((type) => (
-                  <option key={type.value} value={type.value}>
-                    {type.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-}
-
+            {isListingRental && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Rental Period *
+                </label>
+                <select
+                  name="rental_period"
+                  value={formData.rental_period}
+                  onChange={handleChange}
+                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                  required={isListingRental}
+                >
+                  <option value="">Select Period</option>
+                  {TimePeriodEnum.map((type) => (
+                    <option key={type.value} value={type.value}>
+                      {type.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
           </div>
         </div>
 
@@ -747,7 +777,7 @@ export default function ListingForm() {
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Status
               </label>
-              
+
               <select
                 name="status"
                 value={formData.status}

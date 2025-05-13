@@ -166,7 +166,7 @@ const CardGrid = ({ cards }) => {
   const isListView = (viewType === 'list');
   
   // Determine if we're using the API data or mock data
-  const listings = response?.data ? response.data : [];
+  const listings = response?  response : [];
   console.log("response outside is: ", response);
   
   console.log("listings are: ", listings);

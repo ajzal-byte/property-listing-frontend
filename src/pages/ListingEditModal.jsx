@@ -9,6 +9,8 @@ export function ListingEditModal({
   authToken, 
   developers, 
   locations, 
+  pfLocations, 
+  bayutLocations, 
   agents, 
   amenitiesList,
   onSuccess 
@@ -18,7 +20,7 @@ export function ListingEditModal({
   
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto backdrop-blur-md bg-opacity-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 overflow-y-auto backdrop-blur-md bg-opacity-50 flex items-center justify-center ml-64 p-24">
       <div className="relative w-full max-w-6xl max-h-[90vh] overflow-y-auto bg-white rounded-lg shadow-xl">
         <button 
           onClick={onClose}
@@ -33,6 +35,8 @@ export function ListingEditModal({
             authToken={authToken}
             developers={developers}
             locations={locations}
+            pfLocations={pfLocations}
+            bayutLocations={bayutLocations}
             agents={agents}
             amenitiesList={amenitiesList}
             onSuccess={() => {

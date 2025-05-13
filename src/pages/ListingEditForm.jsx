@@ -14,6 +14,8 @@ export default function ListingEditForm({
   authToken,
   developers = [],
   locations = [],
+  pfLocations = [],
+  bayutLocations = [],
   agents = [],
   amenitiesList = [],
   onSuccess = () => {},
@@ -571,7 +573,7 @@ export default function ListingEditForm({
                 className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               >
                 <option value="">Select Location</option>
-                {locations.map((location) => (
+                {pfLocations.map((location) => (
                   <option key={location.id} value={location.id}>
                     {location.location}
                   </option>
@@ -590,7 +592,7 @@ export default function ListingEditForm({
                 className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               >
                 <option value="">Select Location</option>
-                {locations.map((location) => (
+                {bayutLocations.map((location) => (
                   <option key={location.id} value={location.id}>
                     {location.location}
                   </option>
