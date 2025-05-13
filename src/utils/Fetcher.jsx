@@ -175,6 +175,8 @@ const Fetcher = ({
           }
         }
       } catch (err) {
+        console.log("error inside fetcher",err);
+        
         let friendlyError = {
           message: 'Something went wrong.',
           status: null,
@@ -183,7 +185,7 @@ const Fetcher = ({
 
         if (err.response) {
           friendlyError = {
-            message: err.response.data?.message || 'Server error occurred.',
+            message: err.response.data?.error || 'Server error occurred.',
             status: err.response.status,
             details: err.response.data,
           };

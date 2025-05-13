@@ -19,6 +19,7 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router-dom": "^7.1.5",
+    "react-toastify": "^11.0.5",
     "react-world-flags": "^1.6.0",
     "recharts": "^2.15.1",
     "shadcn-ui": "^0.9.4",

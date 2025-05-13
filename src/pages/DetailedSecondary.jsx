@@ -267,6 +267,8 @@ import {
   ChevronLeft,
   ChevronRight,
   Edit2Icon,
+  Check,
+  X,
 } from "lucide-react";
 import Fetcher from "../utils/Fetcher";
 import { useParams } from "react-router-dom";
@@ -696,13 +698,76 @@ export default function DetailedSecondary() {
                   </div>
                 </div>
 
-                <div className="mb-6 sm:mb-8">
-                  <h2 className="text-xl sm:text-2xl font-bold text-blue-800 mb-3 sm:mb-4">
-                    Description
-                  </h2>
-                  <p className="text-gray-700 leading-relaxed">
-                    {listing.desc_en || "No description available."}
-                  </p>
+                <div className="mb-6 sm:mb-8 grid grid-cols-2">
+                  <div>
+                    <h2 className="text-xl sm:text-2xl font-bold text-blue-800 mb-3 sm:mb-4">
+                      Description
+                    </h2>
+                    <p className="text-gray-700 leading-relaxed">
+                      {listing.desc_en || "No description available."}
+                    </p>
+                  </div>
+
+                  {/* Section for: Published In what company  */}
+
+                  <div className="bg-white rounded-lg">
+                    {/* Section Header */}
+                    <h2 className="text-2xl font-bold text-blue-800 mb-4">
+                      Publication Status
+                    </h2>
+
+                    {/* Show unpublished status banner if applicable */}
+                    {listing.status.toLowerCase() === "unpublished" && (
+                      <div className="mb-4 bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded">
+                        <div className="flex items-center">
+                          <X className="h-5 w-5 text-yellow-600 mr-2" />
+                          <p className="text-yellow-700 font-medium">
+                            This listing is currently unpublished
+                          </p>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Publication Platforms */}
+                    <div className="space-y-3">
+                      {[
+                        { name: "Property Finder", key: "pf_enable" },
+                        { name: "Bayut", key: "bayut_enable" },
+                        { name: "Dubizzle", key: "dubizzle_enable" },
+                        { name: "Website", key: "website_enable" },
+                      ].map((platform) => {
+                        const isPublished = listing[platform.key] === 1;
+
+                        return (
+                          <div
+                            key={platform.key}
+                            className="flex justify-between items-center p-2 rounded"
+                          >
+                            <span className="text-gray-700 font-medium">
+                              {platform.name}
+                            </span>
+                            <div
+                              className={`flex items-center ${
+                                isPublished ? "text-green-600" : "text-gray-400"
+                              }`}
+                            >
+                              {isPublished ? (
+                                <>
+                                  <Check className="h-5 w-5 mr-1" />
+                                  <span className="font-medium">Published</span>
+                                </>
+                              ) : (
+                                <>
+                                  <X className="h-5 w-5 mr-1" />
+                                  <span>Not Published</span>
+                                </>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
                 </div>
 
                 <div className="mb-6 sm:mb-8">

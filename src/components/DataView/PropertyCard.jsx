@@ -1,5 +1,4 @@
-
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   Heart,
   BedDouble,
@@ -7,14 +6,24 @@ import {
   Home,
   Ruler,
   Calendar,
-  Tag,
   CheckCircle,
-  Edit2Icon
+  MoreVertical,
+  ChevronRight,
+  Upload,
+  Download,
+  Archive,
+  Trash2,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import {ActionTypes} from "../../enums/actionTypesEnums.jsx";
 
 // Property Card Component
-const PropertyCard = ({ listing = {} }) => {
+const PropertyCard = ({
+  listing = {},
+  selectListingArray = [],
+  setSelectListingArray = () => {},
+  handleAction
+}) => {
   // Default to empty objects/arrays if properties don't exist
   const {
     id,
@@ -34,10 +43,44 @@ const PropertyCard = ({ listing = {} }) => {
   } = listing || {};
 
   const [currentImage, setCurrentImage] = useState(0);
-  const navigate = useNavigate ();
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+  const navigate = useNavigate();
+
+  // Check if the listing is selected
+  const isSelected = selectListingArray.includes(id);
+
   // Find main image or use first image
   const mainImageIndex = photos.findIndex((photo) => photo.is_main === 1);
   const imageUrls = photos.map((photo) => photo.image_url);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setDropdownOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  // Handle selecting/deselecting listing
+  const toggleSelectListing = (e) => {
+    console.log("is selected? :", isSelected);
+    console.log("selectListingArray: ", selectListingArray);
+
+    e.stopPropagation();
+    if (isSelected) {
+      setSelectListingArray(
+        selectListingArray.filter((listingId) => listingId !== id)
+      );
+    } else {
+      setSelectListingArray([...selectListingArray, id]);
+    }
+  };
 
   // Handle image navigation
   const nextImage = (e) => {
@@ -61,8 +104,123 @@ const PropertyCard = ({ listing = {} }) => {
     });
   };
 
+
+  const actionSections = [
+  {
+    title: "Publish",
+    actions: Object.values(ActionTypes.PUBLISH),
+    icon: (type) => type === "PUBLISH_ALL" ? <Upload className="h-4 w-4 mr-2 text-blue-600" /> : <ChevronRight className="h-4 w-4 mr-2 text-blue-600" />,
+    textColor: "text-gray-700",
+    hoverBg: "hover:bg-blue-50"
+  },
+  {
+    title: "Unpublish",
+    actions: Object.values(ActionTypes.UNPUBLISH),
+    icon: (type) => type === "UNPUBLISH_ALL" ? <Download className="h-4 w-4 mr-2 text-amber-600" /> : <ChevronRight className="h-4 w-4 mr-2 text-amber-600" />,
+    textColor: "text-gray-700",
+    hoverBg: "hover:bg-blue-50"
+  },
+  {
+    title: "Remove",
+    actions: Object.values(ActionTypes.REMOVE),
+    icon: (type) =>
+      type === "ARCHIVE"
+        ? <Archive className="h-4 w-4 mr-2 text-gray-600" />
+        : <Trash2 className="h-4 w-4 mr-2 text-red-600" />,
+    textColor: (type) => type === "DELETE" ? "text-red-600" : "text-gray-700",
+    hoverBg: (type) => type === "DELETE" ? "hover:bg-red-50" : "hover:bg-blue-50"
+  }
+];
+
+
   return (
-    <div className="max-w-sm bg-white rounded-xl shadow-md overflow-hidden">
+    <div className="max-w-sm bg-white rounded-xl shadow-md overflow-hidden relative">
+      {/* Selection Checkbox */}
+      <div className="absolute top-3 left-3 z-10">
+        <div
+          className={`h-6 w-6 rounded-md cursor-pointer flex items-center justify-center transition-colors ${
+            isSelected
+              ? "bg-blue-600"
+              : "bg-white bg-opacity-70 hover:bg-opacity-100"
+          }`}
+          onClick={toggleSelectListing}
+        >
+          {isSelected && (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-4 w-4 text-white"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fillRule="evenodd"
+                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                clipRule="evenodd"
+              />
+            </svg>
+          )}
+        </div>
+      </div>
+
+      {/* Action Button & Dropdown */}
+      <div className="absolute top-3 right-3 z-10" ref={dropdownRef}>
+        <button
+          className="bg-white bg-opacity-70 hover:bg-opacity-100 rounded-md p-1 shadow-sm transition-colors"
+          onClick={(e) => {
+            e.stopPropagation();
+            setDropdownOpen(!dropdownOpen);
+          }}
+        >
+          <MoreVertical className="h-5 w-5 text-gray-700" />
+        </button>
+
+        {dropdownOpen && (
+          <div className="absolute top-full right-0 mt-1 w-56 bg-white rounded-md shadow-lg py-1 z-20 text-sm max-h-96 overflow-y-auto">
+            {actionSections.map((section, idx) => (
+              <div key={idx}>
+                {/* Section Header */}
+                <div
+                  className={`px-3 py-1 text-xs font-semibold text-gray-500 bg-gray-50 ${
+                    idx > 0 ? "border-t border-gray-200" : ""
+                  }`}
+                >
+                  {section.title}
+                </div>
+
+                {/* Buttons */}
+                {section.actions.map((action, i) => {
+                  const type = action.type;
+                  const actionField = action.action_field;
+                  const text = actionField
+                    .replace(/_/g, " ")
+                    .replace(/\b\w/g, (l) => l.toUpperCase()); // Capitalize
+
+                  const textColor =
+                    typeof section.textColor === "function"
+                      ? section.textColor(type)
+                      : section.textColor;
+                  const hoverBg =
+                    typeof section.hoverBg === "function"
+                      ? section.hoverBg(type)
+                      : section.hoverBg;
+
+                  return (
+                    <button
+                      key={i}
+                      className={`w-full text-left px-4 py-2 ${hoverBg} ${textColor} flex items-center`}
+                      onClick={() => handleAction(action.action_field, [listing.id])}
+                    >
+                      {section.icon(type)}
+                      {text}
+                    </button>
+                  );
+                })}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
       {/* Top Section: Image + Key Details */}
       <div className="flex flex-col">
         {/* Image Slider */}
@@ -128,11 +286,11 @@ const PropertyCard = ({ listing = {} }) => {
             </div>
           )}
 
-          {/* Favorite button */}
-          <button className="absolute top-4 right-4 bg-white rounded-full p-2 shadow-md">
-            <Heart className="h-5 w-5 text-blue-600" />
+         { (listing.status == "archived") &&
+          <button className="absolute bottom-4 left-4 bg-blue-100 border-2 border-blue-700 rounded-2xl p-1 px-2 shadow-md">
+            <span className="h-2 w-2 text-xs text-blue-600">ARCHIVED</span>
           </button>
-
+         }
         </div>
 
         {/* Title and Status Section */}
@@ -271,9 +429,9 @@ const PropertyCard = ({ listing = {} }) => {
               </button>
 
               <button
-                className="bg-green-500 hover:bg-green-600 text-white text-xs font-medium py-2 px-3 rounded-lg transition duration-300 mx-2"
+                className="bg-green-500 hover:bg-green-600 text-white text-xs font-medium py-2 px-3 rounded-lg transition duration-300 ml-2"
                 onClick={() => {
-                  navigate(`/secondary-listings/${listing.id}`)
+                  navigate(`/secondary-listings/${listing.id}`);
                 }}
               >
                 View
