@@ -45,7 +45,7 @@ const MenuSection = ({ items, isCollapsed, activeItem, onItemClick }) => {
 
 const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
 //   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [activeItem, setActiveItem] = useState('Off plan');
+  const [activeItem, setActiveItem] = useState('Secondary');
 
   const mainMenuItems = [
     { icon: Home, label: 'Off plan' },

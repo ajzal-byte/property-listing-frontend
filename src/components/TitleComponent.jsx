@@ -23,7 +23,7 @@ const PageHeader = () => {
         (mainTab == tabs.OFFPLAN || mainTab == tabs.SUPPORT)
           ? "bg-gradient-to-r from-blue-600 to-blue-800 "
           : mainTab == tabs.SECONDARY
-          ? "bg-gradient-to-r from-orange-600 to-orange-800 "
+          ? "bg-gradient-to-r from-blue-300 to-blue-500 "
           : mainTab == tabs.ACADEMY
           ? "bg-gradient-to-r from-green-600 to-green-800 "
           : mainTab == tabs.ANALYTICS

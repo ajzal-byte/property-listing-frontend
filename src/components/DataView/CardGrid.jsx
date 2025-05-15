@@ -68,7 +68,7 @@ const CardGrid = ({ cards }) => {
 
   // Set the main tab
   useEffect(() => {
-    setMainTab(tabs.OFFPLAN);
+    setMainTab(tabs.SECONDARY);
   }, [setMainTab]);
 
   const isClassicView = viewType === "classic";
