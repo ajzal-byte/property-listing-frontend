@@ -713,7 +713,7 @@ export default function DetailedSecondary() {
                   <div className="bg-white rounded-lg">
                     {/* Section Header */}
                     <h2 className="text-2xl font-bold text-blue-800 mb-4">
-                      Publication Status
+                      Publishing Status
                     </h2>
 
                     {/* Show unpublished status banner if applicable */}
@@ -798,8 +798,10 @@ export default function DetailedSecondary() {
                 </div>
               </div>
 
-              {/* Right Column - Agent Info & Location */}
               <div className="md:col-span-1 space-y-6">
+
+              {/* Right Column - Agent Info  */}
+              { listing.agent &&
                 <div className="bg-blue-50 rounded-lg p-4 sm:p-6">
                   <h2 className="text-lg sm:text-xl font-bold text-blue-800 mb-3 sm:mb-4">
                     Agent Information
@@ -837,7 +839,50 @@ export default function DetailedSecondary() {
                     </div>
                   </div>
                 </div>
+          }
 
+              {/* Right Column - Agent Info  */}
+              { listing.owner &&
+                <div className="bg-blue-50 rounded-lg p-4 sm:p-6">
+                  <h2 className="text-lg sm:text-xl font-bold text-blue-800 mb-3 sm:mb-4">
+                    Owner Information
+                  </h2>
+                  <div className="flex flex-col space-y-3 sm:space-y-4">
+                    <div>
+                      <p className="text-gray-600 text-sm">Agent</p>
+                      <p className="font-medium">
+                        {listing.owner?.name || "N/A"}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-gray-600 text-sm">Company</p>
+                      <p className="font-medium">
+                        {listing.company?.name || "N/A"}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-gray-600 text-sm">RERA Number</p>
+                      <p className="font-medium">
+                        {listing.owner?.rera_number || "N/A"}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-gray-600 text-sm">Contact</p>
+                      <p className="font-medium">
+                        {listing.owner?.phone || "N/A"}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-gray-600 text-sm">Email</p>
+                      <p className="font-medium break-words">
+                        {listing.owner?.email || "N/A"}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+          }
+
+          {/* Listing Location */}
                 <div className="bg-blue-50 rounded-lg p-4 sm:p-6">
                   <h2 className="text-lg sm:text-xl font-bold text-blue-800 mb-3 sm:mb-4">
                     Location

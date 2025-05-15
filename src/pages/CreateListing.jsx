@@ -20,7 +20,6 @@ export default function ListingForm() {
   // State for form data
   const [formData, setFormData] = useState({
     title_deed: "",
-    // title: "",
     title_en: "",
     title_ar: "",
     desc_en: "",
@@ -58,6 +57,7 @@ export default function ListingForm() {
   const [amenities, setAmenities] = useState([]);
   const [agents, setAgents] = useState([]);
   const [companies, setCompanies] = useState([]);
+  const [userData, setUserData] = useState(JSON.parse(localStorage.getItem("userData")))
 
   // State for form submission
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -77,6 +77,10 @@ export default function ListingForm() {
 
   // Fetch all dropdown data on component mount
   useEffect(() => {
+
+
+    setUserData(JSON.parse(localStorage.getItem("userData")))
+
     const fetchData = async () => {
       try {
         // Fetch locations
@@ -125,30 +129,42 @@ export default function ListingForm() {
         setAmenities(amenData);
 
         // Fetch company and agent info
-        const infoResponse = await fetch(
-          "https://backend.myemirateshome.com/api/listing/create-info",
-          {
-            headers: getAuthHeaders(),
-          }
-        );
+  const infoResponse = await fetch(
+    userData.role == "super_admin"
+      ? "https://backend.myemirateshome.com/api/listing/create-info"
+      :
+      userData.role == "admin"
+      ? "https://backend.myemirateshome.com/api/listing/agents"
+      :
+      userData.role == "agent"
+      ? "https://backend.myemirateshome.com/api/agents/list"
+      :
+      userData.role == "owner"
+      ? "https://backend.myemirateshome.com/api/agents/list/forowners"
+      :
+      ""
+      ,
+    {
+      headers: getAuthHeaders(),
+    }
+  );
+  
 
         const infoData = await infoResponse.json();
+        userData.role != "super_admin" ? formData.company_id = infoData.company_id : ""
         console.log(infoData);
 
         // Extract companies and agents from infoData (assuming structure)
-        // This may need adjustment based on actual API response structure
-        setCompanies(infoData.companies); // Replace with actual data
-        console.log(
-          "agents are:",
-          infoData.companies.flatMap((company) => company.agents || [])
-        );
+       userData.role != "super_admin" ? setCompanies(infoData.companies) : "" // Replace with actual data
 
-        formData.company_id &&
+        userData.role == "super_admin" ?
           setAgents(
             infoData.companies.filter(
               (company) => company.id == formData.company_id
             )[0].agents || []
-          );
+          )
+          :
+          setAgents(infoData.agents)
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -190,8 +206,13 @@ export default function ListingForm() {
     isLocationDubai,
     isListingRental,
     formData.offering_type,
+    setUserData
   ]);
 
+  useEffect(()=>{
+
+  },[])
+  
   // Handle input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -711,6 +732,8 @@ export default function ListingForm() {
             Organization Details
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+{     JSON.parse(localStorage.getItem("userData")).role == "super_admin" &&
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Company
@@ -729,7 +752,9 @@ export default function ListingForm() {
                 ))}
               </select>
             </div>
+}
 
+{       
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Agent
@@ -739,12 +764,13 @@ export default function ListingForm() {
                 value={formData.agent_id}
                 onChange={handleChange}
                 className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                disabled={formData.company_id == ""}
+                disabled={formData.company_id == "" && userData.role == "super_admin" }
               >
                 <option value="">
-                  {formData.company_id
+                  Select Agent
+                  {/* {formData.company_id && !userData.role == "super_admin"
                     ? "Select Agent"
-                    : "Select Company First"}
+                    : "Select Company First"} */}
                 </option>
                 {agents.map((agent) => (
                   <option key={agent.id} value={agent.id}>
@@ -753,6 +779,7 @@ export default function ListingForm() {
                 ))}
               </select>
             </div>
+              }
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">

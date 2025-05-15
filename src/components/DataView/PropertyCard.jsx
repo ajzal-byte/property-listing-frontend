@@ -13,16 +13,17 @@ import {
   Download,
   Archive,
   Trash2,
+  ArrowLeftRight,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import {ActionTypes} from "../../enums/actionTypesEnums.jsx";
+import { ActionTypes, actionSections } from "../../enums/actionTypesEnums.jsx";
 
 // Property Card Component
 const PropertyCard = ({
   listing = {},
   selectListingArray = [],
   setSelectListingArray = () => {},
-  handleAction
+  handleAction,
 }) => {
   // Default to empty objects/arrays if properties don't exist
   const {
@@ -44,6 +45,7 @@ const PropertyCard = ({
 
   const [currentImage, setCurrentImage] = useState(0);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [userData, setUserData] = useState(null);
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
 
@@ -65,6 +67,13 @@ const PropertyCard = ({
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
+  }, []);
+
+  useEffect(() => {
+    const storedUserData = localStorage.getItem("userData");
+    if (storedUserData) {
+      setUserData(JSON.parse(storedUserData));
+    }
   }, []);
 
   // Handle selecting/deselecting listing
@@ -104,34 +113,53 @@ const PropertyCard = ({
     });
   };
 
-
-  const actionSections = [
-  {
-    title: "Publish",
-    actions: Object.values(ActionTypes.PUBLISH),
-    icon: (type) => type === "PUBLISH_ALL" ? <Upload className="h-4 w-4 mr-2 text-blue-600" /> : <ChevronRight className="h-4 w-4 mr-2 text-blue-600" />,
-    textColor: "text-gray-700",
-    hoverBg: "hover:bg-blue-50"
-  },
-  {
-    title: "Unpublish",
-    actions: Object.values(ActionTypes.UNPUBLISH),
-    icon: (type) => type === "UNPUBLISH_ALL" ? <Download className="h-4 w-4 mr-2 text-amber-600" /> : <ChevronRight className="h-4 w-4 mr-2 text-amber-600" />,
-    textColor: "text-gray-700",
-    hoverBg: "hover:bg-blue-50"
-  },
-  {
-    title: "Remove",
-    actions: Object.values(ActionTypes.REMOVE),
-    icon: (type) =>
-      type === "ARCHIVE"
-        ? <Archive className="h-4 w-4 mr-2 text-gray-600" />
-        : <Trash2 className="h-4 w-4 mr-2 text-red-600" />,
-    textColor: (type) => type === "DELETE" ? "text-red-600" : "text-gray-700",
-    hoverBg: (type) => type === "DELETE" ? "hover:bg-red-50" : "hover:bg-blue-50"
-  }
-];
-
+  // const actionSections = [
+  //   {
+  //     title: "Transfer",
+  //     actions: Object.values(ActionTypes.TRANSFER),
+  //     icon: (type) => <ArrowLeftRight className="h-4 w-4 mr-2 text-blue-600" />,
+  //     textColor: "text-gray-700",
+  //     hoverBg: "hover:bg-blue-50",
+  //   },
+  //   {
+  //     title: "Publish",
+  //     actions: Object.values(ActionTypes.PUBLISH),
+  //     icon: (type) =>
+  //       type === "PUBLISH_ALL" ? (
+  //         <Upload className="h-4 w-4 mr-2 text-blue-600" />
+  //       ) : (
+  //         <ChevronRight className="h-4 w-4 mr-2 text-blue-600" />
+  //       ),
+  //     textColor: "text-gray-700",
+  //     hoverBg: "hover:bg-blue-50",
+  //   },
+  //   {
+  //     title: "Unpublish",
+  //     actions: Object.values(ActionTypes.UNPUBLISH),
+  //     icon: (type) =>
+  //       type === "UNPUBLISH_ALL" ? (
+  //         <Download className="h-4 w-4 mr-2 text-amber-600" />
+  //       ) : (
+  //         <ChevronRight className="h-4 w-4 mr-2 text-amber-600" />
+  //       ),
+  //     textColor: "text-gray-700",
+  //     hoverBg: "hover:bg-blue-50",
+  //   },
+  //   {
+  //     title: "Remove",
+  //     actions: Object.values(ActionTypes.REMOVE),
+  //     icon: (type) =>
+  //       type === "ARCHIVE" ? (
+  //         <Archive className="h-4 w-4 mr-2 text-gray-600" />
+  //       ) : (
+  //         <Trash2 className="h-4 w-4 mr-2 text-red-600" />
+  //       ),
+  //     textColor: (type) =>
+  //       type === "DELETE" ? "text-red-600" : "text-gray-700",
+  //     hoverBg: (type) =>
+  //       type === "DELETE" ? "hover:bg-red-50" : "hover:bg-blue-50",
+  //   },
+  // ];
 
   return (
     <div className="max-w-sm bg-white rounded-xl shadow-md overflow-hidden relative">
@@ -208,7 +236,9 @@ const PropertyCard = ({
                     <button
                       key={i}
                       className={`w-full text-left px-4 py-2 ${hoverBg} ${textColor} flex items-center`}
-                      onClick={() => handleAction(action.action_field, [listing.id])}
+                      onClick={() =>
+                        handleAction(action.action_field, [listing.id], "individual")
+                      }
                     >
                       {section.icon(type)}
                       {text}
@@ -286,11 +316,11 @@ const PropertyCard = ({
             </div>
           )}
 
-         { (listing.status == "archived") &&
-          <button className="absolute bottom-4 left-4 bg-blue-100 border-2 border-blue-700 rounded-2xl p-1 px-2 shadow-md">
-            <span className="h-2 w-2 text-xs text-blue-600">ARCHIVED</span>
-          </button>
-         }
+          {listing.status == "archived" && (
+            <button className="absolute bottom-4 left-4 bg-blue-100 border-2 border-blue-700 rounded-2xl p-1 px-2 shadow-md">
+              <span className="h-2 w-2 text-xs text-blue-600">ARCHIVED</span>
+            </button>
+          )}
         </div>
 
         {/* Title and Status Section */}

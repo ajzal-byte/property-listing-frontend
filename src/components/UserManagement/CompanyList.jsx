@@ -64,7 +64,7 @@ const CompanyCard = ({ company, onEditAssign }) => {
                 {admin.name}
               </div>
             ))}
-            {company.users?.map(user => (
+            {company.users?.filter(user => user.role != "admin").map(user => (
               <div key={user.id} className="bg-gray-50 px-3 py-1 rounded-full text-sm flex items-center">
                 <span className="bg-gray-600 text-white text-xs px-1 rounded mr-2">{user.role}</span>
                 {user.name}

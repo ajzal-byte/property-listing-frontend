@@ -135,20 +135,25 @@ const Navbar = () => {
   const [selectedLanguage, setSelectedLanguage] = useState({ label: "English", active: true });
   const [selectedUnit, setSelectedUnit] = useState({ label: "m²", active: true });
 
-  const profileItems = [
-    { icon: User, label: "My profile", active: false },
-    { icon: Building2, label: "My company" , active: false},
-    { icon: FileText, label: "My subscriptions", active: false },
-    { icon: FileText, label: "My transactions", active: false },
-    { icon: Link2, label: "My integrations", active: false },
-    { icon: Building, label: "Manage Developers", active: false },
-    { icon: MapPin, label: "Manage Locations", active: false },
-    { icon: Building2, label: "My properties", active: false },
-    { icon: Share2, label: "Invite", active: false },
-    { icon: Hand, label: "Permission Management", active: false},
-    { icon: LogOut, label: "Log Out", danger: true, active: false },
-  ];
+const profileItems = [
+  { icon: User, label: "My profile", active: false },
+  { icon: Building2, label: "My company", active: false },
+  { icon: FileText, label: "My subscriptions", active: false },
+  { icon: FileText, label: "My transactions", active: false },
+  { icon: Link2, label: "My integrations", active: false },
 
+  ...(JSON.parse(localStorage.getItem("userData")).role == "super_admin"        //conditionally shows these two tabs only when role is super_admin
+    ? [
+        { icon: Building, label: "Manage Developers", active: false },
+        { icon: MapPin, label: "Manage Locations", active: false },
+      ]
+    : []),
+
+  { icon: Building2, label: "My properties", active: false },
+  { icon: Share2, label: "Invite", active: false },
+  { icon: Hand, label: "Permission Management", active: false },
+  { icon: LogOut, label: "Log Out", danger: true, active: false },
+];
   const countryItems = [
     { label: "All", country: "", active: false },
     { label: "United States", country: "us", active: false },

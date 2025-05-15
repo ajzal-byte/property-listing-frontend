@@ -28,6 +28,11 @@ const FilterDropdown = ({
   className = "",
 }) => {
   const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(()=>{
+    console.log("role is : ", JSON.parse(localStorage.getItem("userData")).role);
+    
+  },[])
   
   return (
     <div className="relative">
@@ -247,7 +252,7 @@ const PropertyFilters = () => {
           >
             Projects
           </button>
-          <button
+          {/* <button
             onClick={() => setMainContent("Layouts")}
             className={`px-6 py-3 -mb-px text-sm font-medium transition-colors ${
               mainContent === "Layouts"
@@ -256,7 +261,7 @@ const PropertyFilters = () => {
             }`}
           >
             Layouts
-          </button>
+          </button> */}
         </div>
 
         <div className="absolute gap-2 flex right-8">
@@ -273,44 +278,46 @@ const PropertyFilters = () => {
             <PlusCircle className="ml-1 h-4 w-4" />
           </button>
 
-          <button
-            className={`ml-auto mt-2 md:mt-0 flex items-center px-4 py-2 rounded-lg transition duration-300
+         { JSON.parse(localStorage.getItem("userData")).role == "super_admin" &&  
+         <>
+         <button className={`ml-auto mt-2 md:mt-0 flex items-center px-4 py-2 rounded-lg transition duration-300
                     hover:bg-blue-600 hover:text-white
                     bg-blue-100 text-blue-700 mb-2
-                }`}
-            onClick={() => {
+                    }`}
+                    onClick={() => {
               navigate("/manage-companies");
             }}
-          >
+            >
             Manage Companies
             <Wrench className="ml-1 h-4 w-4" />
           </button>
-
           <button
-            className={`ml-auto mt-2 md:mt-0 flex items-center px-4 py-2 rounded-lg transition duration-300
+          className={`ml-auto mt-2 md:mt-0 flex items-center px-4 py-2 rounded-lg transition duration-300
                     hover:bg-blue-600 hover:text-white
                     bg-blue-100 text-blue-700 mb-2
                 }`}
             onClick={() => {
               setIsAddCompanyOpen(true)
             }}
-          >
+            >
             Add Company
             <PlusCircle className="ml-1 h-4 w-4" />
           </button>
           <button
-            className={`ml-auto mt-2 md:mt-0 flex items-center px-4 py-2 rounded-lg transition duration-300
-                    hover:bg-blue-600 hover:text-white
-                    bg-blue-100 text-blue-700 mb-2
-                }`}
+          className={`ml-auto mt-2 md:mt-0 flex items-center px-4 py-2 rounded-lg transition duration-300
+            hover:bg-blue-600 hover:text-white
+            bg-blue-100 text-blue-700 mb-2
+            }`}
             onClick={() => {
               setIsCreateUserOpen(true)
             }}
-          >
+            >
             Create User
             <PlusCircle className="ml-1 h-4 w-4" />
           </button>
 
+       </>
+          }
         </div>
       </div>
 
@@ -406,7 +413,10 @@ const PropertyFilters = () => {
         {/* Secondary filters row */}
         <div className="flex items-center justify-between pt-2">
           <div className="flex items-center gap-4">
-            <div className="flex border border-gray-200 rounded-lg overflow-hidden">
+
+{/* UNCOMMENT WHEN CLASSIC CARD ALSO HAS ACTIONS/BULK ACTIONS FUNCTIONALITY */}
+
+            {/* <div className="flex border border-gray-200 rounded-lg overflow-hidden">
               <ViewTypeButton
                 icon={LayoutGrid}
                 isActive={viewType === "card"}
@@ -418,7 +428,7 @@ const PropertyFilters = () => {
                 onClick={() => setViewType("classic")}
               />
           
-            </div>
+            </div> */}
 
             <FilterDropdown
               label="Relevance"

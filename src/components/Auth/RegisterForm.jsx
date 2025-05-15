@@ -6,7 +6,6 @@ const RegisterForm = ({setIsLoggedIn}) => {
 
     const navigate = useNavigate();
 
-
     const [registerData, setRegisterData] = useState({
       name: '',
       email: '',
@@ -20,26 +19,26 @@ const RegisterForm = ({setIsLoggedIn}) => {
     });
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
-    
+
     const handleChange = (e) => {
       setRegisterData({
         ...registerData,
         [e.target.name]: e.target.value
       });
     };
-    
+
     const handleSubmit = async (e) => {
       e.preventDefault();
       setIsLoading(true);
       setError('');
-      
+
       // Validate passwords match
       if (registerData.password !== registerData.password_confirmation) {
         setError('Passwords do not match');
         setIsLoading(false);
         return;
       }
-      
+
       try {
         const response = await fetch('https://backend.myemirateshome.com/api/register', {
           method: 'POST',
@@ -48,29 +47,30 @@ const RegisterForm = ({setIsLoggedIn}) => {
           },
           body: JSON.stringify(registerData)
         });
-        
+
         if (!response.ok) {
           throw new Error('Registration failed');
         }
-        
+
         const data = await response.json();
         console.log("register gives token:", data.token);
-        
+
         // Save token to localStorage
         localStorage.setItem('authToken', data.token);
+        localStorage.setItem('userData',JSON.stringify(data.user));
         setIsLoggedIn(true)
-        
+
         // Navigate to listings page
         navigate('/listings');
       } catch (err) {
         setError('Registration failed. Please try again.');
         console.log("error in regisrationForm.jsx: ", err);
-        
+
       } finally {
         setIsLoading(false);
       }
     };
-    
+
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-8">
       <div className="w-full max-w-2xl bg-white rounded-xl shadow-lg p-8 transition-all duration-300">
@@ -79,7 +79,7 @@ const RegisterForm = ({setIsLoggedIn}) => {
           <p className="text-center text-gray-600">Join us today and start managing your listings</p>
           <div className="mx-auto w-16 h-1 bg-blue-500 rounded-full mt-3"></div>
         </div>
-        
+
         {error && (
           <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 rounded-lg">
             <div className="flex items-center">
@@ -90,7 +90,7 @@ const RegisterForm = ({setIsLoggedIn}) => {
             </div>
           </div>
         )}
-        
+
         <form onSubmit={handleSubmit} className="space-y-5">
           <div className="grid md:grid-cols-2 gap-5">
             <div>
@@ -113,7 +113,7 @@ const RegisterForm = ({setIsLoggedIn}) => {
                 />
               </div>
             </div>
-            
+
             <div>
               <label className="block text-gray-700 font-medium mb-2" htmlFor="email">
                 Email Address
@@ -135,7 +135,7 @@ const RegisterForm = ({setIsLoggedIn}) => {
               </div>
             </div>
           </div>
-          
+
           <div className="grid md:grid-cols-2 gap-5">
             <div>
               <label className="block text-gray-700 font-medium mb-2" htmlFor="phone">
@@ -157,7 +157,7 @@ const RegisterForm = ({setIsLoggedIn}) => {
                 />
               </div>
             </div>
-            
+
             <div>
               <label className="block text-gray-700 font-medium mb-2" htmlFor="role">
                 Role
@@ -184,69 +184,7 @@ const RegisterForm = ({setIsLoggedIn}) => {
               </div>
             </div>
           </div>
-          
-          {/* <div className="grid md:grid-cols-2 gap-5">
-            <div>
-              <label className="block text-gray-700 font-medium mb-2" htmlFor="company_id">
-                Company ID
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Briefcase className="h-5 w-5 text-gray-400" />
-                </div>
-                <input
-                  id="company_id"
-                  name="company_id"
-                  type="text"
-                  value={registerData.company_id}
-                  onChange={handleChange}
-                  className="pl-10 w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                  placeholder="Company ID"
-                />
-              </div>
-            </div>
-            
-            <div>
-              <label className="block text-gray-700 font-medium mb-2" htmlFor="rera_number">
-                RERA Number
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FileText className="h-5 w-5 text-gray-400" />
-                </div>
-                <input
-                  id="rera_number"
-                  name="rera_number"
-                  type="text"
-                  value={registerData.rera_number}
-                  onChange={handleChange}
-                  className="pl-10 w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                  placeholder="RERA Number"
-                />
-              </div>
-            </div>
-          </div>
-          
-          <div>
-            <label className="block text-gray-700 font-medium mb-2" htmlFor="profile_url">
-              Profile URL
-            </label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Globe className="h-5 w-5 text-gray-400" />
-              </div>
-              <input
-                id="profile_url"
-                name="profile_url"
-                type="url"
-                value={registerData.profile_url}
-                onChange={handleChange}
-                className="pl-10 w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                placeholder="www.example.com"
-              />
-            </div>
-          </div> */}
-          
+
           <div className="grid md:grid-cols-2 gap-5">
             <div>
               <label className="block text-gray-700 font-medium mb-2" htmlFor="password">
@@ -268,7 +206,7 @@ const RegisterForm = ({setIsLoggedIn}) => {
                 />
               </div>
             </div>
-            
+
             <div>
               <label className="block text-gray-700 font-medium mb-2" htmlFor="password_confirmation">
                 Confirm Password
@@ -290,7 +228,7 @@ const RegisterForm = ({setIsLoggedIn}) => {
               </div>
             </div>
           </div>
-          
+
           <div className="mt-8">
             <button
               type="submit"
@@ -306,7 +244,7 @@ const RegisterForm = ({setIsLoggedIn}) => {
             </button>
           </div>
         </form>
-        
+
         <div className="mt-8 text-center">
           <p className="text-gray-600">
             Already registered?{' '}

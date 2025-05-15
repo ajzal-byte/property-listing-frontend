@@ -10,6 +10,10 @@ import {
   CheckCircle,
   Layers,
   ChevronDown,
+  X,
+  UserRound,
+  Users,
+  Building2
 } from "lucide-react";
 import ViewContext from "../../contexts/ViewContext";
 import MainContentContext from "../../contexts/MainContentContext";
@@ -24,9 +28,6 @@ import PropertyCard from "./PropertyCard";
 import { ActionTypes, actionSections } from "../../enums/actionTypesEnums.jsx";
 import { toast } from "react-toastify";
 
-
-// Property Card Component
-
 // Main CardGrid Component
 const CardGrid = ({ cards }) => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -38,6 +39,13 @@ const CardGrid = ({ cards }) => {
   const { setMainTab } = useContext(MainTabContext);
   const [authToken, setAuthToken] = useState(localStorage.getItem("authToken"));
   const [selectAllChecked, setSelectAllChecked] = useState(false);
+  const [userData, setUserData] = useState(null);
+  const [transferDropdownOpen, setTransferDropdownOpen] = useState(false);
+  const [transferType, setTransferType] = useState(null);
+  const [transferOptions, setTransferOptions] = useState([]);
+  const [selectedTransferEntity, setSelectedTransferEntity] = useState(null);
+  const [actionSource, setActionSource] = useState("bulk");
+  const [selectListing, setSelectListing] = useState();
 
   const { loading, response, error } = Fetcher({
     isGetAll: true,
@@ -50,7 +58,13 @@ const CardGrid = ({ cards }) => {
     onSuccess: (res) => console.log("Data is:", res),
   });
 
-  console.log("error outside is: ", error);
+  // Fetch user data from localStorage
+  useEffect(() => {
+    const storedUserData = localStorage.getItem("userData");
+    if (storedUserData) {
+      setUserData(JSON.parse(storedUserData));
+    }
+  }, []);
 
   // Set the main tab
   useEffect(() => {
@@ -62,9 +76,6 @@ const CardGrid = ({ cards }) => {
 
   // Determine if we're using the API data or mock data
   const listings = response ? response : [];
-  console.log("response outside is: ", response);
-
-  console.log("listings are: ", listings);
 
   // Calculate pagination
   const totalItems = listings.length || 0;
@@ -76,12 +87,15 @@ const CardGrid = ({ cards }) => {
 
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
+    // Close transfer dropdown if open
+    if (transferDropdownOpen) {
+      setTransferDropdownOpen(false);
+    }
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     console.log("listing selection array: ", selectListingArray);
-    
-  }, [selectAllChecked, selectListingArray])
+  }, [selectAllChecked, selectListingArray]);
 
   const handleSelectAllChange = () => {
     if (selectAllChecked) {
@@ -95,92 +109,253 @@ const CardGrid = ({ cards }) => {
     setSelectAllChecked(!selectAllChecked);
   };
 
-  const performAction = async (actionField, listingArray) => {
-  const toastId = toast.loading("Performing action...");
-
-  try {
-    const response = await fetch("https://backend.myemirateshome.com/api/listing/action", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${authToken}`,
-      },
-      body: JSON.stringify({
-        action: actionField,
-        propertyId: listingArray,
-      }),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || "Something went wrong.");
+  // Fetch transfer options (agents or owners)
+  const fetchTransferOptions = async (type, source) => {
+    if (!userData || !userData.company_id) {
+      toast.error("User data not available");
+      return;
     }
 
-    const result = await response.json();
-    console.log("Action success:", result);
+    try {
+      let url = "";
+      if (type === "transfer_agent") {
+        url = "https://backend.myemirateshome.com/api/agents/list";
+      } else if (type === "transfer_owner") {
+        url = "https://backend.myemirateshome.com/api/listOwners";
+      } else {
+        toast.error("Invalid transfer type");
+        return;
+      }
 
-    toast.update(toastId, {
-      render: "Action completed successfully.",
-      type: "success",
-      isLoading: false,
-      autoClose: 3000,
-    });
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+          Accept: "application/json",
+        },
+      });
 
-    // Reset selection, close dropdown, refresh data if needed
-    setSelectListingArray([]);
-    setDropdownOpen(false);
+      if (!response.ok) {
+        console.log("error response:", response);
+        throw new Error(
+          "Failed to fetch transfer options: ",
+          response.statusText
+        );
+      }
 
-    // You can optionally refresh data here
-    // e.g. refetch the listings if Fetcher supports it
+      const data = await response.json();
 
-  } catch (err) {
-    console.error("Action error:", err);
-    toast.update(toastId, {
-      render: `Failed: ${err.message}`,
-      type: "error",
-      isLoading: false,
-      autoClose: 4000,
-    });
-  }
-};
+      if (type === "transfer_agent") {
+        setTransferOptions(data.agents);
+      } else if (type === "transfer_owner") {
+        setTransferOptions(data.owners);
+      }
 
+      setTransferDropdownOpen(true);
+      setTransferType(type);
+      setSelectedTransferEntity(null);
+    } catch (error) {
+      console.error("Error fetching transfer options:", error);
+      toast.error("Failed to load transfer options");
+    }
+  };
 
-const handleAction = (actionField, listingArray) => {
-  if (listingArray.length === 0) {
-    toast.warning("Please select at least one listing.");
-    return;
-  }
+  const handleTransferSelection = (entity) => {
+    setSelectedTransferEntity(entity);
+    handleAction(
+      transferType,
+      selectListingArray,
+      actionSource,
+      transferType,
+      entity.id
+    );
 
-  const actionName = actionField.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase());
+    setTransferDropdownOpen(false);
+  };
 
-  toast.info(
-    ({ closeToast }) => (
-      <div>
-        <p>Are you sure you want to perform:</p>
-        <strong>{actionName}</strong>
-        <div className="mt-2 flex justify-end gap-2">
-          <button
-            onClick={() => {
-              closeToast();
-              performAction(actionField, listingArray);
-            }}
-            className="px-3 py-1 text-sm bg-indigo-600 text-white rounded hover:bg-indigo-700"
-          >
-            Confirm
-          </button>
-          <button
-            onClick={closeToast}
-            className="px-3 py-1 text-sm border rounded hover:bg-gray-100"
-          >
-            Cancel
-          </button>
-        </div>
-      </div>
-    ),
-    { autoClose: false }
-  );
-};
+  const performAction = async (
+    actionField,
+    listingArray,
+    transferType = "",
+    transferEntityId = ""
+  ) => {
+    const toastId = toast.loading("Performing action...");
 
+    try {
+      // Special handling for transfers
+      if (
+        transferType === "transfer_agent" ||
+        transferType === "transfer_owner"
+      ) {
+        const url =
+          transferType === "transfer_agent"
+            ? "https://backend.myemirateshome.com/api/listing/agentbulktransfer"
+            : "https://backend.myemirateshome.com/api/listing/ownerbulktransfer";
+
+        const payload = {
+          action: transferType,
+          propertyIds: listingArray,
+          [transferType === "transfer_agent" ? "agent_id" : "owner_id"]:
+            transferEntityId,
+        };
+
+        const response = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${authToken}`,
+          },
+          body: JSON.stringify(payload),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          console.log("error in performAction: ", errorData);
+          throw new Error(
+            errorData.message || "Something went wrong with transfer."
+          );
+        }
+      } else {
+        // Regular actions
+        const response = await fetch(
+          "https://backend.myemirateshome.com/api/listing/action",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${authToken}`,
+            },
+            body: JSON.stringify({
+              action: actionField,
+              propertyId: listingArray,
+            }),
+          }
+        );
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || "Something went wrong.");
+        }
+      }
+
+      toast.update(toastId, {
+        render: "Action completed successfully.",
+        type: "success",
+        isLoading: false,
+        autoClose: 3000,
+      });
+
+      // Reset selection, close dropdowns
+      setSelectListingArray([]);
+      setDropdownOpen(false);
+      setTransferDropdownOpen(false);
+      setSelectedTransferEntity(null);
+    } catch (err) {
+      console.error("Action error:", err);
+      toast.update(toastId, {
+        render: `Failed: ${err.message}`,
+        type: "error",
+        isLoading: false,
+        autoClose: 4000,
+      });
+    }
+  };
+
+  const handleAction = (
+    actionField,
+    listingArray,
+    source = "bulk",
+    transfer = "",
+    transferEntityId = ""
+  ) => {
+    console.log("actionField, array of listing, source, ");
+
+    setActionSource(source);
+
+    if (listingArray.length === 0) {
+      toast.warning("Please select at least one listing.");
+      return;
+    }
+    if (source == "individual") {
+      setSelectListingArray(listingArray);
+    }
+    // Handle transfer actions differently
+    if (actionField === "transfer_agent" || actionField === "transfer_owner") {
+      // If transferEntityId is provided, it means user has selected an agent/owner
+      if (transferEntityId) {
+        const actionName = actionField
+          .replace(/_/g, " ")
+          .replace(/\b\w/g, (l) => l.toUpperCase());
+
+        toast.info(
+          ({ closeToast }) => (
+            <div>
+              <p>Are you sure you want to perform:</p>
+              <strong>{actionName}</strong>
+              <div className="mt-2 flex justify-end gap-2">
+                <button
+                  onClick={() => {
+                    closeToast();
+                    performAction(
+                      actionField,
+                      listingArray,
+                      transfer,
+                      transferEntityId
+                    );
+                  }}
+                  className="px-3 py-1 text-sm bg-indigo-600 text-white rounded hover:bg-indigo-700"
+                >
+                  Confirm
+                </button>
+                <button
+                  onClick={closeToast}
+                  className="px-3 py-1 text-sm border rounded hover:bg-gray-100"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          ),
+          { autoClose: false }
+        );
+      } else {
+        // Fetch and show transfer options
+        fetchTransferOptions(actionField, source);
+      }
+    } else {
+      // Other actions proceed as before
+      const actionName = actionField
+        .replace(/_/g, " ")
+        .replace(/\b\w/g, (l) => l.toUpperCase());
+
+      toast.info(
+        ({ closeToast }) => (
+          <div>
+            <p>Are you sure you want to perform:</p>
+            <strong>{actionName}</strong>
+            <div className="mt-2 flex justify-end gap-2">
+              <button
+                onClick={() => {
+                  closeToast();
+                  performAction(actionField, listingArray);
+                }}
+                className="px-3 py-1 text-sm bg-indigo-600 text-white rounded hover:bg-indigo-700"
+              >
+                Confirm
+              </button>
+              <button
+                onClick={closeToast}
+                className="px-3 py-1 text-sm border rounded hover:bg-gray-100"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        ),
+        { autoClose: false }
+      );
+    }
+  };
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -200,6 +375,59 @@ const handleAction = (actionField, listingArray) => {
             />
           </button>
 
+          {/* Transfer entity selection dropdown */}
+          {transferDropdownOpen && (
+            <div className="absolute top-full right-0 mt-1 w-64 bg-white rounded-md shadow-lg py-1 z-30 text-sm max-h-96 overflow-y-auto">
+              <div className="flex items-center justify-between px-3 py-2 border-b border-gray-200">
+                <h3 className="font-medium text-gray-800">
+                  Select {transferType === "transfer_agent" ? "Agent" : "Owner"}
+                </h3>
+                <button
+                  onClick={() => setTransferDropdownOpen(false)}
+                  className="text-gray-500 hover:text-gray-700"
+                >
+                  <X size={16} />
+                </button>
+              </div>
+
+              {transferOptions.length === 0 ? (
+                <div className="px-3 py-2 text-gray-500">
+                  No {transferType === "transfer_agent" ? "agents" : "owners"}{" "}
+                  available
+                </div>
+              ) : (
+                <div>
+                  {transferOptions.map((entity) => (
+                    <button
+                      key={entity.id}
+                      className="w-full text-left px-4 py-2 hover:bg-blue-50 flex items-center"
+                      onClick={() => handleTransferSelection(entity)}
+                    >
+                      <div className="flex items-center w-full">
+                        <div className="h-8 w-8 bg-blue-100 rounded-full flex items-center justify-center mr-2">
+                          {transferType === "transfer_agent" ? (
+                            <UserRound size={16} className="text-blue-600" />
+                          ) : (
+                            <Users size={16} className="text-blue-600" />
+                          )}
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="text-gray-800 font-medium">
+                            {entity.name}
+                          </span>
+                          <span className="text-gray-500 text-xs">
+                            {entity.email}
+                          </span>
+                        </div>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Main bulk actions dropdown */}
           {dropdownOpen && (
             <div className="absolute top-full right-0 mt-1 w-56 bg-white rounded-md shadow-lg py-1 z-20 text-sm max-h-96 overflow-y-auto">
               {/* SELECT ALL TICK */}
@@ -248,7 +476,9 @@ const handleAction = (actionField, listingArray) => {
                       <button
                         key={i}
                         className={`w-full text-left px-4 py-2 ${hoverBg} ${textColor} flex items-center`}
-                        onClick={() => handleAction(action.action_field, selectListingArray)}
+                        onClick={() =>
+                          handleAction(action.action_field, selectListingArray)
+                        }
                       >
                         {section.icon(type)}
                         {text}
@@ -271,6 +501,23 @@ const handleAction = (actionField, listingArray) => {
           <div className="text-center text-red-500">
             Error {error.status} : {error.message}
           </div>
+        ) : currentListings.length === 0 ? (
+          <div className="flex flex-col items-center justify-center h-64 p-6 text-center">
+            <div className="text-gray-400 mb-3">
+              <Building2 className="h-15 w-15"/>
+            </div>
+            <h3 className="text-xl font-semibold text-gray-700 mb-2">
+              No Listings Available
+            </h3>
+            <p className="text-gray-500 max-w-md">
+              <span className="block mb-1">
+                There are currently no property listings to display for your role.
+              </span>
+              <span className="text-sm">
+                Or server has no listing at all. Please contact Admin.
+              </span>
+            </p>
+          </div>
         ) : (
           <>
             {isListView ? (
@@ -278,22 +525,21 @@ const handleAction = (actionField, listingArray) => {
             ) : (
               <div
                 className={`
-                ${
-                  isClassicView
-                    ? "space-y-6"
-                    : "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-y-6 gap-x-3"
-                }
-                  `}
+          ${
+            isClassicView
+              ? "space-y-6"
+              : "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-y-6 gap-x-3"
+          }
+            `}
               >
                 {currentListings.map((listing, index) => (
                   <div
                     key={listing.id || index}
                     className={`
-                    ${isClassicView ? "mb-6 last:mb-0" : "h-full"}
-                    transition-transform duration-200 hover:scale-102
-                    hover:shadow-lg rounded-lg cursor-pointer
-                    `}
-                    // onClick={() => handleCardClick(listing.id)}
+              ${isClassicView ? "mb-6 last:mb-0" : "h-full"}
+              transition-transform duration-200 hover:scale-102
+              hover:shadow-lg rounded-lg cursor-pointer
+              `}
                   >
                     {isClassicView ? (
                       <ClassicCard listing={listing} />
@@ -303,7 +549,7 @@ const handleAction = (actionField, listingArray) => {
                           listing={listing}
                           selectListingArray={selectListingArray}
                           setSelectListingArray={setSelectListingArray}
-                          handleAction = {handleAction}
+                          handleAction={handleAction}
                         />
                       </div>
                     )}
