@@ -3,7 +3,7 @@ import { useAuth } from "./../contexts/AuthContext"; // path where your AuthCont
 
 export default function PrivateRoute({ children }) {
   const { user } = useAuth();
-  console.log(localStorage.getItem("authToken"));
+  // console.log(localStorage.getItem("authToken"));
   
   if ( !localStorage.getItem("authToken")) {
     // If not logged in, redirect to login page

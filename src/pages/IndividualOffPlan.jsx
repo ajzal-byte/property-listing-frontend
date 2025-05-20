@@ -13,9 +13,6 @@ import {
   MapPin,
   Building,
   ArrowUpRight,
-  Globe,
-  Phone,
-  Mail,
   Landmark,
 } from "lucide-react";
 import TabContext from "./../contexts/TabContext";

@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { Building, GraduationCap , ChevronDown, BadgeHelp } from "lucide-react";
+import { Building, GraduationCap, ChevronDown, BadgeHelp } from "lucide-react";
 import TabContext from "./../contexts/TabContext";
 import { tabs } from "../enums/sidebarTabsEnums";
 
@@ -20,7 +20,7 @@ const PageHeader = () => {
       <div
         className={`
       ${
-        (mainTab == tabs.OFFPLAN || mainTab == tabs.SUPPORT)
+        mainTab == tabs.OFFPLAN || mainTab == tabs.SUPPORT
           ? "bg-gradient-to-r from-blue-600 to-blue-800 "
           : mainTab == tabs.SECONDARY
           ? "bg-gradient-to-r from-blue-300 to-blue-500 "
@@ -48,26 +48,29 @@ const PageHeader = () => {
                 ${isHovered ? "rotate-6 scale-110" : ""}
               `}
               >
-                { (mainTab == tabs.OFFPLAN || mainTab == tabs.SECONDARY) ?
-                <Building
-                  className={`
+                {mainTab == tabs.OFFPLAN || mainTab == tabs.SECONDARY ? (
+                  <Building
+                    className={`
                   w-8 h-8 text-white
                   transition-all duration-300
                   ${isHovered ? "animate-pulse" : ""}
                 `}
-                />
-                :
-                (mainTab == tabs.SUPPORT)
-                ? <BadgeHelp className={`w-8 h-8 text-white transition-all duration-300 ${isHovered ? "animate-pulse" : ""}`}/>
-                :
-                <GraduationCap
-                  className={`
+                  />
+                ) : mainTab == tabs.SUPPORT ? (
+                  <BadgeHelp
+                    className={`w-8 h-8 text-white transition-all duration-300 ${
+                      isHovered ? "animate-pulse" : ""
+                    }`}
+                  />
+                ) : (
+                  <GraduationCap
+                    className={`
                   w-8 h-8 text-white
                   transition-all duration-300
                   ${isHovered ? "animate-pulse" : ""}
                 `}
-                />
-                }
+                  />
+                )}
               </div>
 
               {/* Text Content */}
@@ -89,8 +92,8 @@ const PageHeader = () => {
                     : mainTab == tabs.ANALYTICS
                     ? "Take insight into Analytics"
                     : mainTab == tabs.SUPPORT
-                    ? "Welcome to VortexWeb Support":
-                    "" }
+                    ? "Welcome to VortexWeb Support"
+                    : ""}
                 </h1>
                 {/* Description - Slides down on hover */}
                 <div
@@ -104,26 +107,22 @@ const PageHeader = () => {
                 `}
                 >
                   <p className="text-blue-100 text-lg leading-relaxed">
-                    {mainTab == tabs.OFFPLAN
-                      ? "Browse our top Offplan Listings "
-                      : mainTab == tabs.SECONDARY
-                      ? "Browse our top Secondary Listings "
-                      : mainTab == tabs.ACADEMY
-                      ? "Explore our platform to discover new opportunities for growth and learning"
-                      : mainTab == tabs.SUPPORT 
-                      ? <div className="bg-white/10 backdrop-blur-sm p-6 rounded-xl border border-white/20 max-w-md"> We're here to help you with any questions or concerns about our services.</div>
-                     : " "}
+                    {mainTab == tabs.OFFPLAN ? (
+                      "Browse our top Offplan Listings "
+                    ) : mainTab == tabs.SECONDARY ? (
+                      "Browse our top Secondary Listings "
+                    ) : mainTab == tabs.ACADEMY ? (
+                      "Explore our platform to discover new opportunities for growth and learning"
+                    ) : mainTab == tabs.SUPPORT ? (
+                      <div className="bg-white/10 backdrop-blur-sm p-6 rounded-xl border border-white/20 max-w-md">
+                        {" "}
+                        We're here to help you with any questions or concerns
+                        about our services.
+                      </div>
+                    ) : (
+                      " "
+                    )}
                   </p>
-                { (mainTab ==tabs.OFFPLAN || mainTab ==tabs.SECONDARY) &&
-                  <div className="mt-4 flex gap-3">
-                    <span className="inline-flex items-center px-3 py-1 rounded-full bg-white/10 text-sm text-blue-100">
-                      Premium Listings
-                    </span>
-                    <span className="inline-flex items-center px-3 py-1 rounded-full bg-white/10 text-sm text-blue-100">
-                      New Developments
-                    </span>
-                  </div>
-                  }
                 </div>
               </div>
             </div>

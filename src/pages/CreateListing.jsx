@@ -57,7 +57,9 @@ export default function ListingForm() {
   const [amenities, setAmenities] = useState([]);
   const [agents, setAgents] = useState([]);
   const [companies, setCompanies] = useState([]);
-  const [userData, setUserData] = useState(JSON.parse(localStorage.getItem("userData")))
+  const [userData, setUserData] = useState(
+    JSON.parse(localStorage.getItem("userData"))
+  );
 
   // State for form submission
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -77,9 +79,7 @@ export default function ListingForm() {
 
   // Fetch all dropdown data on component mount
   useEffect(() => {
-
-
-    setUserData(JSON.parse(localStorage.getItem("userData")))
+    setUserData(JSON.parse(localStorage.getItem("userData")));
 
     const fetchData = async () => {
       try {
@@ -104,8 +104,8 @@ export default function ListingForm() {
 
         // Merge both
         const mergedLocations = [...pfData.data, ...bayutData.data];
-        setPfLocations(pfData.data)
-        setBayutLocations(bayutData.data)
+        setPfLocations(pfData.data);
+        setBayutLocations(bayutData.data);
         setLocations(mergedLocations);
 
         // Fetch developers
@@ -129,49 +129,40 @@ export default function ListingForm() {
         setAmenities(amenData);
 
         // Fetch company and agent info
-  const infoResponse = await fetch(
-    userData.role == "super_admin"
-      ? "https://backend.myemirateshome.com/api/listing/create-info"
-      :
-      userData.role == "admin"
-      ? "https://backend.myemirateshome.com/api/listing/agents"
-      :
-      userData.role == "agent"
-      ? "https://backend.myemirateshome.com/api/agents/list"
-      :
-      userData.role == "owner"
-      ? "https://backend.myemirateshome.com/api/agents/list/forowners"
-      :
-      ""
-      ,
-    {
-      headers: getAuthHeaders(),
-    }
-  );
-  
+        const infoResponse = await fetch(
+          userData.role == "super_admin"
+            ? "https://backend.myemirateshome.com/api/listing/create-info"
+            : userData.role == "admin"
+            ? "https://backend.myemirateshome.com/api/listing/agents"
+            : userData.role == "agent"
+            ? "https://backend.myemirateshome.com/api/agents/list"
+            : userData.role == "owner"
+            ? "https://backend.myemirateshome.com/api/agents/list/forowners"
+            : "",
+          {
+            headers: getAuthHeaders(),
+          }
+        );
 
         const infoData = await infoResponse.json();
-        userData.role != "super_admin" ? formData.company_id = infoData.company_id : ""
-        console.log(infoData);
+        console.log("infoData", infoData);
+        userData.role != "super_admin"
+          ? (formData.company_id = infoData.company_id)
+          : "";
 
         // Extract companies and agents from infoData (assuming structure)
-       userData.role != "super_admin" ? setCompanies(infoData.companies) : "" // Replace with actual data
-
-        userData.role == "super_admin" ?
-          setAgents(
-            infoData.companies.filter(
-              (company) => company.id == formData.company_id
-            )[0].agents || []
-          )
-          :
-          setAgents(infoData.agents)
+        userData.role == "super_admin" ? setCompanies(infoData.companies) : "";
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
 
-    console.log(formData.pf_location);
-    console.log(locations);
+    if (formData.company_id) {
+      setAgents(
+        companies.filter((company) => company.id == formData.company_id)[0]
+          ?.agents || []
+      );
+    }
 
     if (
       locations &&
@@ -185,7 +176,6 @@ export default function ListingForm() {
           .includes("dubai"))
     ) {
       setIsLocationDubai(true);
-      console.log(isLocationDubai);
     } else {
       setIsLocationDubai(false);
     }
@@ -206,13 +196,9 @@ export default function ListingForm() {
     isLocationDubai,
     isListingRental,
     formData.offering_type,
-    setUserData
+    setUserData,
   ]);
 
-  useEffect(()=>{
-
-  },[])
-  
   // Handle input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -342,9 +328,6 @@ export default function ListingForm() {
     try {
       setIsSubmitting(true);
 
-      // Log form data before submission
-      console.log("Form data to be submitted:", JSON.stringify(formData));
-
       // Submit form data
       const response = await fetch(
         "https://backend.myemirateshome.com/api/listings",
@@ -433,20 +416,6 @@ export default function ListingForm() {
             Basic Information
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Title *
-              </label>
-              <input
-                type="text"
-                name="title"
-                value={formData.title}
-                onChange={handleChange}
-                className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                required
-              />
-            </div> */}
-
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Title Deed *
@@ -463,7 +432,7 @@ export default function ListingForm() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Reference Number
+                Reference Number *
               </label>
               <input
                 type="text"
@@ -472,12 +441,13 @@ export default function ListingForm() {
                 onChange={handleChange}
                 placeholder="REF-2025-001"
                 className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                required
               />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Title Arabic *
+                Title Arabic
               </label>
               <input
                 type="text"
@@ -485,7 +455,6 @@ export default function ListingForm() {
                 value={formData.title_ar}
                 onChange={handleChange}
                 className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                required
               />
             </div>
 
@@ -505,7 +474,7 @@ export default function ListingForm() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Description (Arabic) *
+                Description (Arabic)
               </label>
               <textarea
                 type="text"
@@ -513,7 +482,6 @@ export default function ListingForm() {
                 value={formData.desc_ar}
                 onChange={handleChange}
                 className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                required
               />
             </div>
             <div>
@@ -554,16 +522,6 @@ export default function ListingForm() {
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Offering Type
               </label>
-              {/* <select
-                name="offering_type"
-                value={formData.offering_type}
-                onChange={handleChange}
-                className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-              >
-                <option value="Sale">Sale</option>
-                <option value="Rent">Rent</option>
-                <option value="Off-Plan">Off-Plan</option>
-              </select> */}
               <select
                 name="offering_type"
                 value={formData.offering_type}
@@ -732,54 +690,53 @@ export default function ListingForm() {
             Organization Details
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {JSON.parse(localStorage.getItem("userData")).role ==
+              "super_admin" && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Company
+                </label>
+                <select
+                  name="company_id"
+                  value={formData.company_id}
+                  onChange={handleChange}
+                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                >
+                  <option value="">Select Company</option>
+                  {companies.map((company) => (
+                    <option key={company.id} value={company.id}>
+                      {company.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
 
-{     JSON.parse(localStorage.getItem("userData")).role == "super_admin" &&
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Company
-              </label>
-              <select
-                name="company_id"
-                value={formData.company_id}
-                onChange={handleChange}
-                className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-              >
-                <option value="">Select Company</option>
-                {companies.map((company) => (
-                  <option key={company.id} value={company.id}>
-                    {company.name}
+            {
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Agent
+                </label>
+                <select
+                  name="agent_id"
+                  value={formData.agent_id}
+                  onChange={handleChange}
+                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                  disabled={
+                    formData.company_id == "" && userData.role == "super_admin"
+                  }
+                >
+                  <option value="">
+                    Select Agent
                   </option>
-                ))}
-              </select>
-            </div>
-}
-
-{       
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Agent
-              </label>
-              <select
-                name="agent_id"
-                value={formData.agent_id}
-                onChange={handleChange}
-                className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                disabled={formData.company_id == "" && userData.role == "super_admin" }
-              >
-                <option value="">
-                  Select Agent
-                  {/* {formData.company_id && !userData.role == "super_admin"
-                    ? "Select Agent"
-                    : "Select Company First"} */}
-                </option>
-                {agents.map((agent) => (
-                  <option key={agent.id} value={agent.id}>
-                    {agent.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-              }
+                  {agents.map((agent) => (
+                    <option key={agent.id} value={agent.id}>
+                      {agent.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            }
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">

@@ -21,7 +21,6 @@ const App = () => {
   const { user } = useAuth();
 
   useEffect(() => {
-    console.log(isLoggedIn);
     localStorage.getItem("authToken") && setIsLoggedIn(true);
   }, [isLoggedIn, setIsLoggedIn]);
 
