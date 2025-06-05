@@ -72,8 +72,6 @@ const Academy = () => {
     <CoursePrompt/>
       </div>
     </div>
-    {/* <LessonsPage/>
-    <LessonContent courseTitle={"Introduction To React Fundamentals"} youtubeUrl={"https://youtu.be/hJHvdBlSxug?feature=shared"} pdfUrl={"https://pdfobject.com/pdf/sample.pdf"}/> */}
 </div>
   );
 };

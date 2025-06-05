@@ -2,11 +2,13 @@ import React from "react";
 import { Mail, Phone, Globe, BadgeHelp } from "lucide-react";
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import FAQAccordion from "../components/Support/FAQAccordion";
-import MainTabContext from "../contexts/TabContext";
-import { tabs } from "../enums/sidebarTabsEnums";
-import faqs from '../mockdata/faqData';
-const SupportPage = () => {
+import FAQAccordion from "../Support/FAQAccordion";
+import MainTabContext from "./../../contexts/TabContext";
+import { tabs } from "./../../enums/sidebarTabsEnums";
+import faqs from './academyFaqs';
+import HelpSection from "./HelpSection";
+
+const AcademyHelpPage = () => {
     const { setMainTab } = useContext(MainTabContext);
     // const navigate = useNavigate();
     setMainTab(tabs.SUPPORT)
@@ -16,14 +18,7 @@ const SupportPage = () => {
 
       {/* Contact Cards Section */}
       <div className="container mx-auto px-6 py-16 md:py-24">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-blue-900">
-            Reach Out To Us
-          </h2>
-          <p className="mt-4 text-xl text-gray-600 max-w-2xl mx-auto">
-            Choose your preferred way to connect with our support team
-          </p>
-        </div>
+
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
           {/* Email Card */}
@@ -96,23 +91,15 @@ const SupportPage = () => {
             </div>
           </div>
         </div>
+ 
+        <HelpSection/>
 
-        {/* Additional Info */}
-        <div className="mt-16 text-center">
-          <p className="text-gray-600">
-            Our support team is available Monday to Friday, 9 AM to 6 PM EST
-          </p>
-          <p className="text-blue-600 font-medium mt-2">
-            We aim to respond to all inquiries within 24 hours
-          </p>
-        </div>
-
-        <FAQAccordion />
+        <FAQAccordion faqs={faqs} />
       </div>
 
-      {/* Footer */}
+
     </div>
   );
 };
 
-export default SupportPage;
+export default AcademyHelpPage;

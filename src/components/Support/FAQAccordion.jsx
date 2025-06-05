@@ -1,10 +1,7 @@
 import React, { useState } from 'react';
 import { Plus, Minus } from 'lucide-react';
 
-// Import the FAQ data
-import faqs from '../../mockdata/faqData';
-
-const FAQAccordion = () => {
+const FAQAccordion = ({faqs}) => {
   const [openIndex, setOpenIndex] = useState(null);
 
   const toggleFAQ = (index) => {

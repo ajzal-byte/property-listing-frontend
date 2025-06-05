@@ -14,6 +14,7 @@ import PrivateRoute from "./components/PrivateRoute"; // path
 import { useAuth } from "./contexts/AuthContext";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Toaster } from "@/components/ui/sonner"
 
 const App = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -80,6 +81,7 @@ const App = () => {
       </ViewProvider>
       {/* </AuthProvider> */}
       <ToastContainer position="top-center" />
+      <Toaster richColors />
     </Router>
   );
 };

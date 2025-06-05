@@ -26,6 +26,7 @@ import DetailedSecondary from "./pages/DetailedSecondary";
 import CompanyList from "./components/UserManagement/CompanyList";
 import DeveloperDirectory from "./components/UserManagement/DeveloperDirectory";
 import LocationManagement from "./components/UserManagement/LocationManagement";
+import AcademyHelpPage from "./components/Academy/AcademyHelpPage";
 
 
 
@@ -44,6 +45,7 @@ export default function ProtectedRoutes() {
       <Route path="/academy" element={<Academy />} />
       <Route path="/academy/courses" element={<CourseGrid />} />
       <Route path="/academy/courses/:courseId" element={<LessonsPage />} />
+      <Route path="/academy/help" element={<AcademyHelpPage />} />
       <Route path="/create-listing" element={< CreateListing/>} />
       <Route path="/manage-companies" element={< CompanyList/>} />
       <Route path="/manage-companies" element={< CompanyList/>} />
