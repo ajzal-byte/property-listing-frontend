@@ -28,40 +28,10 @@ import {
   Loader2
 } from "lucide-react";
 import getAuthHeaders from "@/utils/getAuthHeader";
-import { toast } from "sonner";
 
-const PreviewForm = ({ formData, prevStep, onSubmit }) => {
+const PreviewForm = ({ formData, prevStep, onSubmit, isLoading }) => {
   const [resolvedData, setResolvedData] = useState({});
   const [loading, setLoading] = useState(true);
-
-  const [isLoading, setIsLoading] = useState(false); // State to manage loading status
-
-  const onClick = async () => {
-    setIsLoading(true); // Set loading to true when submission starts
-
-    try {
-      // Simulate an API call or async operation
-      // Replace this with your actual form submission logic (e.g., API call using fetch or axios)
-      await new Promise((resolve) => setTimeout(resolve, 2000)); // Simulate a 2-second delay
-
-      // Show the beautiful success toast
-      toast.success("🎉 Listing Created Successfully!", {
-        description: "Your property has been added.",
-        duration: 3000,
-        position: "bottom-right", // Added for completeness, you can adjust
-      });
-
-    } catch (error) {
-      console.error("Failed to submit property:", error);
-      toast.error("Failed to Create Listing", {
-        description:
-          "There was an error submitting your property. Please try again.",
-        position: "bottom-right", // Added for completeness
-      });
-    } finally {
-      setIsLoading(false); // Set loading to false once the operation is complete (success or error)
-    }
-  };
 
   // API base URL
   const API_BASE_URL = "https://backend.myemirateshome.com/api";
@@ -109,9 +79,6 @@ const PreviewForm = ({ formData, prevStep, onSubmit }) => {
             ?.name || "Unknown Owner";
       }
 
-      // Resolve amenities
-      console.log("here");
-      console.log("formData.selectedAmenities", formData.selectedAmenities);
 
       if (formData.selectedAmenities && formData.selectedAmenities.length > 0) {
         const amenityPromises = formData.selectedAmenities.map((id) =>

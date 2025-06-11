@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useCreateListingData } from "@/hooks/useCreateListingData";
 import {
   ProgressBar,
@@ -12,22 +12,28 @@ import {
   Preview,
 } from "@/components/Create-Listing";
 import { uploadFilesAndCreateListing } from "@/utils/s3Uploader";
+import { toast } from "sonner";
 
 const CreateListing = () => {
   const { formData, setField, currentStep, nextStep, prevStep, steps } =
     useCreateListingData();
 
-  // <-- keep everything else exactly as you have it -->
+  const [isLoading, setIsLoading] = useState(false);
 
-  // this is the only new function
   const handleFinalSubmit = async () => {
     try {
+      // setIsLoading(true);
       await uploadFilesAndCreateListing(formData);
       // clear your draft so it starts fresh next time
       localStorage.removeItem("draftListing");
-      alert("Listing created successfully!");
+      // setIsLoading(false);
+      toast.success("🎉 Listing Created Successfully!", {
+        description: "Your property has been added.",
+        duration: 3000,
+        position: "bottom-right",
+      });
       // optionally redirect the user:
-      // window.location.href = "/my-listings";
+      window.location.href = "/secondary";
     } catch (err) {
       console.error(err);
       alert("Failed to create listing: " + err.message);
@@ -41,7 +47,9 @@ const CreateListing = () => {
       setField,
       nextStep,
       prevStep,
-      onSubmit: handleFinalSubmit, // pass only to Preview
+       // pass only to Preview:
+      isLoading,
+      onSubmit: handleFinalSubmit,
     };
 
     switch (currentStep) {

@@ -19,9 +19,9 @@ export async function uploadFilesAndCreateListing(formData) {
     items.push({
       category: "photo",
       dataUri,
-      filename: `photo_${Date.now()}_${i}.${dataUri
-        .substring("data:".length, dataUri.indexOf(";"))
-        .split("/")[1]}`,
+      filename: `photo_${Date.now()}_${i}.${
+        dataUri.substring("data:".length, dataUri.indexOf(";")).split("/")[1]
+      }`,
       mimeType: dataUri.split(";")[0].split(":")[1],
     });
   });
@@ -31,20 +31,24 @@ export async function uploadFilesAndCreateListing(formData) {
     items.push({
       category: "floorplan",
       dataUri,
-      filename: `floorplan_${Date.now()}_${i}.${dataUri
-        .substring("data:".length, dataUri.indexOf(";"))
-        .split("/")[1]}`,
+      filename: `floorplan_${Date.now()}_${i}.${
+        dataUri.substring("data:".length, dataUri.indexOf(";")).split("/")[1]
+      }`,
       mimeType: dataUri.split(";")[0].split(":")[1],
     });
   });
 
   // documents (assume each has a dataUri and type)
   (formData.documents || []).forEach((doc, i) => {
+    const dataUri = doc.file;
+    const mimeType = dataUri.split(";")[0].split(":")[1];
+    const ext = mimeType.split("/")[1];
+
     items.push({
       category: "document",
-      dataUri: doc.dataUri,
-      filename: `doc_${Date.now()}_${i}.${doc.type}`,
-      mimeType: `application/${doc.type}`,
+      dataUri,
+      filename: `doc_${Date.now()}_${i}.${ext}`,
+      mimeType,
     });
   });
 
@@ -59,6 +63,7 @@ export async function uploadFilesAndCreateListing(formData) {
       ).then((r) => r.json())
     )
   );
+  
 
   // 3) Upload each blob to S3
   const uploadResults = await Promise.all(
@@ -73,6 +78,7 @@ export async function uploadFilesAndCreateListing(formData) {
       return { category: it.category, fileUrl };
     })
   );
+  console.log("Upload results:", uploadResults);
 
   // 4) Separate final URLs
   const photo_urls = uploadResults
@@ -89,6 +95,15 @@ export async function uploadFilesAndCreateListing(formData) {
     .map((u) => u.fileUrl);
 
   // 5) Build final payload (match your API spec)
+  const today = new Date();
+  const availableFromDate = formData.availableFrom
+    ? new Date(formData.availableFrom)
+    : null;
+  const availability =
+    availableFromDate && availableFromDate < today
+      ? "not available"
+      : "available";
+
   const payload = {
     reference_no: formData.referenceNumber,
     title: formData.titleEn,
@@ -105,41 +120,47 @@ export async function uploadFilesAndCreateListing(formData) {
     plot_size: formData.lotSize,
     built_up_area: formData.builtUpArea,
     layout_type: formData.layoutType,
-    project_name: formData.developerName || "",
-    project_status: "",           // fill if you have it
-    sale_type: "1",
-    build_year: "",               // add if you collected
-    customer: "",                 // add if you collected
+    ownership: formData.ownership,
+    developer_id: formData.developer,
+    // project_name: formData.developerName || "",
+    // project_status: "",           // fill if you have it
+    // sale_type: "1",
+    // build_year: "",               // add if you collected
+    // customer: "",                 // add if you collected
     rera_permit_number: formData.reraPermitNumber,
     rera_issue_date: formData.reraIssueDate,
     rera_expiration_date: formData.reraExpirationDate,
-    contract_expiry_date: "",     // add if you collected
-    rental_period: "",            // add if rented
-    price: Number(formData.price),
+    contract_expiry_date: "",
+    rental_period: formData.rentFrequency,
+    price: Number(formData.price) || Number(formData.rentAmount),
+    hide_price: formData.hidePrice,
     payment_method: formData.paymentMethod,
+    down_payment_amount: Number(formData.downPayment) || 0,
     financial_status: formData.financialStatus,
-    sale_type_1: "",              // if needed
+    // sale_type_1: "",              // if needed
     title_en: formData.titleEn,
     title_ar: formData.titleAr,
     desc_en: formData.descriptionEn,
     desc_ar: formData.descriptionAr,
     geopoints: `${formData.property_finder_latitude},${formData.property_finder_longitude}`,
-    listing_owner: formData.listingOwnerName || "",
+    listing_owner: formData.listingOwner || "",
     landlord_name: formData.landlordName,
     landlord_email: formData.landlordEmail,
     landlord_contact: formData.landlordContact,
     pf_location: formData.property_finder_location,
-    availability: formData.availableFrom ? "available" : "not available",
+    bayut_location: formData.bayut_location,
+    availability,
     available_from: formData.availableFrom,
     emirate_amount: Number(formData.serviceCharges),
     payment_option: formData.numberOfCheques
       ? `${formData.numberOfCheques} cheques`
-      : "",
+      : "Upfront",
     no_of_cheques: formData.numberOfCheques,
     contract_charges: Number(formData.serviceCharges),
-    contract_expiry: "",         // if you collected
+    contract_expiry: "",
     qr_code: formData.qr_code_property_booster,
-    brochure: "",                // if you have brochure
+    qr_code_image: formData.qr_code_image_websites,
+    brochure: "",
     video_url: formData.video_tour_url,
     "360_view_url": formData.view_360_url,
     dtcm_permit_number: formData.dtcmPermitNumber,
