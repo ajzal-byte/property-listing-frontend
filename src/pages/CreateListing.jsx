@@ -36,7 +36,7 @@ const CreateListing = () => {
       window.location.href = "/secondary";
     } catch (err) {
       console.error(err);
-      alert("Failed to create listing: " + err.message);
+      // alert("Failed to create listing: " + err.message);
     }
   };
 

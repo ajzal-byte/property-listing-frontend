@@ -189,6 +189,8 @@ export async function uploadFilesAndCreateListing(formData) {
     headers: { ...headers, "Content-Type": "application/json" },
     body: JSON.stringify(payload),
   });
-  if (!res.ok) throw new Error("Create listing failed");
+  // if (!res.ok) throw new Error("Create listing failed");
+  console.log("Create listing response:", res.json());
+  
   return res.json();
 }
