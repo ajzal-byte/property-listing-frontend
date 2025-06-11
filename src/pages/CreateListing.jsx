@@ -22,11 +22,11 @@ const CreateListing = () => {
 
   const handleFinalSubmit = async () => {
     try {
-      // setIsLoading(true);
+      setIsLoading(true);
       await uploadFilesAndCreateListing(formData);
       // clear your draft so it starts fresh next time
       localStorage.removeItem("draftListing");
-      // setIsLoading(false);
+      setIsLoading(false);
       toast.success("🎉 Listing Created Successfully!", {
         description: "Your property has been added.",
         duration: 3000,
