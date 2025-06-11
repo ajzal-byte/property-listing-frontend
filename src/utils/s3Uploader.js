@@ -183,14 +183,30 @@ export async function uploadFilesAndCreateListing(formData) {
     documents,
   };
 
-  // 6) POST create listing
   const res = await fetch(`${API_BASE_URL}/listings`, {
     method: "POST",
     headers: { ...headers, "Content-Type": "application/json" },
     body: JSON.stringify(payload),
   });
-  // if (!res.ok) throw new Error("Create listing failed");
-  console.log("Create listing response:", res.json());
-  
-  return res.json();
+
+  // Check if the response is ok (status code in the range 200-299)
+  if (!res.ok) {
+    // Log the status and response for debugging
+    const errorText = await res.text();
+    console.error("Create listing failed:", res.status, errorText);
+    throw new Error(`Create listing failed with status: ${res.status}`);
+  }
+
+  // Log the status of the response
+  console.log("Create listing status:", res.status);
+
+  // Log the raw HTML response (if any)
+  const htmlResponse = await res.text();
+  console.log("HTML response:", htmlResponse);
+
+  // Parse and log the JSON response
+  const jsonResponse = await res.json();
+  console.log("Create listing response:", jsonResponse);
+
+  return jsonResponse; // Return the parsed JSON response
 }
