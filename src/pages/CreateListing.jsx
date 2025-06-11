@@ -28,17 +28,22 @@ const CreateListing = () => {
       
       // clear your draft so it starts fresh next time
       localStorage.removeItem("draftListing");
-      setIsLoading(false);
       toast.success("🎉 Listing Created Successfully!", {
         description: "Your property has been added.",
         duration: 3000,
         position: "bottom-right",
       });
       // optionally redirect the user:
-      // window.location.href = "/secondary";
+      window.location.href = "/secondary";
     } catch (err) {
+      toast.error("Failed to Create Listing", {
+        description: err.message,
+        duration: 3000,
+        position: "bottom-right",
+      });
       console.error(err);
-      // alert("Failed to create listing: " + err.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 

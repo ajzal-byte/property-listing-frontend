@@ -78,7 +78,6 @@ export async function uploadFilesAndCreateListing(formData) {
       return { category: it.category, fileUrl };
     })
   );
-  console.log("Upload results:", uploadResults);
 
   // 4) Separate final URLs
   const photo_urls = uploadResults
@@ -183,42 +182,18 @@ export async function uploadFilesAndCreateListing(formData) {
     documents,
   };
 
-  console.log("here 1");
-  
+  // 6) POST create listing
   const res = await fetch(`${API_BASE_URL}/listings`, {
     method: "POST",
-    headers: { ...headers, "Content-Type": "application/json" },
+    headers: { ...headers, "Content-Type": "application/json", "Accept": "application/json" },
     body: JSON.stringify(payload),
   });
   
-  // Check if the response is ok (status code in the range 200-299)
   if (!res.ok) {
-    // Log the status and response for debugging
-    const errorText = await res.text();
-    console.error("Create listing failed:", res.status, errorText);
-    throw new Error(`Create listing failed with status: ${res.status}`);
+    const errorData = await res.json();
+    throw new Error(
+      `Failed to create listing: ${errorData.message || "Unknown error"}`
+    );
   }
-  
-  console.log("Create listing status:", res.status);
-  console.log("Raw response:", res);
-  
-  // Check the Content-Type of the response
-  const contentType = res.headers.get("Content-Type");
-  
-  if (contentType.includes("application/json")) {
-    // Handle JSON response
-    const jsonResponse = await res.json();
-    console.log("Create listing response (JSON):", jsonResponse);
-    return jsonResponse;
-  } else if (contentType.includes("text/html")) {
-    // Handle HTML response
-    const htmlResponse = await res.text();
-    console.log("HTML response:", htmlResponse);
-    return htmlResponse; // Return HTML if needed
-  } else {
-    // Handle other formats (e.g., plain text, XML, etc.)
-    const textResponse = await res.text();
-    console.log("Other response format:", textResponse);
-    return textResponse; // Return raw text if needed
-  }
+  return res.json();
 }
