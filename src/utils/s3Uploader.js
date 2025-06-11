@@ -204,12 +204,12 @@ export async function uploadFilesAndCreateListing(formData) {
   // Log the status of the response
   console.log("Create listing status:", res.status);
 
-  // console.log("Raw response: ", res);
+  console.log("Raw response: ", res);
   
 
   // Log the raw HTML response (if any)
-  // const htmlResponse = await res.text();
-  // console.log("HTML response:", htmlResponse);
+  const htmlResponse = await res.text();
+  console.log("HTML response:", htmlResponse);
 
   // Parse and log the JSON response
   const jsonResponse = await res.json();
