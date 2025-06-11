@@ -35,7 +35,7 @@ const CreateListing = () => {
         position: "bottom-right",
       });
       // optionally redirect the user:
-      // window.location.href = "/secondary";
+      window.location.href = "/secondary";
     } catch (err) {
       console.error(err);
       // alert("Failed to create listing: " + err.message);
