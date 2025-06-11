@@ -190,7 +190,7 @@ export async function uploadFilesAndCreateListing(formData) {
     headers: { ...headers, "Content-Type": "application/json" },
     body: JSON.stringify(payload),
   });
-
+  
   // Check if the response is ok (status code in the range 200-299)
   if (!res.ok) {
     // Log the status and response for debugging
@@ -198,22 +198,27 @@ export async function uploadFilesAndCreateListing(formData) {
     console.error("Create listing failed:", res.status, errorText);
     throw new Error(`Create listing failed with status: ${res.status}`);
   }
-  console.log("here 2");
   
-
-  // Log the status of the response
   console.log("Create listing status:", res.status);
-
-  console.log("Raw response: ", res);
+  console.log("Raw response:", res);
   
-
-  // Log the raw HTML response (if any)
-  const htmlResponse = await res.text();
-  console.log("HTML response:", htmlResponse);
-
-  // Parse and log the JSON response
-  const jsonResponse = await res.json();
-  console.log("Create listing response:", jsonResponse);
-
-  return jsonResponse; // Return the parsed JSON response
+  // Check the Content-Type of the response
+  const contentType = res.headers.get("Content-Type");
+  
+  if (contentType.includes("application/json")) {
+    // Handle JSON response
+    const jsonResponse = await res.json();
+    console.log("Create listing response (JSON):", jsonResponse);
+    return jsonResponse;
+  } else if (contentType.includes("text/html")) {
+    // Handle HTML response
+    const htmlResponse = await res.text();
+    console.log("HTML response:", htmlResponse);
+    return htmlResponse; // Return HTML if needed
+  } else {
+    // Handle other formats (e.g., plain text, XML, etc.)
+    const textResponse = await res.text();
+    console.log("Other response format:", textResponse);
+    return textResponse; // Return raw text if needed
+  }
 }
