@@ -183,6 +183,8 @@ export async function uploadFilesAndCreateListing(formData) {
     documents,
   };
 
+  console.log("here 1");
+  
   const res = await fetch(`${API_BASE_URL}/listings`, {
     method: "POST",
     headers: { ...headers, "Content-Type": "application/json" },
@@ -196,16 +198,18 @@ export async function uploadFilesAndCreateListing(formData) {
     console.error("Create listing failed:", res.status, errorText);
     throw new Error(`Create listing failed with status: ${res.status}`);
   }
+  console.log("here 2");
+  
 
   // Log the status of the response
   console.log("Create listing status:", res.status);
 
-  console.log("Raw response: ", res);
+  // console.log("Raw response: ", res);
   
 
   // Log the raw HTML response (if any)
-  const htmlResponse = await res.text();
-  console.log("HTML response:", htmlResponse);
+  // const htmlResponse = await res.text();
+  // console.log("HTML response:", htmlResponse);
 
   // Parse and log the JSON response
   const jsonResponse = await res.json();

@@ -24,6 +24,8 @@ const CreateListing = () => {
     try {
       setIsLoading(true);
       await uploadFilesAndCreateListing(formData);
+      console.log("Listing created successfully!");
+      
       // clear your draft so it starts fresh next time
       localStorage.removeItem("draftListing");
       setIsLoading(false);
@@ -33,7 +35,7 @@ const CreateListing = () => {
         position: "bottom-right",
       });
       // optionally redirect the user:
-      window.location.href = "/secondary";
+      // window.location.href = "/secondary";
     } catch (err) {
       console.error(err);
       // alert("Failed to create listing: " + err.message);
