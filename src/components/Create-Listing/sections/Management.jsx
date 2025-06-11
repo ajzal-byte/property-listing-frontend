@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useFormContext } from "react-hook-form";
 import {
   FormControl,
@@ -28,22 +28,59 @@ const Management = ({ formData, setField }) => {
     trigger(name);
 
     // when a super_admin picks a company, update agents
-    if (name === "company" && user.role === "super_admin") {
-      // find by string comparison
-      const selectedCompany = formData.companies.find(
-        (c) => String(c.id) === value
-      );
-      const agentsForCompany = selectedCompany?.agents || [];
-      // reset agent field
+    if (name === "company" && user.role.name === "super_admin") {
+      const selected = formData.companies.find((c) => String(c.id) === value);
+      const agentsForCompany = selected?.agents ?? [];
+      // reset listingAgent
       setValue("listingAgent", "");
       setField("listingAgent", "");
-      // store new list of agents (objects) in formData.agents
+      // update agents list
       setField("agents", agentsForCompany);
       setValue("agents", agentsForCompany);
+
+      // now also filter owners by company
+      const ownersForCompany = formData.allOwners.filter(
+        (o) => o.company_id === selected.id
+      );
+      // reset listingOwner
+      setValue("listingOwner", "");
+      setField("listingOwner", "");
+      // update owners list
+      setField("owners", ownersForCompany);
+      setValue("owners", ownersForCompany);
     }
   };
 
   const agents = formData.agents || [];
+
+  // Set initial agents and owners based on selected company
+  useEffect(() => {
+    // Get the current selected company ID from form state
+    const selectedCompanyId = getValues("company");
+    if (selectedCompanyId && user.role.name === "super_admin") {
+      const selected = formData.companies.find(
+        (c) => String(c.id) === String(selectedCompanyId)
+      );
+      if (selected) {
+        // Set agents for this company
+        const agentsForCompany = selected.agents ?? [];
+        setField("agents", agentsForCompany);
+        setValue("agents", agentsForCompany);
+
+        // Set owners for this company
+        const ownersForCompany = formData.allOwners.filter(
+          (o) => o.company_id === selected.id
+        );
+        setField("owners", ownersForCompany);
+        setValue("owners", ownersForCompany);
+      }
+    }
+  }, [
+    getValues("company"),
+    formData.companies,
+    formData.allOwners,
+    user.role.name,
+  ]);
 
   return (
     <div className="space-y-6">
@@ -81,7 +118,7 @@ const Management = ({ formData, setField }) => {
         />
 
         {/* Super-admin only: Company */}
-        {user.role === "super_admin" && (
+        {user.role.name === "super_admin" && (
           <FormField
             control={control}
             name="company"

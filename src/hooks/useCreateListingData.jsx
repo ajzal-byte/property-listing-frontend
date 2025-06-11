@@ -112,8 +112,8 @@ export function useCreateListingData() {
 
     // PUBLISHING
     publishPF: false,
-    publishBayut: false,
     publishBayutPlatform: false,
+    publishBayut: false,
     publishDubizzle: false,
     publishWebsite: false,
 
@@ -143,7 +143,7 @@ export function useCreateListingData() {
       const user = JSON.parse(localStorage.getItem("userData") || "{}");
       try {
         // a) Companies & agents logic (unchanged)
-        if (user.role === "super_admin") {
+        if (user.role.name === "super_admin") {
           // fetch both companies + each company’s agents
           const res = await fetch(`${API_BASE_URL}/listing/create-info`, {
             headers,
@@ -182,7 +182,9 @@ export function useCreateListingData() {
         setFormData((f) => ({
           ...f,
           developers: devData,
-          owners: ownerData.owners,
+          // keep full owner list for filtering, but only populate owners[] for non-superadmins
+          allOwners: ownerData.owners,
+          owners: user.role.name === "super_admin" ? [] : ownerData.owners,
           amenitiesList: amenData,
         }));
 
@@ -224,6 +226,7 @@ export function useCreateListingData() {
       [name]: value,
     }));
   }, []);
+  
 
   // 8) Navigation
   const nextStep = useCallback(() => {

@@ -123,7 +123,7 @@ export function useCreateListingData() {
 
       try {
         // a) Companies & agents logic (unchanged)
-        if (user.role === "super_admin") {
+        if (user.role.name === "super_admin") {
           const res = await fetch(`${API_BASE_URL}/listing/create-info`, {
             headers,
           });

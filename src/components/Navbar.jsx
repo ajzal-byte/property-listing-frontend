@@ -142,7 +142,7 @@ const profileItems = [
   { icon: FileText, label: "My transactions", active: false },
   { icon: Link2, label: "My integrations", active: false },
 
-  ...(JSON.parse(localStorage.getItem("userData")).role == "super_admin"        //conditionally shows these two tabs only when role is super_admin
+  ...(JSON.parse(localStorage.getItem("userData")).role.name == "super_admin"        //conditionally shows these two tabs only when role is super_admin
     ? [
         { icon: Building, label: "Manage Developers", active: false },
         { icon: MapPin, label: "Manage Locations", active: false },

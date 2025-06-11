@@ -278,7 +278,7 @@ const PropertyFilters = () => {
             <PlusCircle className="ml-1 h-4 w-4" />
           </button>
 
-         { JSON.parse(localStorage.getItem("userData")).role == "super_admin" &&  
+         { JSON.parse(localStorage.getItem("userData")).role.name == "super_admin" &&  
          <>
          <button className={`ml-auto mt-2 md:mt-0 flex items-center px-4 py-2 rounded-lg transition duration-300
                     hover:bg-blue-600 hover:text-white

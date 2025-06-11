@@ -719,7 +719,7 @@ const PreviewForm = ({ formData, prevStep, onSubmit }) => {
             {/* Bayut */}
             <div
               className={`border rounded-lg p-4 ${
-                formData.publishBayut
+                formData.publishBayutPlatform
                   ? "border-orange-500 bg-orange-50 dark:bg-orange-900/20"
                   : "bg-muted/50"
               }`}
@@ -732,7 +732,7 @@ const PreviewForm = ({ formData, prevStep, onSubmit }) => {
                 </div>
                 <h3 className="font-semibold">Bayut</h3>
                 <div className="ml-auto">
-                  {formData.publishBayut ? (
+                  {formData.publishBayutPlatform ? (
                     <Check className="h-5 w-5 text-green-500" />
                   ) : (
                     <X className="h-5 w-5 text-red-500" />
@@ -740,12 +740,12 @@ const PreviewForm = ({ formData, prevStep, onSubmit }) => {
                 </div>
               </div>
 
-              {formData.publishBayut && (
+              {formData.publishBayutPlatform && (
                 <div className="mt-3 space-y-2">
                   <div className="flex items-center">
                     <Checkbox
                       id="bayut-platform"
-                      checked={formData.publishBayutPlatform}
+                      checked={formData.publishBayut}
                       disabled
                       className="mr-2"
                     />
@@ -865,7 +865,7 @@ const PreviewForm = ({ formData, prevStep, onSubmit }) => {
         </Button>
         <Button
           type="button"
-          onClick={onClick}
+          onClick={onSubmit}
           className="w-full sm:w-auto bg-green-600 hover:bg-green-700"
           disabled={isLoading} // Disable the button while loading
         >

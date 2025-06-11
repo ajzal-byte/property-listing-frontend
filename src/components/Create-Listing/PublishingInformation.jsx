@@ -24,14 +24,14 @@ const PublishingInformationForm = ({
     setField(platform, pressed);
 
     // Special handling for Bayut
-    if (platform === "publishBayut") {
+    if (platform === "publishBayutPlatform") {
       if (pressed) {
         // When Bayut is toggled on, enable and check both sub-platforms
-        setField("publishBayutPlatform", true);
+        setField("publishBayut", true);
         setField("publishDubizzle", true);
       } else {
         // When Bayut is toggled off, uncheck both sub-platforms
-        setField("publishBayutPlatform", false);
+        setField("publishBayut", false);
         setField("publishDubizzle", false);
       }
     }
@@ -44,10 +44,10 @@ const PublishingInformationForm = ({
     // If both sub-platforms are unchecked, untoggle the Bayut card
     if (
       !checked &&
-      !formData.publishBayutPlatform &&
+      !formData.publishBayut &&
       !formData.publishDubizzle
     ) {
-      setField("publishBayut", false);
+      setField("publishBayutPlatform", false);
     }
   };
 
@@ -120,19 +120,19 @@ const PublishingInformationForm = ({
                   <div className="flex items-center space-x-2">
                     <Checkbox
                       id="bayut-platform"
-                      checked={formData.publishBayutPlatform}
+                      checked={formData.publishBayut}
                       onCheckedChange={(checked) =>
                         handleBayutSubPlatformChange(
-                          "publishBayutPlatform",
+                          "publishBayut",
                           checked
                         )
                       }
-                      disabled={!formData.publishBayut}
+                      disabled={!formData.publishBayutPlatform}
                     />
                     <label
                       htmlFor="bayut-platform"
                       className={`text-sm font-medium leading-none ${
-                        !formData.publishBayut ? "text-muted-foreground" : ""
+                        !formData.publishBayutPlatform ? "text-muted-foreground" : ""
                       }`}
                     >
                       Bayut
@@ -146,12 +146,12 @@ const PublishingInformationForm = ({
                       onCheckedChange={(checked) =>
                         handleBayutSubPlatformChange("publishDubizzle", checked)
                       }
-                      disabled={!formData.publishBayut}
+                      disabled={!formData.publishBayutPlatform}
                     />
                     <label
                       htmlFor="dubizzle"
                       className={`text-sm font-medium leading-none ${
-                        !formData.publishBayut ? "text-muted-foreground" : ""
+                        !formData.publishBayutPlatform ? "text-muted-foreground" : ""
                       }`}
                     >
                       Dubizzle
@@ -161,13 +161,13 @@ const PublishingInformationForm = ({
               </div>
               <div className="mt-auto">
                 <Toggle
-                  pressed={formData.publishBayut}
+                  pressed={formData.publishBayutPlatform}
                   onPressedChange={(pressed) =>
-                    handlePlatformToggle("publishBayut", pressed)
+                    handlePlatformToggle("publishBayutPlatform", pressed)
                   }
                   className="w-full py-3 data-[state=on]:bg-orange-500 data-[state=on]:text-white"
                 >
-                  {formData.publishBayut ? "Published" : "Publish"}
+                  {formData.publishBayutPlatform ? "Published" : "Publish"}
                 </Toggle>
               </div>
             </CardContent>
