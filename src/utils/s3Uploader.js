@@ -149,7 +149,7 @@ export async function uploadFilesAndCreateListing(formData) {
     landlord_contact: formData.landlordContact,
     pf_location: formData.property_finder_location,
     bayut_location: formData.bayut_location,
-    availability,
+    // availability,
     available_from: formData.availableFrom,
     emirate_amount: Number(formData.serviceCharges),
     payment_option: formData.numberOfCheques
