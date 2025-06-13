@@ -10,13 +10,21 @@ import {
   Document,
   PublishingStatus,
   Preview,
+  Preview2, // Uncomment if you want to use the second preview
 } from "@/components/Create-Listing";
 import { uploadFilesAndCreateListing } from "@/utils/s3Uploader";
 import { toast } from "sonner";
 
 const CreateListing = () => {
-  const { formData, setField, currentStep, nextStep, prevStep, steps } =
-    useCreateListingData();
+  const {
+    formData,
+    setField,
+    currentStep,
+    nextStep,
+    prevStep,
+    goToStep,
+    steps,
+  } = useCreateListingData();
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -25,7 +33,7 @@ const CreateListing = () => {
       setIsLoading(true);
       await uploadFilesAndCreateListing(formData);
       console.log("Listing created successfully!");
-      
+
       // clear your draft so it starts fresh next time
       localStorage.removeItem("draftListing");
       toast.success("🎉 Listing Created Successfully!", {
@@ -54,7 +62,8 @@ const CreateListing = () => {
       setField,
       nextStep,
       prevStep,
-       // pass only to Preview:
+      // pass only to Preview:
+      goToStep,
       isLoading,
       onSubmit: handleFinalSubmit,
     };

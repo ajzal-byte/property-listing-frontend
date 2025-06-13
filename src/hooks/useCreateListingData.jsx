@@ -237,6 +237,12 @@ export function useCreateListingData() {
     setCurrentStep((i) => Math.max(i - 1, 0));
   }, []);
 
+  const goToStep = useCallback((stepIndex) => {
+    if (stepIndex >= 0 && stepIndex < steps.length) {
+      setCurrentStep(stepIndex);
+    }
+  }, [steps.length]);
+
   return {
     formData,
     setField,
@@ -244,6 +250,7 @@ export function useCreateListingData() {
     currentStep,
     nextStep,
     prevStep,
+    goToStep,
     steps,
   };
 }
