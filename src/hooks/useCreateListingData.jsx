@@ -16,7 +16,14 @@ export function useCreateListingData() {
   ];
 
   // 2) Load draft from localStorage if exists
-  const draft = JSON.parse(localStorage.getItem("draftListing") || "{}");
+  let draft = {};
+  try {
+    const raw = localStorage.getItem("draftListing");
+    draft = raw ? JSON.parse(raw) : {};
+  } catch (err) {
+    console.error("Malformed draftListing in localStorage:", err);
+    localStorage.removeItem("draftListing");
+  }
 
   // 3) Master formData state (all fields across all sections)
   const [formData, setFormData] = useState({
@@ -226,7 +233,6 @@ export function useCreateListingData() {
       [name]: value,
     }));
   }, []);
-  
 
   // 8) Navigation
   const nextStep = useCallback(() => {
@@ -237,11 +243,14 @@ export function useCreateListingData() {
     setCurrentStep((i) => Math.max(i - 1, 0));
   }, []);
 
-  const goToStep = useCallback((stepIndex) => {
-    if (stepIndex >= 0 && stepIndex < steps.length) {
-      setCurrentStep(stepIndex);
-    }
-  }, [steps.length]);
+  const goToStep = useCallback(
+    (stepIndex) => {
+      if (stepIndex >= 0 && stepIndex < steps.length) {
+        setCurrentStep(stepIndex);
+      }
+    },
+    [steps.length]
+  );
 
   return {
     formData,

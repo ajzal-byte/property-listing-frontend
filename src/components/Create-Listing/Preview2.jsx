@@ -307,13 +307,13 @@ const PreviewForm = ({ formData, prevStep, onSubmit, isLoading, goToStep }) => {
         <div className="space-y-4">
           <SpecItem
             label="Title Deed Number"
-            value={formData.titleDeedNumber}
+            value={formData.titleDeed}
           />
-          <SpecItem label="Title" value={formData.title} />
-          {formData.description && (
+          <SpecItem label="Title" value={formData.titleEn} />
+          {formData.descriptionEn && (
             <div>
               <p className="font-medium text-muted-foreground">Description</p>
-              <p className="line-clamp-3 text-sm">{formData.description}</p>
+              <p className="line-clamp-3 text-sm">{formData.descriptionEn}</p>
               <Dialog>
                 <DialogTrigger asChild>
                   <Button variant="link" className="px-0">
@@ -327,15 +327,15 @@ const PreviewForm = ({ formData, prevStep, onSubmit, isLoading, goToStep }) => {
                   <div className="space-y-4 max-h-[70vh] overflow-y-auto pr-4">
                     <SpecItem
                       label="Title Deed Number"
-                      value={formData.titleDeedNumber}
+                      value={formData.titleDeed}
                     />
-                    <SpecItem label="Title" value={formData.title} />
+                    <SpecItem label="Title" value={formData.titleEn} />
                     <div>
                       <p className="font-medium text-muted-foreground">
                         Description
                       </p>
                       <p className="text-sm whitespace-pre-wrap">
-                        {formData.description}
+                        {formData.descriptionEn}
                       </p>
                     </div>
                   </div>
