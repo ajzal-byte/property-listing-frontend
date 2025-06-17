@@ -7,7 +7,6 @@ import LinksCard from "./LinksCard";
 import LocationCard from "./LocationCard";
 import PublishingInformationCard from "./PublishingInformationCard";
 import ImageGallery from "./ImageGallery";
-import PropertyDetails from "./PropertyDetails";
 
 export {
   AdditionalNotes,
