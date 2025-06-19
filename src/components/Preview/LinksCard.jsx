@@ -2,7 +2,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Edit, LinkIcon, Paperclip } from "lucide-react";
 
-const LinksCard = ({ floorPlanUrls, documents, onEdit, stepNumber }) => {
+const LinksCard = ({ floorPlanUrls, documents, onEdit, stepNumber, showEdit = true }) => {
   return (
     <Card>
       <CardHeader>
@@ -11,13 +11,15 @@ const LinksCard = ({ floorPlanUrls, documents, onEdit, stepNumber }) => {
             <LinkIcon className="mr-2 h-5 w-5" />
             Links & Documents
           </CardTitle>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => onEdit(stepNumber)}
-          >
-            <Edit className="h-4 w-4" />
-          </Button>
+          {showEdit && (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => onEdit(stepNumber)}
+            >
+              <Edit className="h-4 w-4" />
+            </Button>
+          )}
         </div>
       </CardHeader>
       <CardContent className="space-y-4">

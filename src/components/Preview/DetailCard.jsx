@@ -15,6 +15,7 @@ const DetailCard = ({
   cols = 2,
   stepNumber,
   children,
+  showEdit = true,
 }) => {
   return (
     <Card>
@@ -24,13 +25,15 @@ const DetailCard = ({
             {Icon && <Icon className="mr-2 h-5 w-5" />}
             {title}
           </CardTitle>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => onEdit(stepNumber)}
-          >
-            <Edit className="h-4 w-4" />
-          </Button>
+          {showEdit && (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => onEdit(stepNumber)}
+            >
+              <Edit className="h-4 w-4" />
+            </Button>
+          )}
         </div>
       </CardHeader>
       <CardContent

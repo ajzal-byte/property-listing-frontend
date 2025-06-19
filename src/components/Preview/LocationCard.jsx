@@ -9,6 +9,7 @@ const LocationCard = ({
   formData,
   onEdit,
   stepNumber,
+  showEdit = true,
 }) => {
   const hasMapCoordinates =
     (formData?.property_finder_latitude || formData?.bayut_latitude) &&
@@ -22,13 +23,15 @@ const LocationCard = ({
             <MapPin className="mr-2 h-5 w-5" />
             Location
           </CardTitle>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => onEdit(stepNumber)}
-          >
-            <Edit className="h-4 w-4" />
-          </Button>
+          {showEdit && (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => onEdit(stepNumber)}
+            >
+              <Edit className="h-4 w-4" />
+            </Button>
+          )}
         </div>
       </CardHeader>
       <CardContent className="space-y-6">

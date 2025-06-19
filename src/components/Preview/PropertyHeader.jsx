@@ -19,9 +19,10 @@ const PropertyHeader = ({
   descriptionEn,
   onEdit,
   formatPrice,
+  showEdit = true,
 }) => {
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 mt-4">
       {/* Pricing Section */}
       <div className="mb-6">
         <h1 className="text-3xl font-bold">
@@ -41,9 +42,11 @@ const PropertyHeader = ({
         <div>
           <div className="flex justify-between items-start">
             <h2 className="text-4xl font-semibold tracking-tight">{titleEn}</h2>
-            <Button variant="ghost" size="icon" onClick={onEdit}>
-              <Edit className="h-4 w-4" />
-            </Button>
+            {showEdit && (
+              <Button variant="ghost" size="icon" onClick={() => onEdit(0)}>
+                <Edit className="h-4 w-4" />
+              </Button>
+            )}
           </div>
           {titleDeed && (
             <p className="text-sm text-muted-foreground">

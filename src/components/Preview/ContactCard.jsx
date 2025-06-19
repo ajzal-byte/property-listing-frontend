@@ -12,19 +12,22 @@ const ContactCard = ({
   phone,
   onEdit,
   stepNumber,
+  showEdit = true,
 }) => {
   return (
     <Card>
       <CardHeader>
         <div className="flex justify-between items-center">
           <CardTitle>Contact Info</CardTitle>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => onEdit(stepNumber)}
-          >
-            <Edit className="h-4 w-4" />
-          </Button>
+          {showEdit && (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => onEdit(stepNumber)}
+            >
+              <Edit className="h-4 w-4" />
+            </Button>
+          )}
         </div>
       </CardHeader>
       <CardContent>

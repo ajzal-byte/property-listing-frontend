@@ -41,15 +41,17 @@ const PlatformBox = ({
   </div>
 );
 
-const PublishingInfoCard = ({ formData, goToStep }) => {
+const PublishingInfoCard = ({ formData, goToStep, showEdit = true }) => {
   return (
     <Card>
       <CardHeader>
         <div className="flex justify-between items-center">
           <CardTitle>Publishing Information</CardTitle>
-          <Button variant="ghost" size="icon" onClick={() => goToStep(3)}>
-            <Edit className="h-4 w-4" />
-          </Button>
+          {showEdit && (
+            <Button variant="ghost" size="icon" onClick={() => goToStep(3)}>
+              <Edit className="h-4 w-4" />
+            </Button>
+          )}
         </div>
       </CardHeader>
       <CardContent>

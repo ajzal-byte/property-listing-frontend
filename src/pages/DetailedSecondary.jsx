@@ -1,668 +1,255 @@
-import { useState, useEffect, useContext } from "react";
-import {
-  MapPin,
-  Home,
-  Calendar,
-  BedDouble,
-  Bath,
-  Car,
-  DollarSign,
-  CheckCircle,
-  ChevronLeft,
-  ChevronRight,
-  Edit2Icon,
-  Check,
-  X,
-} from "lucide-react";
-import Fetcher from "../utils/Fetcher";
+import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import MainTabContext from "../contexts/TabContext";
-import { tabs } from "../enums/sidebarTabsEnums";
-import { ListingEditModal } from "./ListingEditModal";
-import getAuthHeaders from "../utils/getAuthHeader";
+import { Badge } from "@/components/ui/badge";
+import { Loader2 } from "lucide-react";
+import getAuthHeaders from "@/utils/getAuthHeader";
+import {
+  AdditionalNotes,
+  ContactCard,
+  DetailCard,
+  ImageGallery,
+  LinksCard,
+  LocationCard,
+  PropertyHeader,
+  PublishingInformationCard,
+} from "../components/Preview";
 
-export default function DetailedSecondary() {
+const API_BASE_URL = "https://backend.myemirateshome.com/api";
+
+const DetailedSecondary = () => {
   const { id } = useParams();
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [showEditModal, setShowEditModal] = useState(false);
-  const { mainTab, setMainTab } = useContext(MainTabContext);
-  const [locations, setLocations] = useState([]);
-  const [pfLocations, setPfLocations] = useState([]);
-  const [bayutLocations, setBayutLocations] = useState([]);
-  const [developers, setDevelopers] = useState([]);
-  const [amenities, setAmenities] = useState([]);
-  const [companies, setCompanies] = useState([]);
-  const [agents, setAgents] = useState([]);
-
-  const { loading, response, error } = Fetcher({
-    url: `https://backend.myemirateshome.com/api/listings/${id}`,
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("authToken")}`,
-      Accept: "application/json",
-    },
-    onSuccess: (res) => console.log("Data is:", res),
-    onError: (err) => console.error("Error fetching listing:", err),
-  });
-
-  // For debugging
-  useEffect(() => {
-    console.log("Response is:", response);
-    console.log("Error is:", error);
-    console.log("Loading is:", loading);
-  }, [response, error, loading]);
+  const [listing, setListing] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchListing = async () => {
       try {
-        // Fetch locations
-        // const locResponse = await fetch("https://backend.myemirateshome.com/api/locations", {
-        //   headers: getAuthHeaders(),
-        // });
-        // const locData = await locResponse.json();
-        // setLocations(locData);
-        const pfResponse = await fetch(
-          "https://backend.myemirateshome.com/api/locations?type=pf",
-          {
-            headers: getAuthHeaders(),
-          }
-        );
-        const pfData = await pfResponse.json();
+        const response = await fetch(`${API_BASE_URL}/listings/${id}`, {
+          headers: getAuthHeaders(),
+        });
 
-        // Fetch 'bayut' locations
-        const bayutResponse = await fetch(
-          "https://backend.myemirateshome.com/api/locations?type=bayut",
-          {
-            headers: getAuthHeaders(),
-          }
-        );
-        const bayutData = await bayutResponse.json();
+        if (!response.ok) {
+          throw new Error("Failed to fetch listing");
+        }
 
-        // Merge both
-        const mergedLocations = [...pfData.data, ...bayutData.data];
-        setPfLocations(pfData.data);
-        setBayutLocations(bayutData.data);
-        setLocations(mergedLocations);
-
-        // Fetch developers
-        const devResponse = await fetch(
-          "https://backend.myemirateshome.com/api/developers",
-          {
-            headers: getAuthHeaders(),
-          }
-        );
-        const devData = await devResponse.json();
-        setDevelopers(devData);
-
-        // Fetch amenities
-        const amenResponse = await fetch(
-          "https://backend.myemirateshome.com/api/amenities",
-          {
-            headers: getAuthHeaders(),
-          }
-        );
-        const amenData = await amenResponse.json();
-        setAmenities(amenData);
-
-        // Fetch company and agent info
-        const infoResponse = await fetch(
-          "https://backend.myemirateshome.com/api/listing/create-info",
-          {
-            headers: getAuthHeaders(),
-          }
-        );
-
-        const infoData = await infoResponse.json();
-        console.log(infoData);
-
-        // Extract companies and agents from infoData (assuming structure)
-        // This may need adjustment based on actual API response structure
-        setCompanies(infoData.companies); // Replace with actual data
-        console.log(
-          "agents are:",
-          infoData.companies.flatMap((company) => company.agents || [])
-        );
-
-        setAgents(
-          infoData.companies.flatMap((company) => company.agents) || []
-        );
-      } catch (error) {
-        console.error("Error fetching data:", error);
+        const data = await response.json();
+        setListing(data.listing);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
       }
     };
 
-    setMainTab(tabs.HIDDEN);
-    fetchData();
-  }, [
-    setMainTab,
-    setAgents,
-    setAmenities,
-    setCompanies,
-    setLocations,
-    setDevelopers,
-  ]);
+    fetchListing();
+  }, [id]);
 
-  // Safely access the listing data
-  console.log("response from DetailedSecondary:", response);
-
-  const listing = response?.listing || null;
-
-  // Check if data is still loading or there's an error
   if (loading) {
     return (
-      <div className="max-w-7xl mx-auto px-4 py-8 bg-gray-50 flex justify-center items-center h-96">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-700 mx-auto mb-4"></div>
-          <p className="text-lg text-gray-600">Loading property details...</p>
-        </div>
+      <div className="flex justify-center items-center h-screen">
+        <Loader2 className="h-12 w-12 animate-spin" />
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="max-w-7xl mx-auto px-4 py-8 bg-gray-50">
-        <div className="bg-red-50 border border-red-200 rounded-xl p-6 shadow-md">
-          <h2 className="text-xl font-bold text-red-700 mb-2">
-            Error Loading Property
-          </h2>
-          <p className="text-gray-700">
-            {error.message ||
-              "Failed to load property details. Please try again."}
-          </p>
-          <p className="mt-4 text-sm text-gray-600">
-            Status: {error.status || "Unknown"}
-          </p>
-        </div>
+      <div className="flex justify-center items-center h-screen">
+        <p className="text-red-500">Error: {error}</p>
       </div>
     );
   }
 
-  console.log(listing);
   if (!listing) {
     return (
-      <div className="max-w-7xl mx-auto px-4 py-8 bg-gray-50">
-        <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-6 shadow-md">
-          <h2 className="text-xl font-bold text-yellow-700 mb-2">
-            No Property Found
-          </h2>
-          <p className="text-gray-700">
-            The property you're looking for doesn't exist or has been removed.
-          </p>
-        </div>
+      <div className="flex justify-center items-center h-screen">
+        <p>Listing not found</p>
       </div>
     );
   }
 
-  // Only proceed with rendering if we have a valid listing
+  const renderStatusBadge = (status) => {
+    const statusMap = {
+      draft: { label: "Draft", color: "bg-gray-500 text-white" },
+      live: { label: "Live", color: "bg-green-500 text-white" },
+      archived: { label: "Archived", color: "bg-yellow-500 text-white" },
+      published: { label: "Published", color: "bg-blue-500 text-white" },
+      unpublished: { label: "Unpublished", color: "bg-red-500 text-white" },
+      pocket: { label: "Pocket Listing", color: "bg-purple-500 text-white" },
+    };
 
-  // Find the main image if photos exist
-  const orderedPhotos =
-    listing.photos && listing.photos.length > 0
-      ? (() => {
-          const mainImage =
-            listing.photos.find((photo) => photo.is_main === 1) ||
-            listing.photos[0];
-          return [
-            mainImage,
-            ...listing.photos.filter((photo) => photo.id !== mainImage.id),
-          ];
-        })()
-      : [];
+    const info = statusMap[status] || {
+      label: "Unknown",
+      color: "bg-gray-300 text-black",
+    };
 
-  const nextImage = () => {
-    setCurrentImageIndex((prevIndex) =>
-      prevIndex === orderedPhotos.length - 1 ? 0 : prevIndex + 1
-    );
+    return <Badge className={info.color}>{info.label}</Badge>;
   };
 
-  const prevImage = () => {
-    setCurrentImageIndex((prevIndex) =>
-      prevIndex === 0 ? orderedPhotos.length - 1 : prevIndex - 1
-    );
+  // Helper function to format price
+  const formatPrice = (price) => {
+    if (!price) return "Price on request";
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "AED",
+      minimumFractionDigits: 0,
+    }).format(price);
   };
 
-  const selectImage = (index) => {
-    setCurrentImageIndex(index);
-  };
-
-  const formatDate = (dateString) => {
-    if (!dateString) return "N/A";
-    const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-  };
+  // Extract main photo URLs
+  const photos = listing.photos?.map((photo) => photo.image_url) || [];
 
   return (
-    <>
-      <ListingEditModal
-        isOpen={showEditModal}
-        onClose={() => setShowEditModal(false)}
-        listing={listing}
-        authToken={localStorage.getItem("authToken")}
-        developers={developers}
-        locations={locations}
-        pfLocations={pfLocations}
-        bayutLocations={bayutLocations}
-        companies={companies}
-        agents={agents}
-        amenitiesList={amenities}
-        onSuccess={() => {
-          console.log("Updated Successfully");
+    <div className="container mx-auto px-4 py-8">
+      {/* Image Gallery */}
+      {photos.length > 0 && (
+        // In your DetailedSecondary component
+        <ImageGallery
+          photos={photos}
+          watermark={listing.watermark === "1"}
+          publishingStatus={listing.status}
+          showEdit={false}
+          renderStatusBadge={renderStatusBadge}
+        />
+      )}
+
+      {/* Property Header (Price, Title, Description) */}
+      <PropertyHeader
+        offeringType={listing.offering_type}
+        price={listing.price}
+        rentAmount={listing.price} // Adjust based on your data structure
+        rentFrequency="year" // Adjust based on your data structure
+        titleEn={listing.title_en}
+        titleDeed={listing.title_deed}
+        descriptionEn={listing.desc_en}
+        formatPrice={formatPrice}
+        showEdit={false}
+      />
+
+      {/* Property Details Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 my-8">
+        {/* Specifications Card */}
+        <DetailCard
+          title="Specifications"
+          icon="Home"
+          showEdit={false}
+          items={[
+            { label: "Reference No", value: listing.reference_no },
+            { label: "Property Type", value: listing.property_type },
+            { label: "Size", value: `${listing.size} sq.ft` },
+            { label: "Unit No", value: listing.unit_no },
+            { label: "Bedrooms", value: listing.bedrooms },
+            { label: "Bathrooms", value: listing.bathrooms },
+            { label: "Parking", value: listing.parking },
+            {
+              label: "Furnished",
+              value: listing.furnished === "1" ? "Yes" : "No",
+            },
+            { label: "Developer", value: listing.developer?.name },
+          ]}
+        />
+
+        {/* Management Card */}
+        <DetailCard
+          title="Management"
+          icon="Building"
+          showEdit={false}
+          items={[
+            { label: "Company", value: listing.company?.name },
+            { label: "Listing Agent", value: listing.agent?.name },
+            { label: "Landlord Name", value: listing.landlord_name },
+            { label: "Landlord Contact", value: listing.landlord_contact },
+            { label: "Landlord Email", value: listing.landlord_email },
+            {
+              label: "Available From",
+              value:
+                listing.available_from &&
+                new Date(listing.available_from).toLocaleDateString(),
+            },
+          ]}
+        />
+      </div>
+
+      {/* Location Card with Map */}
+      <LocationCard
+        pfLocationDetails={listing.pf_location}
+        bayutLocationDetails={listing.bayut_location}
+        showEdit={false}
+        formData={{
+          property_finder_latitude: listing.geopoints?.split(",")[0],
+          property_finder_longitude: listing.geopoints?.split(",")[1],
+          bayut_latitude: listing.geopoints?.split(",")[0],
+          bayut_longitude: listing.geopoints?.split(",")[1],
         }}
       />
-      <div className="min-h-screen flex flex-col bg-gray-50">
-        <div className="flex-grow flex flex-col w-full max-w-screen-2xl mx-auto px-4 py-6">
-          <div className="bg-white rounded-xl shadow-lg overflow-hidden flex-grow flex flex-col">
-            {/* Property Title Section */}
-            <div className="bg-blue-700 text-white p-6">
-              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center">
-                <h1 className="text-2xl sm:text-3xl font-bold mb-2 sm:mb-0">
-                  {listing.title || "Property Title"}
-                  {"  "}&nbsp;{listing.title_ar || "Arabic Title"}
-                </h1>
 
-                {/* Edit button */}
-                <div className="flex gap-2">
-                  <button
-                    className=" bg-blue-500 px-4 py-1 rounded-full text-white uppercase text-sm font-semibold w-fit cursor-pointer"
-                    onClick={() => setShowEditModal(true)}
-                  >
-                    <Edit2Icon className="bg-blue-500 " />
-                  </button>
-                  <span className="bg-blue-500 px-4 py-1 rounded-full text-white uppercase text-sm font-semibold w-fit cursor-pointer">
-                    {listing.status || "N/A"}
-                  </span>
-                </div>
-              </div>
-              <div className="flex items-center mt-2">
-                <MapPin className="h-4 w-4 mr-1 flex-shrink-0" />
-                <p className="truncate">
-                  {listing.pf_location?.location || "Location not specified"}
-                </p>
-              </div>
-              <div className="flex flex-wrap items-center mt-4 gap-y-2">
-                <div className="flex items-center mr-6">
-                  <BedDouble className="h-5 w-5 mr-1 flex-shrink-0" />
-                  <span>{listing.bedrooms || "N/A"} Beds</span>
-                </div>
-                <div className="flex items-center mr-6">
-                  <Bath className="h-5 w-5 mr-1 flex-shrink-0" />
-                  <span>{listing.bathrooms || "N/A"} Baths</span>
-                </div>
-                <div className="flex items-center">
-                  <Home className="h-5 w-5 mr-1 flex-shrink-0" />
-                  <span>{listing.size || "N/A"} sqm</span>
-                </div>
-              </div>
-            </div>
+      {/* Amenities & Media */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 my-8">
+        {/* Amenities Card */}
+        <DetailCard
+          title="Amenities"
+          icon="Wifi"
+          showEdit={false}
+          badges={listing.amenities?.map((a) => a.amenity_name) || []}
+        />
 
-            {/* Image Gallery - Only show if we have photos */}
-            {orderedPhotos.length > 0 ? (
-              <div className="relative">
-                <div className="relative h-64 sm:h-80 md:h-120 w-full overflow-hidden">
-                  <img
-                    src={orderedPhotos[currentImageIndex].image_url}
-                    alt={`Property image ${currentImageIndex + 1}`}
-                    className="w-full h-full object-cover"
-                  />
-                  <button
-                    onClick={prevImage}
-                    className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 rounded-full p-2 text-white"
-                    aria-label="Previous image"
-                  >
-                    <ChevronLeft className="h-6 w-6" />
-                  </button>
-                  <button
-                    onClick={nextImage}
-                    className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 rounded-full p-2 text-white"
-                    aria-label="Next image"
-                  >
-                    <ChevronRight className="h-6 w-6" />
-                  </button>
-                </div>
-
-                {/* Thumbnails */}
-                <div className="flex overflow-x-auto py-4 px-4 sm:px-6 gap-2 sm:gap-4">
-                  {orderedPhotos.map((photo, index) => (
-                    <div
-                      key={photo.id}
-                      className={`flex-shrink-0 cursor-pointer border-2 ${
-                        currentImageIndex === index
-                          ? "border-blue-600"
-                          : "border-transparent"
-                      }`}
-                      onClick={() => selectImage(index)}
-                    >
-                      <img
-                        src={photo.image_url}
-                        alt={`Thumbnail ${index + 1}`}
-                        className="w-16 sm:w-24 h-12 sm:h-16 object-cover"
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ) : (
-              <div className="h-48 bg-gray-100 flex items-center justify-center">
-                <p className="text-gray-500">No property images available</p>
-              </div>
-            )}
-
-            {/* Main Content - Flex grow to take remaining space */}
-            <div className="flex-grow grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 p-4 sm:p-6">
-              {/* Left Column - Property Details */}
-              <div className="md:col-span-2">
-                <div className="mb-6 sm:mb-8">
-                  <h2 className="text-xl sm:text-2xl font-bold text-blue-800 mb-3 sm:mb-4">
-                    Property Details
-                  </h2>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-4 sm:gap-x-8">
-                    <div className="flex items-center">
-                      <span className="text-gray-600 w-28 sm:w-36">
-                        Reference No:
-                      </span>
-                      <span className="font-medium">
-                        {listing.reference_no || "N/A"}
-                      </span>
-                    </div>
-                    <div className="flex items-center">
-                      <span className="text-gray-600 w-28 sm:w-36">
-                        Property Type:
-                      </span>
-                      <span className="font-medium">
-                        {listing.property_type || "N/A"}
-                      </span>
-                    </div>
-                    <div className="flex items-center">
-                      <span className="text-gray-600 w-28 sm:w-36">
-                        Offering Type:
-                      </span>
-                      <span className="font-medium">
-                        {listing.offering_type || "N/A"}
-                      </span>
-                    </div>
-                    <div className="flex items-center">
-                      <span className="text-gray-600 w-28 sm:w-36">Size:</span>
-                      <span className="font-medium">
-                        {listing.size || "N/A"} sqm
-                      </span>
-                    </div>
-                    <div className="flex items-center">
-                      <span className="text-gray-600 w-28 sm:w-36">
-                        Furnished:
-                      </span>
-                      <span className="font-medium">
-                        {listing.furnished === "1" ? "Yes" : "No"}
-                      </span>
-                    </div>
-                    <div className="flex items-center">
-                      <span className="text-gray-600 w-28 sm:w-36">
-                        Rental Period:
-                      </span>
-                      <span className="font-medium capitalize">
-                        {listing.rental_period || "N/A"}
-                      </span>
-                    </div>
-                    <div className="flex items-center">
-                      <span className="text-gray-600 w-28 sm:w-36">
-                        Available From:
-                      </span>
-                      <span className="font-medium">
-                        {formatDate(listing.available_from)}
-                      </span>
-                    </div>
-                    <div className="flex items-center">
-                      <span className="text-gray-600 w-28 sm:w-36">
-                        RERA Permit:
-                      </span>
-                      <span className="font-medium">
-                        {listing.rera_permit_number || "N/A"}
-                      </span>
-                    </div>
-                    <div className="flex items-center">
-                      <span className="text-gray-600 w-28 sm:w-36">
-                        RERA Issue Date:
-                      </span>
-                      <span className="font-medium">
-                        {formatDate(listing.rera_issue_date)}
-                      </span>
-                    </div>
-                    <div className="flex items-center">
-                      <span className="text-gray-600 w-28 sm:w-36">
-                        RERA Expiry:
-                      </span>
-                      <span className="font-medium">
-                        {formatDate(listing.rera_expiration_date)}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="mb-6 sm:mb-8 grid grid-cols-2">
-                  <div>
-                    <h2 className="text-xl sm:text-2xl font-bold text-blue-800 mb-3 sm:mb-4">
-                      Description
-                    </h2>
-                    <p className="text-gray-700 leading-relaxed">
-                      {listing.desc_en || "No description available."}
-                    </p>
-                  </div>
-
-                  {/* Section for: Published In what company  */}
-
-                  <div className="bg-white rounded-lg">
-                    {/* Section Header */}
-                    <h2 className="text-2xl font-bold text-blue-800 mb-4">
-                      Publishing Status
-                    </h2>
-
-                    {/* Show unpublished status banner if applicable */}
-                    {listing.status.toLowerCase() === "unpublished" && (
-                      <div className="mb-4 bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded">
-                        <div className="flex items-center">
-                          <X className="h-5 w-5 text-yellow-600 mr-2" />
-                          <p className="text-yellow-700 font-medium">
-                            This listing is currently unpublished
-                          </p>
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Publication Platforms */}
-                    <div className="space-y-3">
-                      {[
-                        { name: "Property Finder", key: "pf_enable" },
-                        { name: "Bayut", key: "bayut_enable" },
-                        { name: "Dubizzle", key: "dubizzle_enable" },
-                        { name: "Website", key: "website_enable" },
-                      ].map((platform) => {
-                        const isPublished = listing[platform.key] === 1;
-
-                        return (
-                          <div
-                            key={platform.key}
-                            className="flex justify-between items-center p-2 rounded"
-                          >
-                            <span className="text-gray-700 font-medium">
-                              {platform.name}
-                            </span>
-                            <div
-                              className={`flex items-center ${
-                                isPublished ? "text-green-600" : "text-gray-400"
-                              }`}
-                            >
-                              {isPublished ? (
-                                <>
-                                  <Check className="h-5 w-5 mr-1" />
-                                  <span className="font-medium">Published</span>
-                                </>
-                              ) : (
-                                <>
-                                  <X className="h-5 w-5 mr-1" />
-                                  <span>Not Published</span>
-                                </>
-                              )}
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="mb-6 sm:mb-8">
-                  <h2 className="text-xl sm:text-2xl font-bold text-blue-800 mb-3 sm:mb-4">
-                    Description Arabic
-                  </h2>
-                  <p className="text-gray-700 leading-relaxed">
-                    {listing.desc_ar || "No description available."}
-                  </p>
-                </div>
-
-                <div className="mb-6 sm:mb-8">
-                  <h2 className="text-xl sm:text-2xl font-bold text-blue-800 mb-3 sm:mb-4">
-                    Amenities
-                  </h2>
-                  {listing.amenities && listing.amenities.length > 0 ? (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
-                      {listing.amenities.map((amenity) => (
-                        <div key={amenity.id} className="flex items-center">
-                          <CheckCircle className="h-5 w-5 text-blue-600 mr-2 flex-shrink-0" />
-                          <span>{amenity.amenity_name}</span>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="text-gray-600">No amenities listed.</p>
-                  )}
-                </div>
-              </div>
-
-              <div className="md:col-span-1 space-y-6">
-
-              {/* Right Column - Agent Info  */}
-              { listing.agent &&
-                <div className="bg-blue-50 rounded-lg p-4 sm:p-6">
-                  <h2 className="text-lg sm:text-xl font-bold text-blue-800 mb-3 sm:mb-4">
-                    Agent Information
-                  </h2>
-                  <div className="flex flex-col space-y-3 sm:space-y-4">
-                    <div>
-                      <p className="text-gray-600 text-sm">Agent</p>
-                      <p className="font-medium">
-                        {listing.agent?.name || "N/A"}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-gray-600 text-sm">Company</p>
-                      <p className="font-medium">
-                        {listing.company?.name || "N/A"}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-gray-600 text-sm">RERA Number</p>
-                      <p className="font-medium">
-                        {listing.agent?.rera_number || "N/A"}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-gray-600 text-sm">Contact</p>
-                      <p className="font-medium">
-                        {listing.agent?.phone || "N/A"}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-gray-600 text-sm">Email</p>
-                      <p className="font-medium break-words">
-                        {listing.agent?.email || "N/A"}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-          }
-
-              {/* Right Column - Agent Info  */}
-              { listing.owner &&
-                <div className="bg-blue-50 rounded-lg p-4 sm:p-6">
-                  <h2 className="text-lg sm:text-xl font-bold text-blue-800 mb-3 sm:mb-4">
-                    Owner Information
-                  </h2>
-                  <div className="flex flex-col space-y-3 sm:space-y-4">
-                    <div>
-                      <p className="text-gray-600 text-sm">Agent</p>
-                      <p className="font-medium">
-                        {listing.owner?.name || "N/A"}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-gray-600 text-sm">Company</p>
-                      <p className="font-medium">
-                        {listing.company?.name || "N/A"}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-gray-600 text-sm">RERA Number</p>
-                      <p className="font-medium">
-                        {listing.owner?.rera_number || "N/A"}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-gray-600 text-sm">Contact</p>
-                      <p className="font-medium">
-                        {listing.owner?.phone || "N/A"}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-gray-600 text-sm">Email</p>
-                      <p className="font-medium break-words">
-                        {listing.owner?.email || "N/A"}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-          }
-
-          {/* Listing Location */}
-                <div className="bg-blue-50 rounded-lg p-4 sm:p-6">
-                  <h2 className="text-lg sm:text-xl font-bold text-blue-800 mb-3 sm:mb-4">
-                    Location
-                  </h2>
-                  <div className="flex flex-col space-y-2 sm:space-y-3">
-                    <div>
-                      <p className="text-gray-600 text-sm">City</p>
-                      <p className="font-medium">
-                        {listing.pf_location?.city || "N/A"}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-gray-600 text-sm">Community</p>
-                      <p className="font-medium">
-                        {listing.pf_location?.community || "N/A"}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-gray-600 text-sm">Sub Community</p>
-                      <p className="font-medium">
-                        {listing.pf_location?.sub_community || "N/A"}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-gray-600 text-sm">Building</p>
-                      <p className="font-medium">
-                        {listing.pf_location?.building || "N/A"}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        {/* Media Card */}
+        <DetailCard
+          title="Media"
+          icon="Image"
+          showEdit={false}
+          items={[
+            {
+              label: "Video Tour",
+              value: listing.video_url,
+              useLinkComponent: true,
+            },
+            {
+              label: "360° View",
+              value: listing["360_view_url"],
+              useLinkComponent: true,
+            },
+          ]}
+        />
       </div>
-    </>
+
+      {/* Links & Contact Info */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 my-8">
+        <LinksCard
+          floorPlanUrls={listing.floor_plan}
+          documents={listing.documents?.map((url) => ({ url }))}
+          showEdit={false}
+        />
+
+        <ContactCard
+          profileUrl={listing.agent?.profile_url}
+          name={listing.agent?.name}
+          reraNumber={listing.agent?.rera_number}
+          email={listing.agent?.email}
+          phone={listing.agent?.phone}
+          showEdit={false}
+        />
+      </div>
+
+      {/* Publishing Information */}
+      <PublishingInformationCard
+        formData={{
+          publishPF: listing.pf_enable === 1,
+          publishBayutPlatform: listing.bayut_enable === 1,
+          publishBayut: listing.bayut_enable === 1,
+          publishDubizzle: listing.dubizzle_enable === 1,
+          publishWebsite: listing.website_enable === 1,
+        }}
+        showEdit={false}
+      />
+
+      {/* Additional Notes */}
+      {listing.comments && (
+        <AdditionalNotes notes={listing.comments} showEdit={false} />
+      )}
+    </div>
   );
-}
+};
+
+export default DetailedSecondary;

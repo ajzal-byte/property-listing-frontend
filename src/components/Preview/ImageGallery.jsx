@@ -15,6 +15,7 @@ const ImageGallery = ({
   photos,
   goToStep,
   watermark,
+  showEdit = true,
   publishingStatus,
   renderStatusBadge,
 }) => {
@@ -26,12 +27,14 @@ const ImageGallery = ({
   return (
     <div className="space-y-4">
       {/* Section Header */}
-      <div className="flex justify-between items-center">
-        <h3 className="text-2xl font-semibold tracking-tight">Photos</h3>
-        <Button variant="ghost" size="icon" onClick={() => goToStep(1)}>
-          <Edit className="h-4 w-4" />
-        </Button>
-      </div>
+      {showEdit && (
+        <div className="flex justify-between items-center">
+          <h3 className="text-2xl font-semibold tracking-tight">Photos</h3>
+          <Button variant="ghost" size="icon" onClick={() => goToStep(1)}>
+            <Edit className="h-4 w-4" />
+          </Button>
+        </div>
+      )}
 
       {/* --- Responsive Image Gallery Grid --- */}
       <div
@@ -50,7 +53,7 @@ const ImageGallery = ({
               />
               {/* Badges Overlay */}
               <div className="absolute top-2 left-2 flex flex-wrap gap-2">
-                {watermark == 1 && (
+                {showEdit && watermark == 1 && (
                   // TODO: Can be replaced with availability status
                   <Badge>Watermark Applied</Badge>
                 )}

@@ -2,8 +2,16 @@ import getAuthHeaders from "./getAuthHeader";
 
 // Helper: convert data-URI to Blob
 async function dataUriToBlob(dataUri) {
-  const res = await fetch(dataUri);
-  return res.blob();
+  try {
+    const res = await fetch(dataUri);
+    if (!res.ok) {
+      throw new Error(`Failed to convert data URI: ${res.status}`);
+    }
+    return res.blob();
+  } catch (error) {
+    console.error("Data URI conversion error:", error);
+    throw new Error(`Data URI processing failed: ${error.message}`);
+  }
 }
 
 // Main function: uploads all files in formData to S3, then POSTS listing
@@ -53,31 +61,61 @@ export async function uploadFilesAndCreateListing(formData) {
   });
 
   // 2) Fetch presigned URLs
-  const presigns = await Promise.all(
-    items.map((it) =>
-      fetch(
-        `${API_BASE_URL}/s3/presigned-url?fileName=${encodeURIComponent(
-          it.filename
-        )}&fileType=${encodeURIComponent(it.mimeType)}`,
-        { headers }
-      ).then((r) => r.json())
-    )
-  );
-  
+  let presigns = [];
+  try {
+    presigns = await Promise.all(
+      items.map((it) =>
+        fetch(
+          `${API_BASE_URL}/s3/presigned-url?fileName=${encodeURIComponent(
+            it.filename
+          )}&fileType=${encodeURIComponent(it.mimeType)}`,
+          { headers }
+        ).then(async (response) => {
+          if (!response.ok) {
+            const text = await response.text();
+            throw new Error(`Presign API: ${response.status} - ${text}`);
+          }
+          return response.json();
+        })
+      )
+    );
+  } catch (error) {
+    console.error("Presigned URL error:", error);
+    throw new Error(`Failed to get upload permissions: ${error.message}`);
+  }
 
   // 3) Upload each blob to S3
-  const uploadResults = await Promise.all(
-    items.map(async (it, idx) => {
-      const blob = await dataUriToBlob(it.dataUri);
-      const { uploadUrl, fileUrl } = presigns[idx];
-      await fetch(uploadUrl, {
-        method: "PUT",
-        headers: { "Content-Type": it.mimeType },
-        body: blob,
-      });
-      return { category: it.category, fileUrl };
-    })
-  );
+  let uploadResults = [];
+  try {
+    uploadResults = await Promise.all(
+      items.map(async (it, idx) => {
+        try {
+          const blob = await dataUriToBlob(it.dataUri);
+          const { uploadUrl, fileUrl } = presigns[idx];
+
+          const uploadResponse = await fetch(uploadUrl, {
+            method: "PUT",
+            headers: { "Content-Type": it.mimeType },
+            body: blob,
+          });
+
+          if (!uploadResponse.ok) {
+            const errorText = await uploadResponse.text();
+            throw new Error(
+              `S3 upload failed: ${uploadResponse.status} - ${errorText}`
+            );
+          }
+
+          return { category: it.category, fileUrl };
+        } catch (error) {
+          console.error(`Upload failed for ${it.filename}:`, error);
+          throw new Error(`Upload failed for ${it.filename}: ${error.message}`);
+        }
+      })
+    );
+  } catch (error) {
+    throw new Error(`File uploads failed: ${error.message}`);
+  }
 
   // 4) Separate final URLs
   const photo_urls = uploadResults
@@ -185,10 +223,14 @@ export async function uploadFilesAndCreateListing(formData) {
   // 6) POST create listing
   const res = await fetch(`${API_BASE_URL}/listings`, {
     method: "POST",
-    headers: { ...headers, "Content-Type": "application/json", "Accept": "application/json" },
+    headers: {
+      ...headers,
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
     body: JSON.stringify(payload),
   });
-  
+
   if (!res.ok) {
     const errorData = await res.json();
     throw new Error(

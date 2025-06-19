@@ -11,7 +11,6 @@ import ImageGallery from "./ImageGallery";
 export {
   AdditionalNotes,
   ImageGallery,
-  PropertyDetails,
   ArabicDetailsCard,
   PropertyHeader,
   ContactCard,
