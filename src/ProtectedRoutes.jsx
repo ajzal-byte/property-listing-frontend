@@ -21,19 +21,16 @@ import ProfilePage from "./pages/Profile";
 import MyCompany from "./pages/MyCompany";
 import Subscription from "./pages/Subscription";
 import SupportPage from "./pages/SupportPage";
-import CreateListing from './pages/CreateListing'
+import CreateListing from "./pages/CreateListing";
 import DetailedSecondary from "./pages/DetailedSecondary";
-import CompanyList from "./components/UserManagement/CompanyList";
+import CompanyList from "./components/CompanyManagement/CompanyList";
 import DeveloperDirectory from "./components/UserManagement/DeveloperDirectory";
 import LocationManagement from "./components/UserManagement/LocationManagement";
 import AcademyHelpPage from "./components/Academy/AcademyHelpPage";
-
-
+import UserManagement from "./pages/UserManagement";
+import AnalyticsDashboard from "./pages/Analytics2"
 
 export default function ProtectedRoutes() {
-
-    
-
   return (
     <Routes>
       {/* <Route path="/" element={<HomePage />} /> */}
@@ -46,24 +43,25 @@ export default function ProtectedRoutes() {
       <Route path="/academy/courses" element={<CourseGrid />} />
       <Route path="/academy/courses/:courseId" element={<LessonsPage />} />
       <Route path="/academy/help" element={<AcademyHelpPage />} />
-      <Route path="/create-listing" element={< CreateListing/>} />
-      <Route path="/manage-companies" element={< CompanyList/>} />
-      <Route path="/manage-companies" element={< CompanyList/>} />
-      <Route path="/developers" element={< DeveloperDirectory/>} />
-      <Route path="/locations" element={< LocationManagement/>} />
+      <Route path="/create-listing" element={<CreateListing />} />
+      <Route path="/manage-users" element={<UserManagement />} />
+      <Route path="/manage-companies" element={<CompanyList />} />
+      <Route path="/manage-companies" element={<CompanyList />} />
+      <Route path="/developers" element={<DeveloperDirectory />} />
+      <Route path="/locations" element={<LocationManagement />} />
 
       <Route
         path="/academy/courses/:courseId/lessons/:lessonId"
         element={
-            <LessonContent
+          <LessonContent
             youtubeUrl="https://www.youtube.com/watch?v=9B4CvtzXRpc"
             pdfUrl="https://www.newline.co/fullstack-react/assets/media/sGEMe/MNzue/30-days-of-react-ebook-fullstackio.pdf"
             courseTitle="ReactJS Beginner to Advanced"
-            />
+          />
         }
-        />
+      />
       <Route path="/company" element={<MyCompany />} />
-      <Route path="/analytics" element={<Analytics />} />
+      <Route path="/analytics" element={<AnalyticsDashboard />} />
       <Route path="/permissions" element={<CurrentUserRoles />} />
       <Route path="/permissions/edit" element={<PermissionManager />} />
       <Route path="/permissions/edit/add-role" element={<AddNewRole />} />

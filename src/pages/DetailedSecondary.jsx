@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
-import { Loader2 } from "lucide-react";
+import { Building, Home, Image, Loader2, Wifi } from "lucide-react";
 import getAuthHeaders from "@/utils/getAuthHeader";
 import {
   AdditionalNotes,
@@ -132,7 +132,7 @@ const DetailedSecondary = () => {
         {/* Specifications Card */}
         <DetailCard
           title="Specifications"
-          icon="Home"
+          icon={Home}
           showEdit={false}
           items={[
             { label: "Reference No", value: listing.reference_no },
@@ -153,7 +153,7 @@ const DetailedSecondary = () => {
         {/* Management Card */}
         <DetailCard
           title="Management"
-          icon="Building"
+          icon={Building}
           showEdit={false}
           items={[
             { label: "Company", value: listing.company?.name },
@@ -189,7 +189,7 @@ const DetailedSecondary = () => {
         {/* Amenities Card */}
         <DetailCard
           title="Amenities"
-          icon="Wifi"
+          icon={Wifi}
           showEdit={false}
           badges={listing.amenities?.map((a) => a.amenity_name) || []}
         />
@@ -197,7 +197,7 @@ const DetailedSecondary = () => {
         {/* Media Card */}
         <DetailCard
           title="Media"
-          icon="Image"
+          icon={Image}
           showEdit={false}
           items={[
             {

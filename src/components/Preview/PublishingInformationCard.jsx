@@ -61,8 +61,13 @@ const PublishingInfoCard = ({ formData, goToStep, showEdit = true }) => {
             enabled={formData.publishPF}
             title="Property Finder"
             icon={{
-              bg: "bg-blue-600",
-              content: <span className="text-white font-bold text-xs">PF</span>,
+              content: (
+                <img
+                  src="/pf-logo.png"
+                  alt="Property Finder"
+                  className="w-6 h-6 object-contain"
+                />
+              ),
             }}
             description={
               formData.publishPF
@@ -78,8 +83,13 @@ const PublishingInfoCard = ({ formData, goToStep, showEdit = true }) => {
             enabled={formData.publishBayutPlatform}
             title="Bayut"
             icon={{
-              bg: "bg-orange-500",
-              content: <span className="text-white font-bold text-xs">B</span>,
+              content: (
+                <img
+                  src="/bayut-logo.png"
+                  alt="Bayut"
+                  className="w-6 h-6 object-contain"
+                />
+              ),
             }}
             description={
               formData.publishBayutPlatform

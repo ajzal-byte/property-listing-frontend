@@ -20,7 +20,7 @@ const MediaForm = ({ formData, setField, nextStep, prevStep }) => {
   const handleImageChange = useCallback(
     (newImages) => {
       const updatedImages = [...formData.photo_urls, ...newImages];
-      setField("photo_urls", updatedImages);  
+      setField("photo_urls", updatedImages);
 
       // Clear error when adding images
       if (updatedImages.length >= 3) {
@@ -94,14 +94,24 @@ const MediaForm = ({ formData, setField, nextStep, prevStep }) => {
   };
 
   const onSubmit = () => {
-    const photoCount = formData.photo_urls.length;
+    const photoUrls = formData.photo_urls;
+
+    // Check for duplicate images
+    if (new Set(photoUrls).size !== photoUrls.length) {
+      setImageError("Duplicate images detected. Please remove duplicates.");
+      return;
+    }
+
+    const photoCount = photoUrls.length;
 
     // Validate image count (either 0 or >=3)
-    if (photoCount > 0 && photoCount < 3) {
+    if (photoCount < 3) {
       setImageError("Please select at least 3 images to continue");
       return;
     }
 
+    // Clear any existing error and proceed
+    setImageError("");
     nextStep();
   };
 

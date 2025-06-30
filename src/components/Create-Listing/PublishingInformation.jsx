@@ -42,11 +42,7 @@ const PublishingInformationForm = ({
     setField(field, checked);
 
     // If both sub-platforms are unchecked, untoggle the Bayut card
-    if (
-      !checked &&
-      !formData.publishBayut &&
-      !formData.publishDubizzle
-    ) {
+    if (!checked && !formData.publishBayut && !formData.publishDubizzle) {
       setField("publishBayutPlatform", false);
     }
   };
@@ -68,9 +64,11 @@ const PublishingInformationForm = ({
               <div className="flex items-center justify-between">
                 <CardTitle className="flex items-center">
                   <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-2 mr-3">
-                    <div className="bg-blue-600 w-8 h-8 rounded flex items-center justify-center">
-                      <span className="text-white font-bold text-xs">PF</span>
-                    </div>
+                    <img
+                      src="/pf-logo.png"
+                      alt="Property Finder Logo"
+                      className="w-8 h-8 object-contain"
+                    />
                   </div>
                   <span>Property Finder</span>
                 </CardTitle>
@@ -102,9 +100,11 @@ const PublishingInformationForm = ({
               <div className="flex items-center justify-between">
                 <CardTitle className="flex items-center">
                   <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-2 mr-3">
-                    <div className="bg-orange-500 w-8 h-8 rounded flex items-center justify-center">
-                      <span className="text-white font-bold text-xs">B</span>
-                    </div>
+                    <img
+                      src="/bayut-logo.png"
+                      alt="Bayut Logo"
+                      className="w-8 h-8 object-contain"
+                    />
                   </div>
                   <span>Bayut</span>
                 </CardTitle>
@@ -122,17 +122,16 @@ const PublishingInformationForm = ({
                       id="bayut-platform"
                       checked={formData.publishBayut}
                       onCheckedChange={(checked) =>
-                        handleBayutSubPlatformChange(
-                          "publishBayut",
-                          checked
-                        )
+                        handleBayutSubPlatformChange("publishBayut", checked)
                       }
                       disabled={!formData.publishBayutPlatform}
                     />
                     <label
                       htmlFor="bayut-platform"
                       className={`text-sm font-medium leading-none ${
-                        !formData.publishBayutPlatform ? "text-muted-foreground" : ""
+                        !formData.publishBayutPlatform
+                          ? "text-muted-foreground"
+                          : ""
                       }`}
                     >
                       Bayut
@@ -151,7 +150,9 @@ const PublishingInformationForm = ({
                     <label
                       htmlFor="dubizzle"
                       className={`text-sm font-medium leading-none ${
-                        !formData.publishBayutPlatform ? "text-muted-foreground" : ""
+                        !formData.publishBayutPlatform
+                          ? "text-muted-foreground"
+                          : ""
                       }`}
                     >
                       Dubizzle

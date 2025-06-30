@@ -20,6 +20,18 @@ const PublishingStatusForm = ({ formData, setField, nextStep, prevStep }) => {
     formState: { errors },
   } = form;
 
+  const role = JSON.parse(localStorage.getItem("userData") || "{}")?.role?.name;
+  // filter based on role
+  const filteredStatusOptions = statusOptions.filter((opt) => {
+    if (role === "agent") {
+      return !["live", "published"].includes(opt.value);
+    }
+    if (role === "admin" || role === "super_admin") {
+      return opt.value !== "send-for-approval";
+    }
+    return true;
+  });
+
   // This function will be called when the form is submitted
   const handleFormSubmit = () => {
     // formData.publishingStatus is updated by the RadioGroup's onValueChange via setField
@@ -68,7 +80,7 @@ const PublishingStatusForm = ({ formData, setField, nextStep, prevStep }) => {
               }}
               className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
             >
-              {statusOptions.map((option) => (
+              {filteredStatusOptions.map((option) => (
                 <div key={option.value}>
                   <RadioGroupItem
                     value={option.value}

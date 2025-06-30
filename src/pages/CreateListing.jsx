@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useCreateListingData } from "@/hooks/useCreateListingData";
 import {
   ProgressBar,
@@ -10,10 +10,10 @@ import {
   Document,
   PublishingStatus,
   Preview,
-  Preview2, // Uncomment if you want to use the second preview
 } from "@/components/Create-Listing";
-import { uploadFilesAndCreateListing } from "@/utils/s3Uploader";
+import { uploadFilesAndCreateListing } from "@/utils/createListing";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 
 const CreateListing = () => {
   const {
@@ -28,20 +28,36 @@ const CreateListing = () => {
 
   const [isLoading, setIsLoading] = useState(false);
 
+  const handleDiscard = () => {
+    const confirmDiscard = window.confirm(
+      "Are you sure you want to discard the draft listing?"
+    );
+
+    if (confirmDiscard) {
+      try {
+        localStorage.removeItem("draftListing");
+        window.location.href = "/secondary";
+      } catch (error) {
+        console.error("Failed to remove draft listing:", error);
+        alert(
+          "An error occurred while discarding the draft. Please try again."
+        );
+      }
+    }
+  };
+
   const handleFinalSubmit = async () => {
     try {
       setIsLoading(true);
       await uploadFilesAndCreateListing(formData);
       console.log("Listing created successfully!");
 
-      // clear your draft so it starts fresh next time
       localStorage.removeItem("draftListing");
       toast.success("🎉 Listing Created Successfully!", {
         description: "Your property has been added.",
         duration: 3000,
         position: "bottom-right",
       });
-      // optionally redirect the user:
       window.location.href = "/secondary";
     } catch (err) {
       toast.error("Failed to Create Listing", {
@@ -93,7 +109,12 @@ const CreateListing = () => {
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-5xl">
-      <h1 className="text-3xl font-bold mb-6">Create Property Listing</h1>
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-3xl font-bold">Create Property Listing</h1>
+        <Button variant="outline" size="sm" onClick={handleDiscard}>
+          Discard
+        </Button>
+      </div>
       <ProgressBar steps={steps} currentStep={currentStep} />
       <div className="mt-8">{renderCurrentStep()}</div>
     </div>
