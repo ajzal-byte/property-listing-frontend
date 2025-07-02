@@ -46,7 +46,7 @@ export const statusOptions = [
   { value: "published", label: "Publish" },
   { value: "unpublished", label: "Unpublish" },
   { value: "pocket", label: "Save as Pocket Listing" },
-  {value: "send-for-approval", label: "Send for Approval" },
+  { value: "sendforapproval", label: "Send for Approval" },
 ];
 
 export const TimePeriodEnum = [

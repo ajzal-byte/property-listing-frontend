@@ -266,23 +266,6 @@ export default function LocationSearch() {
           Bayut Locations
         </button>
       </div>
-      {/* <div className='flex gap-4 relative'>
-      <button 
-          onClick={() => setOpenAddLocation(true)}
-          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors flex items-center absolute right-2"
-          >
-          <PlusCircle size={16} className="mr-2" />
-          Add Location
-        </button>
-
-      <button 
-          onClick={() => setOpenImportBulkLocation(true)}
-          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors flex items-center absolute right-24"
-          >
-          <PlusCircle size={16} className="mr-2" />
-          Import Bulk
-        </button>
-            </div> */}
       <div className="flex mb-8 relative items-center">
         <div className="absolute top-2 right-2 flex  mb-4">
           <button

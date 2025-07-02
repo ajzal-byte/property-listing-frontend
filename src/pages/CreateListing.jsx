@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useCreateListingData } from "@/hooks/useCreateListingData";
 import {
   ProgressBar,
@@ -12,10 +12,24 @@ import {
   Preview,
 } from "@/components/Create-Listing";
 import { uploadFilesAndCreateListing } from "@/utils/createListing";
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogAction,
+  AlertDialogCancel,
+} from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import MainTabContext from "../contexts/TabContext";
+import { tabs } from "../enums/sidebarTabsEnums";
 
 const CreateListing = () => {
+  const { setMainTab } = useContext(MainTabContext);
   const {
     formData,
     setField,
@@ -25,6 +39,10 @@ const CreateListing = () => {
     goToStep,
     steps,
   } = useCreateListingData();
+
+  useEffect(() => {
+    setMainTab(tabs.HIDDEN); // Hide the main tab when on User Management page
+  }, [setMainTab]);
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -111,9 +129,42 @@ const CreateListing = () => {
     <div className="container mx-auto px-4 py-8 max-w-5xl">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-3xl font-bold">Create Property Listing</h1>
-        <Button variant="outline" size="sm" onClick={handleDiscard}>
-          Discard
-        </Button>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button variant="outline" size="sm">
+              Discard
+            </Button>
+          </AlertDialogTrigger>
+
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Discard Draft?</AlertDialogTitle>
+              <AlertDialogDescription>
+                Are you sure you want to discard the draft listing?
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={() => {
+                  try {
+                    localStorage.removeItem("draftListing");
+                    window.location.href = "/secondary";
+                  } catch (error) {
+                    console.error("Failed to discard draft:", error);
+                    toast.error("Failed to discard draft", {
+                      description:
+                        "An error occurred while discarding the draft.",
+                    });
+                  }
+                }}
+              >
+                Discard
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
       <ProgressBar steps={steps} currentStep={currentStep} />
       <div className="mt-8">{renderCurrentStep()}</div>

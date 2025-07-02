@@ -1,34 +1,33 @@
-import React, { useState } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Sidebar from "./components/Sidebar";
-import Navbar from "./components/Navbar";
+import { Routes, Route } from "react-router-dom";
 import SimpleFilters from "./components/SimpleFilters";
 import CardGrid from "./components/DataView/CardGrid";
 import { cards } from "./mockdata/mockData";
-import Academy from "./pages/Academy";
-import TitleComponent from "./components/TitleComponent";
 import CourseGrid from "./components/Academy/CourseGrid";
 import LessonsPage from "./components/Academy/Lessons";
 import LessonContent from "./components/Academy/Content/LessonContent";
-import Analytics from "./pages/Analytics";
-import IndividualOffPlan from "./pages/IndividualOffPlan";
-import IndividualSecondary from "./pages/IndividualSecondary";
+// import Analytics from "./pages/Analytics";
 import CurrentUserRoles from "./components/RoleAccess/CurrentUserRoles";
 import AddNewRole from "./components/RoleAccess/AddNewRole";
-import { mockUsers } from "./mockdata/mockData";
 import PermissionManager from "./components/RoleAccess/PermissionManager";
-import ProfilePage from "./pages/Profile";
-import MyCompany from "./pages/MyCompany";
-import Subscription from "./pages/Subscription";
-import SupportPage from "./pages/SupportPage";
-import CreateListing from "./pages/CreateListing";
-import DetailedSecondary from "./pages/DetailedSecondary";
+import {
+  CreateListing,
+  HomePage,
+  IndividualOffPlan,
+  IndividualSecondary,
+  Academy,
+  AnalyticsDashboard,
+  DetailedSecondary,
+  MyCompany,
+  ProfilePage,
+  Subscription,
+  SupportPage,
+  UserManagement,
+} from "./pages";
 import CompanyList from "./components/CompanyManagement/CompanyList";
 import DeveloperDirectory from "./components/UserManagement/DeveloperDirectory";
 import LocationManagement from "./components/UserManagement/LocationManagement";
 import AcademyHelpPage from "./components/Academy/AcademyHelpPage";
-import UserManagement from "./pages/UserManagement";
-import AnalyticsDashboard from "./pages/Analytics2"
+import PropertyListings from "./pages/PropertyListings";
 
 export default function ProtectedRoutes() {
   return (
@@ -45,7 +44,6 @@ export default function ProtectedRoutes() {
       <Route path="/academy/help" element={<AcademyHelpPage />} />
       <Route path="/create-listing" element={<CreateListing />} />
       <Route path="/manage-users" element={<UserManagement />} />
-      <Route path="/manage-companies" element={<CompanyList />} />
       <Route path="/manage-companies" element={<CompanyList />} />
       <Route path="/developers" element={<DeveloperDirectory />} />
       <Route path="/locations" element={<LocationManagement />} />
@@ -68,7 +66,7 @@ export default function ProtectedRoutes() {
       <Route path="/pricing" element={<Subscription />} />
       <Route path="/profile" element={<ProfilePage />} />
       <Route path="/support" element={<SupportPage />} />
-      <Route
+      {/* <Route
         path="/*"
         element={
           <main className="flex-1 bg-gray-50">
@@ -78,7 +76,8 @@ export default function ProtectedRoutes() {
             </div>
           </main>
         }
-      />
+      /> */}
+      <Route path="/*" element={<PropertyListings />} />
     </Routes>
   );
 }

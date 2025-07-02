@@ -36,19 +36,15 @@ import { toast } from "sonner";
 import MainTabContext from "../contexts/TabContext";
 import { tabs } from "../enums/sidebarTabsEnums";
 
-
-
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884D8"];
 
 const AnalyticsDashboard = () => {
-
-    const { mainTab, setMainTab } = useContext(MainTabContext);
+  const { mainTab, setMainTab } = useContext(MainTabContext);
 
   useEffect(() => {
     setMainTab(tabs.ANALYTICS);
   }, [setMainTab]);
 
-  
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -63,10 +59,13 @@ const AnalyticsDashboard = () => {
           }
         );
         const result = await response.json();
+        if (!response.ok) {
+          throw new Error(result.message || "Failed to fetch analytics data");
+        }
         setData(result);
       } catch (error) {
         console.error("Error fetching analytics:", error);
-        toast.error("Failed to fetch analytics data", {
+        toast.error(error.message || "Failed to fetch analytics data", {
           description: "Please try again later.",
         });
       } finally {

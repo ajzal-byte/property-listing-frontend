@@ -1,0 +1,27 @@
+import Academy from "./Academy"
+import AnalyticsDashboard from "./Analytics2"
+import CreateListing from "./CreateListing"
+import DetailedSecondary from "./DetailedSecondary"
+import HomePage from "./HomePage"
+import IndividualOffPlan from "./IndividualOffPlan"
+import IndividualSecondary from "./IndividualSecondary"
+import MyCompany from "./MyCompany"
+import ProfilePage from "./Profile"
+import Subscription from "./Subscription"
+import SupportPage from "./SupportPage"
+import UserManagement from "./UserManagement"
+
+export {
+  Academy,
+  AnalyticsDashboard,
+  CreateListing,
+  DetailedSecondary,
+  HomePage,
+  IndividualOffPlan,
+  IndividualSecondary,
+  MyCompany,
+  ProfilePage,
+  Subscription,
+  SupportPage,
+  UserManagement
+}

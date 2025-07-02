@@ -7,7 +7,6 @@ import Notes from "./Notes";
 import Document from "./Document";
 import PublishingStatus from "./PublishingStatus";
 import Preview from "./Preview";
-import Preview2 from "./Preview2";
 
 export {
   ProgressBar,
@@ -19,5 +18,4 @@ export {
   Document,
   PublishingStatus,
   Preview,
-  Preview2
 };

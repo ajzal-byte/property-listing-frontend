@@ -1,24 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Search,
   ChevronDown,
-  LayoutGrid,
-  LayoutList,
   Map,
   BarChart2,
-  List,
   PlusCircle,
-  Wrench,
 } from "lucide-react";
 
 import { useContext } from "react";
 import ViewContext from "../contexts/ViewContext";
-import TitleComponent from "./TitleComponent";
 import MainContentContext from "../contexts/MainContentContext";
-import { Navigate } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import AddCompanyModal from "./UserManagement/AddCompany";
-import CreateUserModal from "./UserManagement/CreateUser";
 
 const FilterDropdown = ({
   label,
@@ -29,11 +21,6 @@ const FilterDropdown = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
 
-  useEffect(()=>{
-    console.log("role is : ", JSON.parse(localStorage.getItem("userData")).role);
-    
-  },[])
-  
   return (
     <div className="relative">
       <button
@@ -45,8 +32,8 @@ const FilterDropdown = ({
           size={16}
           className={`ml-2 transition-transform duration-200 text-gray-500 ${
             isOpen ? "rotate-180" : ""
-            }`}
-            />
+          }`}
+        />
       </button>
       {isOpen && (
         <>
@@ -63,7 +50,7 @@ const FilterDropdown = ({
                   onChange(option);
                   setIsOpen(false);
                 }}
-                >
+              >
                 {option}
               </div>
             ))}
@@ -76,7 +63,7 @@ const FilterDropdown = ({
 
 const PriceFilter = ({ value, onChange }) => {
   const [isOpen, setIsOpen] = useState(false);
-  
+
   const priceOptions = [
     "Any",
     "300000 د.ا",
@@ -86,13 +73,13 @@ const PriceFilter = ({ value, onChange }) => {
     "500000 د.ا",
     "1000000 د.ا",
   ];
-  
+
   return (
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center justify-between w-full px-4 py-2.5 text-sm bg-white border border-gray-200 rounded-xl hover:border-blue-400 hover:bg-blue-50/50 transition-all duration-200"
-        >
+      >
         <span className="text-gray-700 font-medium">
           {value.from === "Any" && value.to === "Any"
             ? "Price"
@@ -110,7 +97,7 @@ const PriceFilter = ({ value, onChange }) => {
           <div
             className="fixed inset-0 z-10 bg-black/5"
             onClick={() => setIsOpen(false)}
-            />
+          />
           <div className="absolute z-20 w-72 p-4 mt-2 bg-white border border-gray-100 rounded-xl shadow-lg">
             <div className="space-y-4">
               <div>
@@ -157,23 +144,23 @@ const PriceFilter = ({ value, onChange }) => {
 const ToggleSwitch = ({ checked, onChange }) => {
   return (
     <div
-    onClick={() => onChange(!checked)}
-    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 ease-in-out cursor-pointer ${
-      checked ? "bg-blue-500" : "bg-gray-200"
+      onClick={() => onChange(!checked)}
+      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 ease-in-out cursor-pointer ${
+        checked ? "bg-blue-500" : "bg-gray-200"
       }`}
-      >
+    >
       <span
         className={`inline-block h-4 w-4 transform rounded-full bg-white shadow-sm transition duration-200 ease-in-out ${
           checked ? "translate-x-6" : "translate-x-1"
-          }`}
-          />
+        }`}
+      />
     </div>
   );
 };
 
 const ViewTypeButton = ({ icon: Icon, isActive, onClick }) => (
   <button
-  onClick={onClick}
+    onClick={onClick}
     className={`p-2.5 transition-colors duration-200 ${
       isActive ? "bg-blue-50 text-blue-600" : "hover:bg-gray-50 text-gray-500"
     }`}
@@ -190,8 +177,6 @@ const PropertyFilters = () => {
   const navigate = useNavigate();
   const [showMap, setShowMap] = useState(false);
   const [showAnalytics, setShowAnalytics] = useState(false);
-  const [isAddCompanyOpen, setIsAddCompanyOpen] = useState(false);
-  const [isCreateUserOpen, setIsCreateUserOpen] = useState(false);
   const [filterForm, setFilterForm] = useState({
     search: "",
     city: "",
@@ -277,60 +262,8 @@ const PropertyFilters = () => {
             Create Listing
             <PlusCircle className="ml-1 h-4 w-4" />
           </button>
-
-         { JSON.parse(localStorage.getItem("userData")).role.name == "super_admin" &&  
-         <>
-         <button className={`ml-auto mt-2 md:mt-0 flex items-center px-4 py-2 rounded-lg transition duration-300
-                    hover:bg-blue-600 hover:text-white
-                    bg-blue-100 text-blue-700 mb-2
-                    }`}
-                    onClick={() => {
-              navigate("/manage-companies");
-            }}
-            >
-            Manage Companies
-            <Wrench className="ml-1 h-4 w-4" />
-          </button>
-          <button
-          className={`ml-auto mt-2 md:mt-0 flex items-center px-4 py-2 rounded-lg transition duration-300
-                    hover:bg-blue-600 hover:text-white
-                    bg-blue-100 text-blue-700 mb-2
-                }`}
-            onClick={() => {
-              setIsAddCompanyOpen(true)
-            }}
-            >
-            Add Company
-            <PlusCircle className="ml-1 h-4 w-4" />
-          </button>
-          <button
-          className={`ml-auto mt-2 md:mt-0 flex items-center px-4 py-2 rounded-lg transition duration-300
-            hover:bg-blue-600 hover:text-white
-            bg-blue-100 text-blue-700 mb-2
-            }`}
-            onClick={() => {
-              setIsCreateUserOpen(true)
-            }}
-            >
-            Create User
-            <PlusCircle className="ml-1 h-4 w-4" />
-          </button>
-
-       </>
-          }
         </div>
       </div>
-
-      <AddCompanyModal
-        isModalOpen={isAddCompanyOpen}
-        onClose={()=> setIsAddCompanyOpen(false)}
-        />
-
-      <CreateUserModal
-        isModalOpen={isCreateUserOpen}
-        onClose={()=> setIsCreateUserOpen(false)}
-        />
-
 
       {/* Filters */}
       <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
@@ -413,8 +346,7 @@ const PropertyFilters = () => {
         {/* Secondary filters row */}
         <div className="flex items-center justify-between pt-2">
           <div className="flex items-center gap-4">
-
-{/* UNCOMMENT WHEN CLASSIC CARD ALSO HAS ACTIONS/BULK ACTIONS FUNCTIONALITY */}
+            {/* UNCOMMENT WHEN CLASSIC CARD ALSO HAS ACTIONS/BULK ACTIONS FUNCTIONALITY */}
 
             {/* <div className="flex border border-gray-200 rounded-lg overflow-hidden">
               <ViewTypeButton
@@ -492,7 +424,6 @@ const PropertyFilters = () => {
           </div>
         </div>
       </form>
-      
     </div>
   );
 };

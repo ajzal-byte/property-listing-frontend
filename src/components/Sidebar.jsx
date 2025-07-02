@@ -11,6 +11,7 @@ import {
   GraduationCap,
   FileStack,
   HeadphonesIcon,
+  MapPin,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -77,6 +78,11 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
             icon: Building2,
             label: "Manage Companies",
             link: "/manage-companies",
+          },
+          {
+            icon: MapPin,
+            label: "Manage Locations",
+            link: "/locations",
           },
         ]
       : []),

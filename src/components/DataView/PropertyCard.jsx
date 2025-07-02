@@ -113,54 +113,6 @@ const PropertyCard = ({
     });
   };
 
-  // const actionSections = [
-  //   {
-  //     title: "Transfer",
-  //     actions: Object.values(ActionTypes.TRANSFER),
-  //     icon: (type) => <ArrowLeftRight className="h-4 w-4 mr-2 text-blue-600" />,
-  //     textColor: "text-gray-700",
-  //     hoverBg: "hover:bg-blue-50",
-  //   },
-  //   {
-  //     title: "Publish",
-  //     actions: Object.values(ActionTypes.PUBLISH),
-  //     icon: (type) =>
-  //       type === "PUBLISH_ALL" ? (
-  //         <Upload className="h-4 w-4 mr-2 text-blue-600" />
-  //       ) : (
-  //         <ChevronRight className="h-4 w-4 mr-2 text-blue-600" />
-  //       ),
-  //     textColor: "text-gray-700",
-  //     hoverBg: "hover:bg-blue-50",
-  //   },
-  //   {
-  //     title: "Unpublish",
-  //     actions: Object.values(ActionTypes.UNPUBLISH),
-  //     icon: (type) =>
-  //       type === "UNPUBLISH_ALL" ? (
-  //         <Download className="h-4 w-4 mr-2 text-amber-600" />
-  //       ) : (
-  //         <ChevronRight className="h-4 w-4 mr-2 text-amber-600" />
-  //       ),
-  //     textColor: "text-gray-700",
-  //     hoverBg: "hover:bg-blue-50",
-  //   },
-  //   {
-  //     title: "Remove",
-  //     actions: Object.values(ActionTypes.REMOVE),
-  //     icon: (type) =>
-  //       type === "ARCHIVE" ? (
-  //         <Archive className="h-4 w-4 mr-2 text-gray-600" />
-  //       ) : (
-  //         <Trash2 className="h-4 w-4 mr-2 text-red-600" />
-  //       ),
-  //     textColor: (type) =>
-  //       type === "DELETE" ? "text-red-600" : "text-gray-700",
-  //     hoverBg: (type) =>
-  //       type === "DELETE" ? "hover:bg-red-50" : "hover:bg-blue-50",
-  //   },
-  // ];
-
   return (
     <div className="max-w-sm bg-white rounded-xl shadow-md overflow-hidden relative">
       {/* Selection Checkbox */}

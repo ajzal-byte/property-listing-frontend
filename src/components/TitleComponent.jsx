@@ -113,6 +113,8 @@ const PageHeader = () => {
                       "Browse our top Secondary Listings "
                     ) : mainTab == tabs.ACADEMY ? (
                       "Explore our platform to discover new opportunities for growth and learning"
+                    ) : mainTab == tabs.ANALYTICS ? (
+                      "Gain insights into your listings metrics"
                     ) : mainTab == tabs.SUPPORT ? (
                       <div className="bg-white/10 backdrop-blur-sm p-6 rounded-xl border border-white/20 max-w-md">
                         {" "}
