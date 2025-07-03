@@ -7,6 +7,7 @@ import {
   PropertyFilters,
   PropertyPagination,
 } from "../components/PropertyListings";
+import { createApiParams } from "@/utils/createApiParams";
 
 const PropertyListings = () => {
   const [isMapView, setIsMapView] = useState(false);
@@ -24,8 +25,6 @@ const PropertyListings = () => {
   const getFiltersFromParams = () => {
     return {
       search: searchParams.get("search") || "",
-      property_type: searchParams.get("property_type") || "",
-      offering_type: searchParams.get("offering_type") || "",
       city: searchParams.get("city") || "",
       community: searchParams.get("community") || "",
       sub_community: searchParams.get("sub_community") || "",
@@ -34,6 +33,22 @@ const PropertyListings = () => {
       bathrooms: searchParams.get("bathrooms") || "",
       price_min: searchParams.get("price_min") || "",
       price_max: searchParams.get("price_max") || "",
+      reference_no: searchParams.get("reference_no") || "",
+      rera_permit_number: searchParams.get("rera_permit_number") || "",
+      dtcm_permit_number: searchParams.get("dtcm_permit_number") || "",
+      title: searchParams.get("title") || "",
+      status: searchParams.get("status") || "",
+      landlord_email: searchParams.get("landlord_email") || "",
+      landlord_contact: searchParams.get("landlord_contact") || "",
+
+      // multi-value filters
+      property_types: searchParams.getAll("property_types") || [],
+      offering_types: searchParams.getAll("offering_types") || [],
+      portal: searchParams.getAll("portal") || [],
+      developer: searchParams.getAll("developer") || [],
+      agent_id: searchParams.getAll("agent_id") || [],
+      owner_id: searchParams.getAll("owner_id") || [],
+
       page: searchParams.get("page") || 1,
       per_page: searchParams.get("per_page") || 10,
     };
@@ -45,12 +60,7 @@ const PropertyListings = () => {
   const fetchListings = async () => {
     try {
       setLoading(true);
-      const queryParams = new URLSearchParams();
-
-      // Add filters to query params
-      for (const [key, value] of Object.entries(filters)) {
-        if (value) queryParams.append(key, value);
-      }
+      const queryParams = createApiParams(filters);
 
       const response = await fetch(
         `https://backend.myemirateshome.com/api/listings?${queryParams.toString()}`,
@@ -60,7 +70,6 @@ const PropertyListings = () => {
       if (!response.ok) throw new Error("Failed to fetch listings");
 
       const data = await response.json();
-      console.log("Fetched Listings:", data);
 
       setListings(data.listings.data);
       setPagination({
@@ -80,10 +89,7 @@ const PropertyListings = () => {
 
   // Update URL when filters change
   useEffect(() => {
-    const params = new URLSearchParams();
-    for (const [key, value] of Object.entries(filters)) {
-      if (value) params.set(key, value);
-    }
+    const params = createApiParams(filters);
     setSearchParams(params);
   }, [filters, setSearchParams]);
 

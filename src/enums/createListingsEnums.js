@@ -49,6 +49,28 @@ export const statusOptions = [
   { value: "sendforapproval", label: "Send for Approval" },
 ];
 
+export const portalOptions = [
+  { value: "pf_enable", label: "Property Finder" },
+  { value: "bayut_enable", label: "Bayut" },
+  { value: "dubizzle_enable", label: "Dubizzle" },
+  { value: "website_enable", label: "Website" },
+];
+
+export const bedroomBathroomOptions = [
+  "1",
+  "2",
+  "3",
+  "4",
+  "5",
+  "6",
+  "7",
+  "8",
+  "9",
+  "10",
+  "11",
+  "12",
+];
+
 export const TimePeriodEnum = [
   { value: "yearly", name: "Yearly" },
   { value: "monthly", name: "Monthly" },

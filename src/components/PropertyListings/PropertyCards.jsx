@@ -82,7 +82,7 @@ const PropertyCards = ({ listings, loading, totalItems, isMapView }) => {
               className="hover:shadow-lg transition-shadow"
             >
               {/* Property Image or Map */}
-              <CardHeader className="relative h-48 overflow-hidden p-0">
+              <CardHeader className="relative">
                 {/* dropdown menu */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -110,7 +110,7 @@ const PropertyCards = ({ listings, loading, totalItems, isMapView }) => {
                 {isMapView ? (
                   latitude && longitude ? (
                     <iframe
-                      className="w-full h-full border-0 rounded-t-lg"
+                      className="w-full h-50 border-0 rounded-t-lg"
                       allowFullScreen
                       loading="lazy"
                       referrerPolicy="no-referrer-when-downgrade"
@@ -121,7 +121,7 @@ const PropertyCards = ({ listings, loading, totalItems, isMapView }) => {
                       )}&hl=en&z=14&output=embed`}
                     />
                   ) : (
-                    <div className="w-full h-full bg-muted flex items-center justify-center rounded-t-lg">
+                    <div className="w-full h-50 bg-muted flex items-center justify-center rounded-lg">
                       <span className="text-muted-foreground">
                         Map view not available
                       </span>
@@ -129,13 +129,13 @@ const PropertyCards = ({ listings, loading, totalItems, isMapView }) => {
                   )
                 ) : listing.photos?.length > 0 ? (
                   <Carousel className="w-full h-full">
-                    <CarouselContent className="h-48">
+                    <CarouselContent className="w-full h-full">
                       {listing.photos.map((photo, index) => (
                         <CarouselItem key={index}>
                           <img
                             src={photo.image_url}
                             alt={`Property ${index + 1}`}
-                            className="w-full h-full object-cover rounded-t-lg"
+                            className="w-full h-full object-cover"
                           />
                         </CarouselItem>
                       ))}
