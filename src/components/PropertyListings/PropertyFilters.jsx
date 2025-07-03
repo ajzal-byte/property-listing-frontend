@@ -22,6 +22,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { MultiSelectFilter } from "./MultiSelectFilter";
+import { LocationSelectField } from "./LocationSelectField";
 import { getAllFilterOptions } from "@/utils/getFilterOptions";
 
 const PropertyFilters = ({
@@ -33,13 +34,11 @@ const PropertyFilters = ({
   const navigate = useNavigate();
   const [moreFiltersOpen, setMoreFiltersOpen] = useState(false);
   const [activeFiltersCount, setActiveFiltersCount] = useState(0);
+
+  // State for non-location filter options
   const [filterOptions, setFilterOptions] = useState({
     propertyTypes: [],
     offeringTypes: [],
-    cities: [],
-    communities: [],
-    subCommunities: [],
-    buildings: [],
     developers: [],
     agents: [],
     owners: [],
@@ -47,37 +46,15 @@ const PropertyFilters = ({
     statusOptions: [],
     portalOptions: [],
   });
-  const [loading, setLoading] = useState(true);
 
-  // Fetch filter options
+  // Load non-location options once on mount
   useEffect(() => {
-    const fetchOptions = async () => {
-      setLoading(true);
-      try {
-        // Get location filters from current filters
-        const locationFilters = {
-          city: filters.city,
-          community: filters.community,
-          sub_community: filters.sub_community,
-          building: filters.building,
-        };
-
-        const options = await getAllFilterOptions(locationFilters);
-        setFilterOptions(options);
-      } catch (error) {
-        console.error("Error fetching filter options:", error);
-      } finally {
-        setLoading(false);
-      }
+    const loadOptions = async () => {
+      const options = await getAllFilterOptions();
+      setFilterOptions(options);
     };
-
-    fetchOptions();
-  }, [
-    filters.city,
-    filters.community,
-    filters.sub_community,
-    filters.building,
-  ]);
+    loadOptions();
+  }, []);
 
   // Count active filters
   useEffect(() => {
@@ -106,26 +83,16 @@ const PropertyFilters = ({
   };
 
   const handleLocationChange = (field, value) => {
-    // When a location field changes, we need to clear all dependent fields
-    const updates = { [field]: value };
-
-    if (field === "city") {
-      updates.community = "";
-      updates.sub_community = "";
-      updates.building = "";
-    } else if (field === "community") {
-      updates.sub_community = "";
-      updates.building = "";
-    } else if (field === "sub_community") {
-      updates.building = "";
-    }
-
-    onFilterChange(updates);
+    onFilterChange({ [field]: value });
   };
 
-  if (loading) {
-    return <div>Loading filters...</div>;
-  }
+  // Prepare location filters for the location select fields
+  const locationFilters = {
+    city: filters.city,
+    community: filters.community,
+    sub_community: filters.sub_community,
+    building: filters.building,
+  };
 
   return (
     <div className="space-y-6 mb-8">
@@ -152,8 +119,8 @@ const PropertyFilters = ({
         <MultiSelectFilter
           title="Property Type"
           options={filterOptions.propertyTypes}
-          value={filters.property_types || []}
-          onChange={(values) => onFilterChange({ property_types: values })}
+          value={filters.property_type || []}
+          onChange={(values) => onFilterChange({ property_type: values })}
         />
 
         <MultiSelectFilter
@@ -163,38 +130,21 @@ const PropertyFilters = ({
           onChange={(values) => onFilterChange({ offering_types: values })}
         />
 
-        <Select
+        <LocationSelectField
+          field="city"
+          label="City"
           value={filters.city}
-          onValueChange={(value) => handleLocationChange("city", value)}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="City" />
-          </SelectTrigger>
-          <SelectContent>
-            {filterOptions.cities.map((city) => (
-              <SelectItem key={city} value={city}>
-                {city}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+          onChange={(value) => handleLocationChange("city", value)}
+          locationFilters={locationFilters}
+        />
 
-        <Select
-          value={filters.community}
-          onValueChange={(value) => handleLocationChange("community", value)}
-          disabled={!filters.city}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Community" />
-          </SelectTrigger>
-          <SelectContent>
-            {filterOptions.communities.map((community) => (
-              <SelectItem key={community} value={community}>
-                {community}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        {/* <LocationSelectField
+            field="community"
+            label="Community"
+            value={filters.community}
+            onChange={(value) => handleLocationChange("community", value)}
+            locationFilters={locationFilters}
+          /> */}
 
         <Select
           value={filters.bedrooms}
@@ -266,70 +216,43 @@ const PropertyFilters = ({
                   {/* Community */}
                   <div className="space-y-2">
                     <Label>Community</Label>
-                    <Select
+                    <LocationSelectField
+                      field="community"
+                      label="community"
                       value={filters.community}
-                      onValueChange={(value) =>
+                      onChange={(value) =>
                         handleLocationChange("community", value)
                       }
-                      disabled={!filters.city}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select community" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {filterOptions.communities.map((community) => (
-                          <SelectItem key={community} value={community}>
-                            {community}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                      locationFilters={locationFilters}
+                    />
                   </div>
 
                   {/* Sub‑community */}
                   <div className="space-y-2">
                     <Label>Sub‑community</Label>
-                    <Select
+                    <LocationSelectField
+                      field="sub_community"
+                      label="sub-community"
                       value={filters.sub_community}
-                      onValueChange={(value) =>
+                      onChange={(value) =>
                         handleLocationChange("sub_community", value)
                       }
-                      disabled={!filters.community}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select sub-community" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {filterOptions.subCommunities.map((subCommunity) => (
-                          <SelectItem key={subCommunity} value={subCommunity}>
-                            {subCommunity}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                      locationFilters={locationFilters}
+                    />
                   </div>
 
                   {/* Building */}
                   <div className="space-y-2">
                     <Label>Building</Label>
-                    <Select
+                    <LocationSelectField
+                      field="building"
+                      label="building"
                       value={filters.building}
-                      onValueChange={(value) =>
+                      onChange={(value) =>
                         handleLocationChange("building", value)
                       }
-                      disabled={!filters.sub_community}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select building" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {filterOptions.buildings.map((building) => (
-                          <SelectItem key={building} value={building}>
-                            {building}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                      locationFilters={locationFilters}
+                    />
                   </div>
 
                   {/* RERA Permit */}
@@ -580,7 +503,11 @@ const PropertyFilters = ({
               }
 
               return (
-                <Badge key={key} className="flex items-center gap-1">
+                <Badge
+                  variant="blue"
+                  key={key}
+                  className="flex items-center gap-1"
+                >
                   {key}: {label}
                   <button onClick={() => clearFilter(key)}>
                     <X className="h-3 w-3" />

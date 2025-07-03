@@ -9,17 +9,26 @@ import getAuthHeaders from "@/utils/getAuthHeader";
 
 const API_BASE_URL = "https://backend.myemirateshome.com/api";
 
-// Fetch locations with optional filters
-export const fetchLocations = async (filters = {}) => {
+// Fetch locations with optional filters and search
+export const fetchLocations = async (filters = {}, searchQuery = "") => {
   try {
     const queryParams = new URLSearchParams();
+
+    // Add search query if provided
+    if (searchQuery) {
+      queryParams.append("search", searchQuery);
+    }
+
+    // Add other filters
     Object.entries(filters).forEach(([key, value]) => {
       if (value) queryParams.append(key, value);
     });
 
     const response = await fetch(
       `${API_BASE_URL}/filterlocations?${queryParams}`,
-      { headers: getAuthHeaders() }
+      {
+        headers: getAuthHeaders(),
+      }
     );
     if (!response.ok) throw new Error("Failed to fetch locations");
     const data = await response.json();
