@@ -68,19 +68,30 @@ export const fetchOwners = async () => {
   }
 };
 
-// Dummy agents data
-const dummyAgents = [
-  { id: 1, name: "John Doe" },
-  { id: 2, name: "Jane Smith" },
-  { id: 3, name: "Michael Johnson" },
-];
+// Fetch Agents
+export const fetchAgentsByRole = async () => {
+  const { role } = JSON.parse(localStorage.getItem("userData") || "{}") || {};
+  const url = `${API_BASE_URL}/getAgentsByRole`;
+  try {
+    const response = await fetch(
+      role?.name === "superadmin" ? `${url}?include_companies=true` : url,
+      { headers: getAuthHeaders() }
+    );
+    if (!response.ok) throw new Error("Failed to fetch agents");
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching agents:", error);
+    return {};
+  }
+};
 
 // Get all filter options
 export const getAllFilterOptions = async (locationFilters = {}) => {
-  const [locations, developers, owners] = await Promise.all([
+  const [locations, developers, ownersRaw, agentsRes] = await Promise.all([
     fetchLocations(locationFilters),
     fetchDevelopers(),
     fetchOwners(),
+    fetchAgentsByRole(),
   ]);
 
   // Extract unique values for each location type
@@ -94,6 +105,46 @@ export const getAllFilterOptions = async (locationFilters = {}) => {
   const buildings = [...new Set(locations.map((loc) => loc.building))].filter(
     Boolean
   );
+
+  //Build `owners` with grouping when `company` is present:
+  let owners;
+  if (ownersRaw.some((o) => o.company && o.company.name)) {
+    // superadmin: group by o.company.name
+    const grouped = {};
+    ownersRaw.forEach((o) => {
+      const compName = o.company.name;
+      if (!grouped[compName]) grouped[compName] = [];
+      grouped[compName].push({ value: o.id, label: o.name });
+    });
+    owners = Object.entries(grouped).map(([label, options]) => ({
+      label,
+      options,
+    }));
+  } else {
+    // normal user: flat list
+    owners = ownersRaw.map((o) => ({ value: o.id, label: o.name }));
+  }
+
+  // Build agent options, grouping by company for superadmins
+  let agents;
+  if (Array.isArray(agentsRes.companies)) {
+    // superadmin: each company has its own agents array
+    agents = agentsRes.companies.map((company) => ({
+      label: company.name,
+      options: company.agents.map((agent) => ({
+        value: agent.id,
+        label: agent.name,
+      })),
+    }));
+  } else if (Array.isArray(agentsRes.agents)) {
+    // normal user: flat agent list
+    agents = agentsRes.agents.map((agent) => ({
+      value: agent.id,
+      label: agent.name,
+    }));
+  } else {
+    agents = [];
+  }
 
   return {
     propertyTypes: PropertyTypeEnum.map((opt) => ({
@@ -121,10 +172,7 @@ export const getAllFilterOptions = async (locationFilters = {}) => {
     subCommunities,
     buildings,
     developers: developers.map((dev) => ({ value: dev.id, label: dev.name })),
-    owners: owners.map((owner) => ({ value: owner.id, label: owner.name })),
-    agents: dummyAgents.map((agent) => ({
-      value: agent.id,
-      label: agent.name,
-    })),
+    owners,
+    agents,
   };
 };

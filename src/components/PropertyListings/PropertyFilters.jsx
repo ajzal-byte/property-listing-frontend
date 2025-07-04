@@ -119,8 +119,8 @@ const PropertyFilters = ({
         <MultiSelectFilter
           title="Property Type"
           options={filterOptions.propertyTypes}
-          value={filters.property_type || []}
-          onChange={(values) => onFilterChange({ property_type: values })}
+          value={filters.property_types || []}
+          onChange={(values) => onFilterChange({ property_types: values })}
         />
 
         <MultiSelectFilter

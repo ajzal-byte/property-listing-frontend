@@ -1,4 +1,4 @@
-import { Check } from "lucide-react";
+import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -24,21 +24,18 @@ export function MultiSelectFilter({
   className,
 }) {
   const handleSelect = (selectedValue) => {
-    // Check if the value is already selected
     if (value.includes(selectedValue)) {
-      // If so, remove it from the array
       onChange(value.filter((v) => v !== selectedValue));
     } else {
-      // If not, add it to the array
       onChange([...value, selectedValue]);
     }
   };
 
-  // Check if options are objects with value/label properties
-  const isObjectOptions =
+  // Detect whether this is a grouped‑options array:
+  const isGrouped =
     options.length > 0 &&
     typeof options[0] === "object" &&
-    "value" in options[0];
+    Array.isArray(options[0].options);
 
   return (
     <Popover>
@@ -61,6 +58,7 @@ export function MultiSelectFilter({
               </>
             )}
           </div>
+          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0" align="start">
@@ -68,43 +66,75 @@ export function MultiSelectFilter({
           <CommandInput placeholder={`Search ${title}...`} />
           <CommandList>
             <CommandEmpty>No results found.</CommandEmpty>
-            <CommandGroup>
-              {options.map((option) => {
-                const optionValue = isObjectOptions ? option.value : option;
-                const optionLabel = isObjectOptions ? option.label : option;
-                const isSelected = value.includes(optionValue);
 
-                return (
-                  <CommandItem
-                    key={optionValue}
-                    onSelect={() => handleSelect(optionValue)}
-                  >
-                    <div
-                      className={cn(
-                        "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
-                        isSelected
-                          ? "bg-primary text-primary-foreground"
-                          : "opacity-50 [&_svg]:invisible"
-                      )}
-                    >
-                      <Check className="h-4 w-4" />
-                    </div>
-                    <span>{optionLabel}</span>
-                  </CommandItem>
-                );
-              })}
-            </CommandGroup>
-            {value?.length > 0 && (
-              <>
-                <CommandGroup>
-                  <CommandItem
-                    onSelect={() => onChange([])}
-                    className="justify-center text-center text-xs text-muted-foreground"
-                  >
-                    Clear selection
-                  </CommandItem>
+            {/** If grouped, render each company as its own CommandGroup */}
+            {isGrouped ? (
+              options.map((group) => (
+                <CommandGroup key={group.label}>
+                  <div className="px-2 py-1 text-xs font-semibold text-muted-foreground">
+                    {group.label}
+                  </div>
+                  {group.options.map((opt) => {
+                    const isSelected = value.includes(opt.value);
+                    return (
+                      <CommandItem
+                        key={opt.value}
+                        onSelect={() => handleSelect(opt.value)}
+                      >
+                        <div
+                          className={cn(
+                            "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
+                            isSelected
+                              ? "bg-primary text-primary-foreground"
+                              : "opacity-50 [&_svg]:invisible"
+                          )}
+                        >
+                          <Check className="h-4 w-4" />
+                        </div>
+                        {opt.label}
+                      </CommandItem>
+                    );
+                  })}
                 </CommandGroup>
-              </>
+              ))
+            ) : (
+              /** Otherwise, fall back to flat list */
+              <CommandGroup>
+                {options.map((option) => {
+                  const optionValue = option.value ?? option;
+                  const optionLabel = option.label ?? option;
+                  const isSelected = value.includes(optionValue);
+                  return (
+                    <CommandItem
+                      key={optionValue}
+                      onSelect={() => handleSelect(optionValue)}
+                    >
+                      <div
+                        className={cn(
+                          "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
+                          isSelected
+                            ? "bg-primary text-primary-foreground"
+                            : "opacity-50 [&_svg]:invisible"
+                        )}
+                      >
+                        <Check className="h-4 w-4" />
+                      </div>
+                      <span>{optionLabel}</span>
+                    </CommandItem>
+                  );
+                })}
+              </CommandGroup>
+            )}
+
+            {value?.length > 0 && (
+              <CommandGroup>
+                <CommandItem
+                  onSelect={() => onChange([])}
+                  className="justify-center text-center text-xs text-muted-foreground"
+                >
+                  Clear selection
+                </CommandItem>
+              </CommandGroup>
             )}
           </CommandList>
         </Command>
