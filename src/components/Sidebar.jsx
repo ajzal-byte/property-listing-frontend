@@ -62,11 +62,15 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
   // Build your menu arrays (with `.link`)
   const role = JSON.parse(localStorage.getItem("userData") || "{}")?.role?.name;
   const mainMenuItems = [
-    { icon: Home, label: "Off plan", link: "/off-plan" },
+    ...(role === "super_admin"
+      ? [
+          { icon: Home, label: "Off plan", link: "/off-plan" },
+          { icon: Calculator, label: "Mortgage", link: "/mortgage" },
+          { icon: Users, label: "CRM", link: "/crm" },
+        ]
+      : []),
     { icon: Building2, label: "Secondary", link: "/secondary" },
     { icon: GraduationCap, label: "Academy", link: "/academy" },
-    { icon: Users, label: "CRM", link: "/crm" },
-    { icon: Calculator, label: "Mortgage", link: "/mortgage" },
     { icon: BarChart3, label: "Analytics", link: "/analytics" },
     { icon: FileStack, label: "Pricing", link: "/pricing" },
     ...(role === "super_admin" || role === "admin"
@@ -89,7 +93,11 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
   ];
 
   const bottomMenuItems = [
-    { icon: HeadphonesIcon, label: "Support", link: "/support" },
+    {
+      icon: HeadphonesIcon,
+      label: "Support",
+      link: "https://vortexwebclouds.bitrix24.in/marketplace/app/245/",
+    },
   ];
 
   // Derive active label by matching the current pathname.
@@ -158,7 +166,22 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
       {/* Bottom Menu */}
       <div className="p-2">
         <Separator className="mb-2" />
-        {renderSection(bottomMenuItems)}
+        <div className="space-y-1 px-2 py-2">
+          {/* Support opens in a new tab */}
+          <a
+            href="https://vortexwebclouds.bitrix24.in/marketplace/app/245/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <MenuItem
+              icon={HeadphonesIcon}
+              label="Support"
+              isCollapsed={isCollapsed}
+              isActive={activeLabel === "Support"}
+              onClick={() => {}}
+            />
+          </a>
+        </div>
       </div>
     </div>
   );

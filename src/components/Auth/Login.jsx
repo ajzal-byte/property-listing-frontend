@@ -1,104 +1,108 @@
-
 import { useEffect, useState } from "react";
-import { Mail, Lock, LogIn } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Mail, Lock, LogIn } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 
-const LoginForm = ({isLoggedIn, setIsLoggedIn}) => {
-    const navigate = useNavigate();
-    const {login} = useAuth();
-    const [loginData, setLoginData] = useState({
-      email: '',
-      password: ''
-    });
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState('');
-    const authToken = localStorage.getItem("authToken");
-    const [currentWord, setCurrentWord] = useState("View");
-    const words = ["View", "List", "Create"];
+const LoginForm = ({ isLoggedIn, setIsLoggedIn }) => {
+  const navigate = useNavigate();
+  const { login } = useAuth();
+  const [loginData, setLoginData] = useState({
+    email: "",
+    password: "",
+  });
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+  const authToken = localStorage.getItem("authToken");
+  const [currentWord, setCurrentWord] = useState("View");
+  const words = ["View", "List", "Create"];
 
-    // Rotate through the words
-    useEffect(() => {
-      const interval = setInterval(() => {
-        setCurrentWord(prevWord => {
-          const currentIndex = words.indexOf(prevWord);
-          return words[(currentIndex + 1) % words.length];
-        });
-      }, 2500);
-      
-      return () => clearInterval(interval);
-    }, []);
-
-    const handleChange = (e) => {
-      setLoginData({
-        ...loginData,
-        [e.target.name]: e.target.value
+  // Rotate through the words
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentWord((prevWord) => {
+        const currentIndex = words.indexOf(prevWord);
+        return words[(currentIndex + 1) % words.length];
       });
-    };
-    
-    const handleSubmit = async (e) => {
-      e.preventDefault();
-      setIsLoading(true);
-      setError('');
-      
-      try {
-        const response = await fetch('https://backend.myemirateshome.com/api/login', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(loginData)
-        });
-        
-        if (!response.ok) {
-          throw new Error('Login failed');
-        }
-        
-        const data = await response.json();
+    }, 2500);
 
-        console.log("login gives token:", data.token);
-        
-        // Save token to localStorage
-        localStorage.setItem('authToken', data.token);
-        localStorage.setItem('userData', JSON.stringify(data.user));
-        setIsLoggedIn(true);
-        console.log("in login page:", isLoggedIn );
-        
-        
-        
-        // Navigate to listings page
-        navigate('/listings');
-      } catch (err) {
-        setError('Invalid credentials. Please try again.');
-        console.log("error in Login.jsx: ", err);
-        
-      } finally {
-        setIsLoading(false);
+    return () => clearInterval(interval);
+  }, []);
+
+  const handleChange = (e) => {
+    setLoginData({
+      ...loginData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError("");
+
+    try {
+      const response = await fetch(
+        "https://backend.myemirateshome.com/api/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(loginData),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Login failed");
       }
-    };
-    
-    return (
+
+      const data = await response.json();
+
+      console.log("login gives token:", data.token);
+
+      // Save token to localStorage
+      localStorage.setItem("authToken", data.token);
+      localStorage.setItem("userData", JSON.stringify(data.user));
+      setIsLoggedIn(true);
+      console.log("in login page:", isLoggedIn);
+
+      // Navigate to listings page
+      navigate("/listings");
+    } catch (err) {
+      setError("Invalid credentials. Please try again.");
+      console.log("error in Login.jsx: ", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div className="w-full max-w-lg bg-white p-8 rounded-xl shadow-lg border border-blue-100">
       <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 px-4">
         <div className="w-full max-w-md bg-white p-8 rounded-xl shadow-lg border border-blue-100">
           {/* Animated heading */}
           <div className="mb-10 text-center">
             <h1 className="text-4xl font-bold text-blue-900 mb-2">Log In</h1>
             <div className="text-2xl font-medium text-blue-700 min-h-12">
-              to <span className="text-blue-600 font-bold">{currentWord}</span> Property Listing
+              to <span className="text-blue-600 font-bold">{currentWord}</span>{" "}
+              Property Listing
             </div>
           </div>
-          
+
           {error && (
             <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 rounded-md text-sm flex items-center">
               {error}
             </div>
           )}
-          
+
           {authToken && navigate("/")}
-          
+
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label className="block text-gray-700 text-sm font-medium mb-2" htmlFor="email">
+              <label
+                className="block text-gray-700 text-sm font-medium mb-2"
+                htmlFor="email"
+              >
                 Email Address
               </label>
               <div className="relative">
@@ -117,9 +121,12 @@ const LoginForm = ({isLoggedIn, setIsLoggedIn}) => {
                 />
               </div>
             </div>
-            
+
             <div>
-              <label className="block text-gray-700 text-sm font-medium mb-2" htmlFor="password">
+              <label
+                className="block text-gray-700 text-sm font-medium mb-2"
+                htmlFor="password"
+              >
                 Password
               </label>
               <div className="relative">
@@ -138,12 +145,15 @@ const LoginForm = ({isLoggedIn, setIsLoggedIn}) => {
                 />
               </div>
               <div className="flex justify-end mt-2">
-                <a href="#" className="text-sm text-blue-600 hover:text-blue-800 transition-colors">
+                <a
+                  href="#"
+                  className="text-sm text-blue-600 hover:text-blue-800 transition-colors"
+                >
                   Forgot password?
                 </a>
               </div>
             </div>
-            
+
             <button
               type="submit"
               disabled={isLoading}
@@ -154,21 +164,21 @@ const LoginForm = ({isLoggedIn, setIsLoggedIn}) => {
               ) : (
                 <LogIn className="h-5 w-5 mr-2" />
               )}
-              {isLoading ? 'Logging in...' : 'Log In'}
+              {isLoading ? "Logging in..." : "Log In"}
             </button>
           </form>
-          
+
           <div className="mt-10 text-center">
             <div className="relative flex items-center justify-center mb-6">
               <div className="border-t border-gray-200 w-full"></div>
               <div className="bg-white px-3 text-gray-500 text-sm">OR</div>
             </div>
-            
+
             <p className="text-gray-600">
-              Haven't registered yet?{' '}
+              Haven't registered yet?{" "}
               <button
                 onClick={() => {
-                  navigate("/register")
+                  navigate("/register");
                 }}
                 className="text-indigo-600 hover:text-indigo-800 font-bold"
               >
@@ -178,7 +188,8 @@ const LoginForm = ({isLoggedIn, setIsLoggedIn}) => {
           </div>
         </div>
       </div>
-    );
-  };
+    </div>
+  );
+};
 
 export default LoginForm;

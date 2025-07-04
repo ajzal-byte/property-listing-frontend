@@ -243,7 +243,7 @@ const PropertyCards = ({ listings, loading, totalItems, isMapView }) => {
                 >
                   {listing.agent?.phone ? (
                     <a
-                      href={`tel:${listing.agent.phone}`}
+                      href={`https://wa.me/${listing.agent.phone}`}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
