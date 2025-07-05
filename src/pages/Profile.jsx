@@ -197,7 +197,7 @@ const ProfilePage = () => {
             <div>user-{userData.userId}</div>
             <div>{userData.userIdExtraInfo}</div>
           </div>
-          <img src={qrCodeImage} alt="QR Code" className="w-24 h-24" />
+          {/* <img src={qrCodeImage} alt="QR Code" className="w-24 h-24" /> */}
         </div>
 
         {/* User Details */}
@@ -381,7 +381,7 @@ const ProfilePage = () => {
 
         {/* Country */}
         <div className="mb-4">
-          <div className="text-gray-700 mb-2">Select country (behomes)</div>
+          <div className="text-gray-700 mb-2">Select country</div>
           <div className="flex flex-wrap gap-2">
             {availableCountries.map((country) => (
               <button

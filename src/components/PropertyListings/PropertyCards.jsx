@@ -154,13 +154,13 @@ const PropertyCards = ({ listings, loading, totalItems, isMapView }) => {
                 )}
 
                 {/* Status Badge */}
-                {listing.offering_type && statusMap[listing.offering_type] && (
+                {listing.status && statusMap[listing.status] && (
                   <Badge
-                    className={`absolute top-2 right-2 ${
-                      statusMap[listing.offering_type].color
+                    className={`absolute top-1 left-2 ${
+                      statusMap[listing.status].color
                     }`}
                   >
-                    {statusMap[listing.offering_type].label}
+                    {statusMap[listing.status].label}
                   </Badge>
                 )}
               </CardHeader>
@@ -168,6 +168,13 @@ const PropertyCards = ({ listings, loading, totalItems, isMapView }) => {
               {/* Property Details */}
               <CardContent className="pt-4">
                 <CardTitle className="text-lg mb-2">{listing.title}</CardTitle>
+                <CardTitle className="text-md mb-2">
+                  AED {listing.price}
+                  {listing.offering_type === "RS" ||
+                  listing.offering_type === "CS"
+                    ? ""
+                    : ` / ${listing.rental_period}`}
+                </CardTitle>
                 <div className="text-sm text-muted-foreground mb-3">
                   Ref: {listing.reference_no}
                 </div>
@@ -207,23 +214,41 @@ const PropertyCards = ({ listings, loading, totalItems, isMapView }) => {
                   <span>{listing.furnished ? "Furnished" : "Unfurnished"}</span>
                 </div>
 
-                {/* Agent Info */}
-                {listing.agent && (
-                  <div className="flex items-center gap-3 pt-3 border-t">
-                    <Avatar className="h-8 w-8">
-                      <AvatarImage src={listing.agent.profile_url} />
-                      <AvatarFallback>
-                        <User className="h-4 w-4" />
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="flex-1">
-                      <p className="text-sm font-medium">
-                        {listing.agent.name}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        {listing.agent.phone || listing.agent.email}
-                      </p>
-                    </div>
+                {(listing.owner || listing.agent) && (
+                  <div className="flex justify-between items-start gap-6 pt-3 border-t">
+                    {/* Owner Info */}
+                    {listing.owner && (
+                      <div className="flex items-center gap-3">
+                        <Avatar className="h-8 w-8">
+                          <AvatarImage src={listing.owner.profile_url} />
+                          <AvatarFallback>
+                            <User className="h-4 w-4" />
+                          </AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <p className="text-sm font-medium">
+                            {listing.owner.name}
+                          </p>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Agent Info */}
+                    {listing.agent && (
+                      <div className="flex items-center gap-3">
+                        <Avatar className="h-8 w-8">
+                          <AvatarImage src={listing.agent.profile_url} />
+                          <AvatarFallback>
+                            <User className="h-4 w-4" />
+                          </AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <p className="text-sm font-medium">
+                            {listing.agent.name}
+                          </p>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
               </CardContent>

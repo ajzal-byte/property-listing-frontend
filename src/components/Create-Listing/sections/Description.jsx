@@ -44,7 +44,7 @@ const Description = ({ setField }) => {
               rules={{ required: "Title is required." }}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>
+                  <FormLabel className="flex items-center gap-1">
                     Title <span className="text-red-500">*</span>
                   </FormLabel>
                   <FormControl>
@@ -53,6 +53,7 @@ const Description = ({ setField }) => {
                       value={field.value}
                       onChange={(e) => handleChange("titleEn", e.target.value)}
                       onBlur={() => trigger("titleEn")}
+                      maxLength={50}
                     />
                   </FormControl>
                   <FormMessage />
@@ -66,7 +67,7 @@ const Description = ({ setField }) => {
               rules={{ required: "Description is required." }}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>
+                  <FormLabel className="flex items-center gap-1">
                     Description <span className="text-red-500">*</span>
                   </FormLabel>
                   <FormControl>
@@ -101,6 +102,7 @@ const Description = ({ setField }) => {
                       value={field.value}
                       onChange={(e) => handleChange("titleAr", e.target.value)}
                       onBlur={() => trigger("titleAr")}
+                      maxLength={50}
                       dir="rtl"
                     />
                   </FormControl>

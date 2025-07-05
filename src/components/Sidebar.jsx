@@ -12,6 +12,10 @@ import {
   FileStack,
   HeadphonesIcon,
   MapPin,
+  HousePlus,
+  User,
+  Hand,
+  LogOut,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -69,10 +73,10 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
           { icon: Users, label: "CRM", link: "/crm" },
         ]
       : []),
-    { icon: Building2, label: "Secondary", link: "/secondary" },
+    { icon: Building2, label: "Listings", link: "/secondary" },
     { icon: GraduationCap, label: "Academy", link: "/academy" },
     { icon: BarChart3, label: "Analytics", link: "/analytics" },
-    { icon: FileStack, label: "Pricing", link: "/pricing" },
+    // { icon: FileStack, label: "Pricing", link: "/pricing" },
     ...(role === "super_admin" || role === "admin"
       ? [{ icon: Users, label: "Manage Users", link: "/manage-users" }]
       : []),
@@ -84,9 +88,19 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
             link: "/manage-companies",
           },
           {
+            label: "Manage Developers",
+            icon: HousePlus,
+            link: "/developers",
+          },
+          {
             icon: MapPin,
             label: "Manage Locations",
             link: "/locations",
+          },
+          {
+            icon: Hand,
+            label: "Manage Permissions",
+            link: "/permissions",
           },
         ]
       : []),
@@ -97,6 +111,20 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
       icon: HeadphonesIcon,
       label: "Support",
       link: "https://vortexwebclouds.bitrix24.in/marketplace/app/245/",
+    },
+    {
+      icon: Building2,
+      label: "My Company",
+      link: "/company",
+    },
+    {
+      icon: User,
+      label: "Profile",
+      link: "/profile",
+    },
+    {
+      icon: LogOut,
+      label: "Log Out",
     },
   ];
 
@@ -167,20 +195,45 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
       <div className="p-2">
         <Separator className="mb-2" />
         <div className="space-y-1 px-2 py-2">
-          {/* Support opens in a new tab */}
-          <a
-            href="https://vortexwebclouds.bitrix24.in/marketplace/app/245/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <MenuItem
-              icon={HeadphonesIcon}
-              label="Support"
-              isCollapsed={isCollapsed}
-              isActive={activeLabel === "Support"}
-              onClick={() => {}}
-            />
-          </a>
+          {bottomMenuItems.map((item) =>
+            item.label === "Support" ? (
+              <a
+                key={item.label}
+                href={item.link}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <MenuItem
+                  icon={item.icon}
+                  label={item.label}
+                  isCollapsed={isCollapsed}
+                  isActive={activeLabel === item.label}
+                  onClick={() => {}}
+                />
+              </a>
+            ) : item.label === "Log Out" ? (
+              <MenuItem
+                key={item.label}
+                icon={item.icon}
+                label={item.label}
+                isCollapsed={isCollapsed}
+                isActive={false}
+                onClick={() => {
+                  localStorage.removeItem("authToken");
+                  window.location.reload();
+                }}
+              />
+            ) : (
+              <MenuItem
+                key={item.link}
+                icon={item.icon}
+                label={item.label}
+                isCollapsed={isCollapsed}
+                isActive={activeLabel === item.label}
+                onClick={() => navigate(item.link)}
+              />
+            )
+          )}
         </div>
       </div>
     </div>

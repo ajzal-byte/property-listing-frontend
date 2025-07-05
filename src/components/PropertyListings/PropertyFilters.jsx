@@ -115,311 +115,338 @@ const PropertyFilters = ({
       </div>
 
       {/* Main Filter Row */}
-      <div className="grid grid-flow-col auto-cols-min gap-2">
-        <MultiSelectFilter
-          title="Property Type"
-          options={filterOptions.propertyTypes}
-          value={filters.property_types || []}
-          onChange={(values) => onFilterChange({ property_types: values })}
-        />
-
-        <MultiSelectFilter
-          title="Offering Types"
-          options={filterOptions.offeringTypes}
-          value={filters.offering_types || []}
-          onChange={(values) => onFilterChange({ offering_types: values })}
-        />
-
-        <LocationSelectField
-          field="city"
-          label="City"
-          value={filters.city}
-          onChange={(value) => handleLocationChange("city", value)}
-          locationFilters={locationFilters}
-        />
-
-        {/* <LocationSelectField
-            field="community"
-            label="Community"
-            value={filters.community}
-            onChange={(value) => handleLocationChange("community", value)}
+      <div className="flex flex-wrap -mx-2">
+        <div className="px-2 mb-4 w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5">
+          <MultiSelectFilter
+            title="Property Type"
+            options={filterOptions.propertyTypes}
+            value={filters.property_types || []}
+            onChange={(values) => onFilterChange({ property_types: values })}
+          />
+        </div>
+        <div className="px-2 mb-4 w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5">
+          <MultiSelectFilter
+            title="Offering Types"
+            options={filterOptions.offeringTypes}
+            value={filters.offering_types || []}
+            onChange={(values) => onFilterChange({ offering_types: values })}
+          />
+        </div>
+        <div className="px-2 mb-4 w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5">
+          <LocationSelectField
+            field="city"
+            label="City"
+            value={filters.city || []}
+            onChange={(value) => handleLocationChange("city", value)}
             locationFilters={locationFilters}
-          /> */}
-
-        <Select
-          value={filters.bedrooms}
-          onValueChange={(value) => onFilterChange({ bedrooms: value })}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Bedrooms" />
-          </SelectTrigger>
-          <SelectContent>
-            {filterOptions.bedroomBathroomOptions.map((opt) => (
-              <SelectItem key={opt.value} value={opt.value}>
-                {opt.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-
-        <Select
-          value={filters.bathrooms}
-          onValueChange={(value) => onFilterChange({ bathrooms: value })}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Bathrooms" />
-          </SelectTrigger>
-          <SelectContent>
-            {filterOptions.bedroomBathroomOptions.map((opt) => (
-              <SelectItem key={opt.value} value={opt.value}>
-                {opt.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-
-        <Dialog open={moreFiltersOpen} onOpenChange={setMoreFiltersOpen}>
-          <DialogTrigger asChild>
-            <Button variant="outline" className="relative">
-              <Filter className="mr-2 h-4 w-4" />
-              More Filters
-              {activeFiltersCount > 0 && (
-                <Badge
-                  variant="blue"
-                  className="absolute -top-2 -right-2 h-5 w-5 p-0"
-                >
-                  {activeFiltersCount}
-                </Badge>
-              )}
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-2xl max-h-[80vh]">
-            <DialogHeader>
-              <DialogTitle>Advanced Filters</DialogTitle>
-            </DialogHeader>
-            <ScrollArea className="h-[60vh] pr-4">
-              <div className="grid grid-cols-2 gap-6">
-                {/* Column 1 */}
-                <div className="space-y-4">
-                  {/* Reference Number */}
-                  <div className="space-y-2">
-                    <Label>Reference Number</Label>
-                    <Input
-                      value={filters.reference_no}
-                      onChange={(e) =>
-                        onFilterChange({ reference_no: e.target.value })
-                      }
-                      placeholder="Enter reference number"
-                    />
-                  </div>
-
-                  {/* Community */}
-                  <div className="space-y-2">
-                    <Label>Community</Label>
-                    <LocationSelectField
-                      field="community"
-                      label="community"
-                      value={filters.community}
-                      onChange={(value) =>
-                        handleLocationChange("community", value)
-                      }
-                      locationFilters={locationFilters}
-                    />
-                  </div>
-
-                  {/* Sub‑community */}
-                  <div className="space-y-2">
-                    <Label>Sub‑community</Label>
-                    <LocationSelectField
-                      field="sub_community"
-                      label="sub-community"
-                      value={filters.sub_community}
-                      onChange={(value) =>
-                        handleLocationChange("sub_community", value)
-                      }
-                      locationFilters={locationFilters}
-                    />
-                  </div>
-
-                  {/* Building */}
-                  <div className="space-y-2">
-                    <Label>Building</Label>
-                    <LocationSelectField
-                      field="building"
-                      label="building"
-                      value={filters.building}
-                      onChange={(value) =>
-                        handleLocationChange("building", value)
-                      }
-                      locationFilters={locationFilters}
-                    />
-                  </div>
-
-                  {/* RERA Permit */}
-                  <div className="space-y-2">
-                    <Label>RERA Permit Number</Label>
-                    <Input
-                      value={filters.rera_permit_number}
-                      onChange={(e) =>
-                        onFilterChange({ rera_permit_number: e.target.value })
-                      }
-                      placeholder="Enter RERA number"
-                    />
-                  </div>
-
-                  {/* DTCM Permit */}
-                  <div className="space-y-2">
-                    <Label>DTCM Permit Number</Label>
-                    <Input
-                      value={filters.dtcm_permit_number}
-                      onChange={(e) =>
-                        onFilterChange({ dtcm_permit_number: e.target.value })
-                      }
-                      placeholder="Enter DTCM number"
-                    />
-                  </div>
-
-                  {/* Title */}
-                  <div className="space-y-2">
-                    <Label>Title</Label>
-                    <Input
-                      value={filters.title}
-                      onChange={(e) =>
-                        onFilterChange({ title: e.target.value })
-                      }
-                      placeholder="Enter listing title"
-                    />
-                  </div>
-
-                  {/* Status */}
-                  <div className="space-y-2">
-                    <Label>Status</Label>
-                    <Select
-                      value={filters.status}
-                      onValueChange={(value) =>
-                        onFilterChange({ status: value })
-                      }
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select status" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {filterOptions.statusOptions.map((status) => (
-                          <SelectItem key={status.value} value={status.value}>
-                            {status.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-
-                {/* Column 2 */}
-                <div className="space-y-4">
-                  {/* Developer IDs */}
-                  <div className="space-y-2">
-                    <Label>Developer</Label>
-                    <MultiSelectFilter
-                      title="Select Developer"
-                      className="w-full"
-                      options={filterOptions.developers}
-                      value={filters.developer || []}
-                      onChange={(values) =>
-                        onFilterChange({ developer: values })
-                      }
-                    />
-                  </div>
-
-                  {/* Agent IDs */}
-                  <div className="space-y-2">
-                    <Label>Agent</Label>
-                    <MultiSelectFilter
-                      title="Select Agent"
-                      className="w-full"
-                      options={filterOptions.agents}
-                      value={filters.agent_id || []}
-                      onChange={(values) =>
-                        onFilterChange({ agent_id: values })
-                      }
-                    />
-                  </div>
-
-                  {/* Owner IDs */}
-                  <div className="space-y-2">
-                    <Label>Owner</Label>
-                    <MultiSelectFilter
-                      title="Select Owner"
-                      className="w-full"
-                      options={filterOptions.owners}
-                      value={filters.owner_id || []}
-                      onChange={(values) =>
-                        onFilterChange({ owner_id: values })
-                      }
-                    />
-                  </div>
-                  {/* Landlord Email */}
-                  <div className="space-y-2">
-                    <Label>Landlord Email</Label>
-                    <Input
-                      value={filters.landlord_email}
-                      onChange={(e) =>
-                        onFilterChange({ landlord_email: e.target.value })
-                      }
-                      placeholder="Enter landlord email"
-                    />
-                  </div>
-
-                  {/* Landlord Contact */}
-                  <div className="space-y-2">
-                    <Label>Landlord Contact</Label>
-                    <Input
-                      value={filters.landlord_contact}
-                      onChange={(e) =>
-                        onFilterChange({ landlord_contact: e.target.value })
-                      }
-                      placeholder="Enter landlord phone"
-                    />
-                  </div>
-
-                  {/* Price Range */}
-                  <div className="space-y-2">
-                    <Label>Price Range</Label>
-                    <div className="flex gap-2">
+          />
+        </div>
+        <div className="px-2 mb-4 w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/7">
+          <Select
+            value={filters.status}
+            onValueChange={(value) => onFilterChange({ status: value })}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select status" />
+            </SelectTrigger>
+            <SelectContent>
+              {filterOptions.statusOptions.map((status) => (
+                <SelectItem key={status.value} value={status.value}>
+                  {status.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="px-2 mb-4 w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5">
+          <MultiSelectFilter
+            title="Select Portals"
+            className="w-full"
+            options={filterOptions.portalOptions}
+            value={filters.portal || []}
+            onChange={(values) => onFilterChange({ portal: values })}
+          />
+        </div>
+        <div className="px-2 mb-4 w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/8">
+          <Select
+            value={filters.bedrooms}
+            onValueChange={(value) => onFilterChange({ bedrooms: value })}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Bedrooms" />
+            </SelectTrigger>
+            <SelectContent>
+              {filterOptions.bedroomBathroomOptions.map((opt) => (
+                <SelectItem key={opt.value} value={opt.value}>
+                  {opt.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="px-2 mb-4 w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/8">
+          <Select
+            value={filters.bathrooms}
+            onValueChange={(value) => onFilterChange({ bathrooms: value })}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Bathrooms" />
+            </SelectTrigger>
+            <SelectContent>
+              {filterOptions.bedroomBathroomOptions.map((opt) => (
+                <SelectItem key={opt.value} value={opt.value}>
+                  {opt.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="px-2 mb-4 w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5">
+          <Dialog open={moreFiltersOpen} onOpenChange={setMoreFiltersOpen}>
+            <DialogTrigger asChild>
+              <Button variant="outline" className="relative w-full">
+                <Filter className="mr-2 h-4 w-4" />
+                More Filters
+                {activeFiltersCount > 0 && (
+                  <Badge
+                    variant="blue"
+                    className="absolute -top-2 -right-2 h-5 w-5 p-0"
+                  >
+                    {activeFiltersCount}
+                  </Badge>
+                )}
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-2xl max-h-[80vh]">
+              <DialogHeader>
+                <DialogTitle>Advanced Filters</DialogTitle>
+              </DialogHeader>
+              <ScrollArea className="h-[60vh] pr-4">
+                <div className="grid grid-cols-2 gap-6">
+                  {/* Column 1 */}
+                  <div className="space-y-4">
+                    {/* Reference Number */}
+                    <div className="space-y-2">
+                      <Label>Reference Number</Label>
                       <Input
-                        value={filters.price_min}
+                        value={filters.reference_no}
                         onChange={(e) =>
-                          onFilterChange({ price_min: e.target.value })
+                          onFilterChange({ reference_no: e.target.value })
                         }
-                        placeholder="Min"
-                        type="number"
+                        placeholder="Enter reference number"
                       />
+                    </div>
+
+                    {/* Community */}
+                    <div className="space-y-2">
+                      <Label>Community</Label>
+                      <LocationSelectField
+                        field="community"
+                        label="community"
+                        value={filters.community || []}
+                        onChange={(value) =>
+                          handleLocationChange("community", value)
+                        }
+                        locationFilters={locationFilters}
+                      />
+                    </div>
+
+                    {/* Sub‑community */}
+                    <div className="space-y-2">
+                      <Label>Sub‑community</Label>
+                      <LocationSelectField
+                        field="sub_community"
+                        label="sub-community"
+                        value={filters.sub_community || []}
+                        onChange={(value) =>
+                          handleLocationChange("sub_community", value)
+                        }
+                        locationFilters={locationFilters}
+                      />
+                    </div>
+
+                    {/* Building */}
+                    <div className="space-y-2">
+                      <Label>Building</Label>
+                      <LocationSelectField
+                        field="building"
+                        label="building"
+                        value={filters.building || []}
+                        onChange={(value) =>
+                          handleLocationChange("building", value)
+                        }
+                        locationFilters={locationFilters}
+                      />
+                    </div>
+
+                    {/* RERA Permit */}
+                    <div className="space-y-2">
+                      <Label>RERA Permit Number</Label>
                       <Input
-                        value={filters.price_max}
+                        value={filters.rera_permit_number}
                         onChange={(e) =>
-                          onFilterChange({ price_max: e.target.value })
+                          onFilterChange({ rera_permit_number: e.target.value })
                         }
-                        placeholder="Max"
-                        type="number"
+                        placeholder="Enter RERA number"
                       />
+                    </div>
+
+                    {/* DTCM Permit */}
+                    <div className="space-y-2">
+                      <Label>DTCM Permit Number</Label>
+                      <Input
+                        value={filters.dtcm_permit_number}
+                        onChange={(e) =>
+                          onFilterChange({ dtcm_permit_number: e.target.value })
+                        }
+                        placeholder="Enter DTCM number"
+                      />
+                    </div>
+
+                    {/* Title */}
+                    <div className="space-y-2">
+                      <Label>Title</Label>
+                      <Input
+                        value={filters.title}
+                        onChange={(e) =>
+                          onFilterChange({ title: e.target.value })
+                        }
+                        placeholder="Enter listing title"
+                      />
+                    </div>
+
+                    {/* Status */}
+                    <div className="space-y-2">
+                      <Label>Status</Label>
+                      <Select
+                        value={filters.status}
+                        onValueChange={(value) =>
+                          onFilterChange({ status: value })
+                        }
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select status" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {filterOptions.statusOptions.map((status) => (
+                            <SelectItem key={status.value} value={status.value}>
+                              {status.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </div>
                   </div>
 
-                  {/* Portals */}
-                  <div className="space-y-2">
-                    <Label>Portals</Label>
-                    <MultiSelectFilter
-                      title="Select Portals"
-                      className="w-full"
-                      options={filterOptions.portalOptions}
-                      value={filters.portal || []}
-                      onChange={(values) => onFilterChange({ portal: values })}
-                    />
+                  {/* Column 2 */}
+                  <div className="space-y-4">
+                    {/* Developer IDs */}
+                    <div className="space-y-2">
+                      <Label>Developer</Label>
+                      <MultiSelectFilter
+                        title="Select Developer"
+                        className="w-full"
+                        options={filterOptions.developers}
+                        value={filters.developer || []}
+                        onChange={(values) =>
+                          onFilterChange({ developer: values })
+                        }
+                      />
+                    </div>
+
+                    {/* Agent IDs */}
+                    <div className="space-y-2">
+                      <Label>Agent</Label>
+                      <MultiSelectFilter
+                        title="Select Agent"
+                        className="w-full"
+                        options={filterOptions.agents}
+                        value={filters.agent_id || []}
+                        onChange={(values) =>
+                          onFilterChange({ agent_id: values })
+                        }
+                      />
+                    </div>
+
+                    {/* Owner IDs */}
+                    <div className="space-y-2">
+                      <Label>Owner</Label>
+                      <MultiSelectFilter
+                        title="Select Owner"
+                        className="w-full"
+                        options={filterOptions.owners}
+                        value={filters.owner_id || []}
+                        onChange={(values) =>
+                          onFilterChange({ owner_id: values })
+                        }
+                      />
+                    </div>
+                    {/* Landlord Email */}
+                    <div className="space-y-2">
+                      <Label>Landlord Email</Label>
+                      <Input
+                        value={filters.landlord_email}
+                        onChange={(e) =>
+                          onFilterChange({ landlord_email: e.target.value })
+                        }
+                        placeholder="Enter landlord email"
+                      />
+                    </div>
+
+                    {/* Landlord Contact */}
+                    <div className="space-y-2">
+                      <Label>Landlord Contact</Label>
+                      <Input
+                        value={filters.landlord_contact}
+                        onChange={(e) =>
+                          onFilterChange({ landlord_contact: e.target.value })
+                        }
+                        placeholder="Enter landlord phone"
+                      />
+                    </div>
+
+                    {/* Price Range */}
+                    <div className="space-y-2">
+                      <Label>Price Range</Label>
+                      <div className="flex gap-2">
+                        <Input
+                          value={filters.price_min}
+                          onChange={(e) =>
+                            onFilterChange({ price_min: e.target.value })
+                          }
+                          placeholder="Min"
+                          type="number"
+                        />
+                        <Input
+                          value={filters.price_max}
+                          onChange={(e) =>
+                            onFilterChange({ price_max: e.target.value })
+                          }
+                          placeholder="Max"
+                          type="number"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Portals */}
+                    <div className="space-y-2">
+                      <Label>Portals</Label>
+                      <MultiSelectFilter
+                        title="Select Portals"
+                        className="w-full"
+                        options={filterOptions.portalOptions}
+                        value={filters.portal || []}
+                        onChange={(values) =>
+                          onFilterChange({ portal: values })
+                        }
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
-            </ScrollArea>
-          </DialogContent>
-        </Dialog>
+              </ScrollArea>
+            </DialogContent>
+          </Dialog>
+        </div>
       </div>
 
       {/* Active Filters */}

@@ -99,7 +99,7 @@ const Management = ({ formData, setField }) => {
           rules={{ required: "Reference Number is required." }}
           render={({ field }) => (
             <FormItem>
-              <FormLabel>
+              <FormLabel className="flex items-center gap-1">
                 Reference Number <span className="text-red-500">*</span>
               </FormLabel>
               <FormControl>
@@ -125,7 +125,7 @@ const Management = ({ formData, setField }) => {
             rules={{ required: "Company is required." }}
             render={({ field }) => (
               <FormItem>
-                <FormLabel>
+                <FormLabel className="flex items-center gap-1">
                   Company <span className="text-red-500">*</span>
                 </FormLabel>
                 <Select
@@ -158,7 +158,7 @@ const Management = ({ formData, setField }) => {
           rules={{ required: "Listing Agent is required." }}
           render={({ field }) => (
             <FormItem>
-              <FormLabel>
+              <FormLabel className="flex items-center gap-1">
                 Listing Agent <span className="text-red-500">*</span>
               </FormLabel>
               <Select
@@ -188,7 +188,7 @@ const Management = ({ formData, setField }) => {
           control={control}
           name="useDifferentAgents"
           render={({ field }) => (
-            <FormItem className="flex items-center justify-between col-span-full">
+            <FormItem className="flex items-center gap-6 col-span-full">
               <FormLabel>Use different agents per portal?</FormLabel>
               <FormControl>
                 <Switch
@@ -298,7 +298,7 @@ const Management = ({ formData, setField }) => {
           rules={{ required: "Listing Owner is required." }}
           render={({ field }) => (
             <FormItem>
-              <FormLabel>
+              <FormLabel className="flex items-center gap-1">
                 Listing Owner <span className="text-red-500">*</span>
               </FormLabel>
               <Select
@@ -390,7 +390,7 @@ const Management = ({ formData, setField }) => {
           rules={{ required: "Availability date is required." }}
           render={({ field }) => (
             <FormItem>
-              <FormLabel>
+              <FormLabel className="flex items-center gap-1">
                 Available From <span className="text-red-500">*</span>
               </FormLabel>
               <FormControl>

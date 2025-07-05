@@ -65,8 +65,8 @@ const Specifications = ({ formData, setField }) => {
           rules={{ required: "Offering type is required." }}
           render={({ field }) => (
             <FormItem className="space-y-2">
-              <FormLabel>
-                Offering Type <span className="text-red-500">*</span>
+              <FormLabel className="flex items-center gap-1">
+                Offering Type<span className="text-red-500">*</span>
               </FormLabel>
               <FormControl>
                 <RadioGroup
@@ -96,7 +96,7 @@ const Specifications = ({ formData, setField }) => {
           rules={{ required: "Title deed is required." }}
           render={({ field }) => (
             <FormItem>
-              <FormLabel>
+              <FormLabel className="flex items-center gap-1">
                 Title Deed <span className="text-red-500">*</span>
               </FormLabel>
               <FormControl>
@@ -119,7 +119,7 @@ const Specifications = ({ formData, setField }) => {
           rules={{ required: "Property type is required." }}
           render={({ field }) => (
             <FormItem>
-              <FormLabel>
+              <FormLabel className="flex items-center gap-1">
                 Property Type <span className="text-red-500">*</span>
               </FormLabel>
               <Select
@@ -154,7 +154,7 @@ const Specifications = ({ formData, setField }) => {
           }}
           render={({ field }) => (
             <FormItem>
-              <FormLabel>
+              <FormLabel className="flex items-center gap-1">
                 Size (sq.ft) <span className="text-red-500">*</span>
               </FormLabel>
               <FormControl>
@@ -254,7 +254,7 @@ const Specifications = ({ formData, setField }) => {
           control={control}
           name="isFurnished"
           render={({ field }) => (
-            <FormItem className="flex items-center justify-between">
+            <FormItem className="flex items-center gap-6">
               <FormLabel>Furnished</FormLabel>
               <FormControl>
                 <div className="flex items-center space-x-2">
@@ -376,7 +376,7 @@ const Specifications = ({ formData, setField }) => {
           rules={{ required: "Developer is required." }}
           render={({ field }) => (
             <FormItem>
-              <FormLabel>
+              <FormLabel className="flex items-center gap-1">
                 Developer <span className="text-red-500">*</span>
               </FormLabel>
               <Select

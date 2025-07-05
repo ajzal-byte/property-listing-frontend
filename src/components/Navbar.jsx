@@ -65,7 +65,7 @@ const Dropdown = ({ trigger, items, align = "right", onSelect, selectedValue }) 
     })}) : trigger;
 
   return (
-    <div className="relative">
+    <div className="relative z-30">
       <div
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center cursor-pointer"
@@ -129,7 +129,6 @@ const Dropdown = ({ trigger, items, align = "right", onSelect, selectedValue }) 
 
 // Rest of the Navbar component with state management
 const Navbar = () => {
-  const navigate = useNavigate();
   const [selectedCountry, setSelectedCountry] = useState({ label: "United States", country: "us", active: true });
   const [selectedCurrency, setSelectedCurrency] = useState({ label: "AED", country: "are", active: true });
   const [selectedLanguage, setSelectedLanguage] = useState({ label: "English", active: true });
@@ -138,19 +137,19 @@ const Navbar = () => {
 const profileItems = [
   { icon: User, label: "My profile", active: false },
   { icon: Building2, label: "My company", active: false },
-  { icon: FileText, label: "My subscriptions", active: false },
-  { icon: FileText, label: "My transactions", active: false },
-  { icon: Link2, label: "My integrations", active: false },
+  // { icon: FileText, label: "My subscriptions", active: false },
+  // { icon: FileText, label: "My transactions", active: false },
+  // { icon: Link2, label: "My integrations", active: false },
 
   ...(JSON.parse(localStorage.getItem("userData")).role.name == "super_admin"        //conditionally shows these two tabs only when role is super_admin
     ? [
-        { icon: Building, label: "Manage Developers", active: false },
-        { icon: MapPin, label: "Manage Locations", active: false },
+        // { icon: Building, label: "Manage Developers", active: false },
+        // { icon: MapPin, label: "Manage Locations", active: false },
       ]
     : []),
 
-  { icon: Building2, label: "My properties", active: false },
-  { icon: Share2, label: "Invite", active: false },
+  // { icon: Building2, label: "My properties", active: false },
+  // { icon: Share2, label: "Invite", active: false },
   { icon: Hand, label: "Permission Management", active: false },
   { icon: LogOut, label: "Log Out", danger: true, active: false },
 ];

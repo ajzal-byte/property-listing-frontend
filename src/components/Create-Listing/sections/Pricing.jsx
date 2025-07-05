@@ -56,7 +56,7 @@ const Pricing = ({ formData, setField }) => {
               rules={{ required: "Price is required." }}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>
+                  <FormLabel className="flex items-center gap-1">
                     Price <span className="text-red-500">*</span>
                   </FormLabel>
                   <FormControl>
@@ -152,7 +152,7 @@ const Pricing = ({ formData, setField }) => {
               rules={{ required: "Rent Frequency is required." }}
               render={({ field }) => (
                 <FormItem className="col-span-full">
-                  <FormLabel>
+                  <FormLabel className="flex items-center gap-1">
                     Rent Frequency <span className="text-red-500">*</span>
                   </FormLabel>
                   <FormControl>
@@ -191,7 +191,7 @@ const Pricing = ({ formData, setField }) => {
               rules={{ required: "Rent Amount is required." }}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>
+                  <FormLabel className="flex items-center gap-1">
                     Rent Amount <span className="text-red-500">*</span>
                   </FormLabel>
                   <FormControl>

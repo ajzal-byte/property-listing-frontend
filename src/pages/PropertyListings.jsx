@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useSearchParams } from "react-router-dom";
 import getAuthHeaders from "@/utils/getAuthHeader";
 import { toast } from "sonner";
@@ -8,8 +8,16 @@ import {
   PropertyPagination,
 } from "../components/PropertyListings";
 import { createApiParams } from "@/utils/createApiParams";
+import MainTabContext from "../contexts/TabContext";
+import { tabs } from "../enums/sidebarTabsEnums";
 
 const PropertyListings = () => {
+  const { mainTab, setMainTab } = useContext(MainTabContext);
+  
+    useEffect(() => {
+      setMainTab(tabs.SECONDARY);
+    }, [setMainTab]);
+
   const [isMapView, setIsMapView] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const [listings, setListings] = useState([]);
@@ -25,10 +33,6 @@ const PropertyListings = () => {
   const getFiltersFromParams = () => {
     return {
       search: searchParams.get("search") || "",
-      city: searchParams.get("city") || "",
-      community: searchParams.get("community") || "",
-      sub_community: searchParams.get("sub_community") || "",
-      building: searchParams.get("building") || "",
       bedrooms: searchParams.get("bedrooms") || "",
       bathrooms: searchParams.get("bathrooms") || "",
       price_min: searchParams.get("price_min") || "",
@@ -44,6 +48,10 @@ const PropertyListings = () => {
       // multi-value filters
       property_types: searchParams.getAll("property_types") || [],
       offering_types: searchParams.getAll("offering_types") || [],
+      city: searchParams.getAll("city") || [],
+      community: searchParams.getAll("community") || [],
+      sub_community: searchParams.getAll("sub_community") || [],
+      building: searchParams.getAll("building") || [],
       portal: searchParams.getAll("portal") || [],
       developer: searchParams.getAll("developer") || [],
       agent_id: searchParams.getAll("agent_id") || [],

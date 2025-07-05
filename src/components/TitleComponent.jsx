@@ -86,7 +86,7 @@ const PageHeader = () => {
                   {mainTab == tabs.OFFPLAN
                     ? "Off Plan Listings"
                     : mainTab == tabs.SECONDARY
-                    ? "Secondary Listings"
+                    ? "Listings"
                     : mainTab == tabs.ACADEMY
                     ? "Welcome to our Academy"
                     : mainTab == tabs.ANALYTICS
@@ -110,7 +110,7 @@ const PageHeader = () => {
                     {mainTab == tabs.OFFPLAN ? (
                       "Browse our top Offplan Listings "
                     ) : mainTab == tabs.SECONDARY ? (
-                      "Browse our top Secondary Listings "
+                      "Browse our top Property Listings "
                     ) : mainTab == tabs.ACADEMY ? (
                       "Explore our platform to discover new opportunities for growth and learning"
                     ) : mainTab == tabs.ANALYTICS ? (

@@ -48,7 +48,7 @@ const AppContent = () => {
               }`
         }
       >
-        {!isAuthRoute && (user || isLoggedIn) && <Navbar />}
+        {/* {!isAuthRoute && (user || isLoggedIn) && <Navbar />} */}
 
         <MainTabProvider>
           <MainContentProvider>

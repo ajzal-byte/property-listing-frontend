@@ -89,7 +89,7 @@ const DetailedSecondary = () => {
 
   // Helper function to format price
   const formatPrice = (price) => {
-    if (!price) return "Price on request";
+    if (!price) return "Price not available";
     return new Intl.NumberFormat("en-US", {
       style: "currency",
       currency: "AED",
