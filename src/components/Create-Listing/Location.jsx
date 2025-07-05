@@ -185,8 +185,6 @@ const LocationForm = ({ formData, setField, nextStep, prevStep }) => {
     setField("property_finder_community", loc.community || "");
     setField("property_finder_sub_community", loc.sub_community || "");
     setField("property_finder_tower", loc.building || "");
-    setField("property_finder_latitude", loc.latitude || "");
-    setField("property_finder_longitude", loc.longitude || "");
     setOpenPF(false);
     setSearchQueryPF("");
   };
@@ -198,8 +196,6 @@ const LocationForm = ({ formData, setField, nextStep, prevStep }) => {
     setField("bayut_community", loc.community || "");
     setField("bayut_sub_community", loc.sub_community || "");
     setField("bayut_tower", loc.building || "");
-    setField("bayut_latitude", loc.latitude || "");
-    setField("bayut_longitude", loc.longitude || "");
     setOpenBayut(false);
     setSearchQueryBayut("");
   };
@@ -274,7 +270,7 @@ const LocationForm = ({ formData, setField, nextStep, prevStep }) => {
                 </Popover>
               </div>
 
-              {/* Derived fields: city, community, sub‐community, tower, latitude, longitude */}
+              {/* Derived fields: city, community, sub‐community, tower */}
               <div className="space-y-2">
                 <label className="text-sm font-medium">City</label>
                 <Input value={formData.property_finder_city} disabled />
@@ -293,26 +289,6 @@ const LocationForm = ({ formData, setField, nextStep, prevStep }) => {
               <div className="space-y-2">
                 <label className="text-sm font-medium">Tower/Building</label>
                 <Input value={formData.property_finder_tower} disabled />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Latitude</label>
-                  <Input
-                    value={formData.property_finder_latitude}
-                    onChange={(e) =>
-                      setField("property_finder_latitude", e.target.value)
-                    }
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Longitude</label>
-                  <Input
-                    value={formData.property_finder_longitude}
-                    onChange={(e) =>
-                      setField("property_finder_longitude", e.target.value)
-                    }
-                  />
-                </div>
               </div>
             </CardContent>
           </Card>
@@ -390,26 +366,26 @@ const LocationForm = ({ formData, setField, nextStep, prevStep }) => {
                 <label className="text-sm font-medium">Tower/Building</label>
                 <Input value={formData.bayut_tower} disabled />
               </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Latitude</label>
-                  <Input
-                    value={formData.bayut_latitude}
-                    onChange={(e) => setField("bayut_latitude", e.target.value)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Longitude</label>
-                  <Input
-                    value={formData.bayut_longitude}
-                    onChange={(e) =>
-                      setField("bayut_longitude", e.target.value)
-                    }
-                  />
-                </div>
-              </div>
             </CardContent>
           </Card>
+        </div>
+
+        {/* Common Latitude/Longitude Section */}
+        <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <label className="text-sm font-medium">Latitude</label>
+            <Input
+              value={formData.latitude}
+              onChange={(e) => setField("latitude", e.target.value)}
+            />
+          </div>
+          <div className="space-y-2">
+            <label className="text-sm font-medium">Longitude</label>
+            <Input
+              value={formData.longitude}
+              onChange={(e) => setField("longitude", e.target.value)}
+            />
+          </div>
         </div>
 
         {/* Floor Plan Card (unchanged) */}

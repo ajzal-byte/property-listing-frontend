@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
   CircleChevronLeft,
@@ -9,39 +9,42 @@ import {
   Calculator,
   BarChart3,
   GraduationCap,
-  FileStack,
   HeadphonesIcon,
   MapPin,
   HousePlus,
   User,
   Hand,
   LogOut,
+  Settings,
 } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import {
   Tooltip,
   TooltipContent,
-  TooltipTrigger,
   TooltipProvider,
+  TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Separator } from "@/components/ui/separator";
 
-const MenuItem = ({
-  icon: Icon,
-  label,
-  link,
-  isCollapsed,
-  isActive,
-  onClick,
-}) => {
+const NavLink = ({ link, isCollapsed, isActive, isChild, onClick }) => {
   const content = (
     <Button
       variant={isActive ? "secondary" : "ghost"}
-      className={`w-full justify-start ${isCollapsed ? "px-3" : "px-4"}`}
+      className={cn(
+        "w-full justify-start h-10",
+        isCollapsed ? "px-3" : "px-4",
+        isChild && !isCollapsed && "pl-12"
+      )}
       onClick={onClick}
     >
-      <Icon className="h-4 w-4 text-blue-500" />
-      {!isCollapsed && <span className="ml-3">{label}</span>}
+      <link.icon className="h-4 w-4 text-blue-500" />
+      {!isCollapsed && <span className="ml-3">{link.label}</span>}
     </Button>
   );
 
@@ -50,7 +53,7 @@ const MenuItem = ({
       <Tooltip delayDuration={0}>
         <TooltipTrigger asChild>{content}</TooltipTrigger>
         <TooltipContent side="right" className="flex items-center gap-4">
-          {label}
+          {link.label}
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>
@@ -62,116 +65,203 @@ const MenuItem = ({
 const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
-
-  // Build your menu arrays (with `.link`)
-  const role = JSON.parse(localStorage.getItem("userData") || "{}")?.role?.name;
-  const mainMenuItems = [
-    ...(role === "super_admin"
-      ? [
-          { icon: Home, label: "Off plan", link: "/off-plan" },
-          { icon: Calculator, label: "Mortgage", link: "/mortgage" },
-          { icon: Users, label: "CRM", link: "/crm" },
-        ]
-      : []),
-    { icon: Building2, label: "Listings", link: "/secondary" },
-    { icon: GraduationCap, label: "Academy", link: "/academy" },
-    { icon: BarChart3, label: "Analytics", link: "/analytics" },
-    // { icon: FileStack, label: "Pricing", link: "/pricing" },
-    ...(role === "super_admin" || role === "admin"
-      ? [{ icon: Users, label: "Manage Users", link: "/manage-users" }]
-      : []),
-    ...(role === "super_admin"
-      ? [
-          {
-            icon: Building2,
-            label: "Manage Companies",
-            link: "/manage-companies",
-          },
-          {
-            label: "Manage Developers",
-            icon: HousePlus,
-            link: "/developers",
-          },
-          {
-            icon: MapPin,
-            label: "Manage Locations",
-            link: "/locations",
-          },
-          {
-            icon: Hand,
-            label: "Manage Permissions",
-            link: "/permissions",
-          },
-        ]
-      : []),
-  ];
-
-  const bottomMenuItems = [
-    {
-      icon: HeadphonesIcon,
-      label: "Support",
-      link: "https://vortexwebclouds.bitrix24.in/marketplace/app/245/",
-    },
-    {
-      icon: Building2,
-      label: "My Company",
-      link: "/company",
-    },
-    {
-      icon: User,
-      label: "Profile",
-      link: "/profile",
-    },
-    {
-      icon: LogOut,
-      label: "Log Out",
-    },
-  ];
-
-  // Derive active label by matching the current pathname.
-  const activeLabel = useMemo(() => {
-    // find the first menu item whose link equals or is a prefix of the pathname
-    const match = [...mainMenuItems, ...bottomMenuItems].find((item) =>
-      pathname === item.link
-        ? true
-        : // if you want prefix-based (e.g. nested routes)
-          pathname.startsWith(item.link + "/")
-    ) || { label: "" };
-    return match.label;
-  }, [pathname, mainMenuItems, bottomMenuItems]);
-
-  const renderSection = (items) => (
-    <div className="space-y-1 px-2 py-2">
-      {items.map((item) => (
-        <MenuItem
-          key={item.link}
-          icon={item.icon}
-          label={item.label}
-          link={item.link}
-          isCollapsed={isCollapsed}
-          isActive={activeLabel === item.label}
-          onClick={() => navigate(item.link)}
-        />
-      ))}
-    </div>
+  const role = useMemo(
+    () => JSON.parse(localStorage.getItem("userData") || "{}")?.role?.name,
+    []
   );
+
+  const menuConfig = useMemo(
+    () => ({
+      main: [
+        {
+          icon: Home,
+          label: "Off plan",
+          link: "/off-plan",
+        },
+        {
+          icon: Calculator,
+          label: "Mortgage",
+          link: "/mortgage",
+        },
+        { icon: Users, label: "CRM", link: "/crm" },
+        {
+          icon: Building2,
+          label: "Listings",
+          link: "/secondary",
+        },
+        {
+          icon: GraduationCap,
+          label: "Academy",
+          link: "/academy",
+        },
+        {
+          roles: ["super_admin", "admin", "agent", "owner"],
+          icon: BarChart3,
+          label: "Analytics",
+          link: "/analytics",
+        },
+        {
+          roles: ["super_admin", "admin"],
+          icon: Users,
+          label: "Manage Users",
+          link: "/manage-users",
+        },
+        // The new collapsible group
+        {
+          roles: ["super_admin"],
+          icon: Settings,
+          label: "Admin Settings",
+          subItems: [
+            {
+              icon: Building2,
+              label: "Manage Companies",
+              link: "/manage-companies",
+            },
+            {
+              icon: HousePlus,
+              label: "Manage Developers",
+              link: "/developers",
+            },
+            {
+              icon: MapPin,
+              label: "Manage Locations",
+              link: "/locations",
+            },
+            {
+              icon: Hand,
+              label: "Manage Permissions",
+              link: "/permissions",
+            },
+          ],
+        },
+      ],
+      bottom: [
+        {
+          icon: HeadphonesIcon,
+          label: "Support",
+          link: "https://vortexwebclouds.bitrix24.in/marketplace/app/245/",
+          isExternal: true,
+        },
+        { icon: Building2, label: "My Company", link: "/company" },
+        { icon: User, label: "Profile", link: "/profile" },
+        { icon: LogOut, label: "Log Out", action: "logout" },
+      ],
+    }),
+    []
+  );
+
+  // Filter menu based on role
+  const filterMenuByRole = (items) =>
+    items.filter((item) => !item.roles || item.roles.includes(role));
+
+  const mainMenuItems = filterMenuByRole(menuConfig.main);
+  const bottomMenuItems = menuConfig.bottom;
+
+  // Check if the current path or any sub-item path is active
+  const isLinkActive = (item) => {
+    if (item.subItems) {
+      return item.subItems.some((sub) => pathname.startsWith(sub.link));
+    }
+    return pathname.startsWith(item.link);
+  };
+
+  // State for the collapsible group
+  const [isSettingsOpen, setIsSettingsOpen] = useState(
+    mainMenuItems.some((item) => item.subItems && isLinkActive(item))
+  );
+
+  const handleLinkClick = (item) => {
+    if (item.action === "logout") {
+      localStorage.removeItem("authToken");
+      localStorage.removeItem("userData");
+      window.location.href = "/login"; // Redirect to login
+    } else if (item.isExternal) {
+      window.open(item.link, "_blank", "noopener,noreferrer");
+    } else {
+      navigate(item.link);
+    }
+  };
+
+  const renderNavLinks = (items) => {
+    return items.map((item, index) => {
+      if (item.subItems) {
+        // Render Collapsible Group
+        return (
+          <Collapsible
+            key={`${item.label}-${index}`}
+            open={isSettingsOpen}
+            onOpenChange={setIsSettingsOpen}
+            className="w-full"
+          >
+            <CollapsibleTrigger asChild>
+              <Button
+                variant={isLinkActive(item) ? "secondary" : "ghost"}
+                className={cn(
+                  "w-full justify-start h-10",
+                  isCollapsed ? "px-3" : "px-4"
+                )}
+              >
+                <item.icon className="h-4 w-4 text-blue-500" />
+                {!isCollapsed && (
+                  <>
+                    <span className="ml-3">{item.label}</span>
+                    <CircleChevronRight
+                      className={cn(
+                        "ml-auto h-4 w-4 transition-transform duration-200",
+                        isSettingsOpen && "rotate-90"
+                      )}
+                    />
+                  </>
+                )}
+              </Button>
+            </CollapsibleTrigger>
+            <CollapsibleContent className="space-y-1 py-1">
+              {item.subItems.map((subItem) => (
+                <NavLink
+                  key={subItem.link}
+                  link={subItem}
+                  isCollapsed={isCollapsed}
+                  isActive={pathname.startsWith(subItem.link)}
+                  isChild={true}
+                  onClick={() => handleLinkClick(subItem)}
+                />
+              ))}
+            </CollapsibleContent>
+          </Collapsible>
+        );
+      }
+      // Render a regular link
+      return (
+        <NavLink
+          key={item.link || item.label}
+          link={item}
+          isCollapsed={isCollapsed}
+          isActive={isLinkActive(item)}
+          onClick={() => handleLinkClick(item)}
+        />
+      );
+    });
+  };
 
   return (
     <div
-      className={`fixed left-0 top-0 h-screen bg-background border-r transition-all duration-300 ease-in-out flex flex-col z-[999]
-        ${isCollapsed ? "w-16" : "w-60"}
-      `}
+      className={cn(
+        "fixed left-0 top-0 h-screen border-r bg-background z-50 flex flex-col transition-all duration-300 ease-in-out",
+        isCollapsed ? "w-20" : "w-62",
+        "shadow-lg"
+      )}
     >
       {/* Header */}
       <div
-        className={`flex items-center p-4 ${
+        className={cn(
+          "flex items-center p-4 h-16",
           isCollapsed ? "justify-center" : "justify-between"
-        }`}
+        )}
       >
         {!isCollapsed && (
-          <div className="flex items-center">
-            <img src="user.png" alt="User" className="h-8 w-8 rounded-full" />
-            <span className="ml-2 text-sm font-medium">Property Listing</span>
+          <div className="flex items-center gap-2">
+            <img src="/user.png" alt="Logo" className="h-8 w-8" />
+            <span className="text-lg font-semibold">Property Listing</span>
           </div>
         )}
         <Button
@@ -189,52 +279,14 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
       </div>
 
       {/* Main Menu */}
-      <div className="flex-grow">{renderSection(mainMenuItems)}</div>
+      <div className="flex-grow overflow-y-auto px-2 space-y-1">
+        {renderNavLinks(mainMenuItems)}
+      </div>
 
       {/* Bottom Menu */}
       <div className="p-2">
-        <Separator className="mb-2" />
-        <div className="space-y-1 px-2 py-2">
-          {bottomMenuItems.map((item) =>
-            item.label === "Support" ? (
-              <a
-                key={item.label}
-                href={item.link}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <MenuItem
-                  icon={item.icon}
-                  label={item.label}
-                  isCollapsed={isCollapsed}
-                  isActive={activeLabel === item.label}
-                  onClick={() => {}}
-                />
-              </a>
-            ) : item.label === "Log Out" ? (
-              <MenuItem
-                key={item.label}
-                icon={item.icon}
-                label={item.label}
-                isCollapsed={isCollapsed}
-                isActive={false}
-                onClick={() => {
-                  localStorage.removeItem("authToken");
-                  window.location.reload();
-                }}
-              />
-            ) : (
-              <MenuItem
-                key={item.link}
-                icon={item.icon}
-                label={item.label}
-                isCollapsed={isCollapsed}
-                isActive={activeLabel === item.label}
-                onClick={() => navigate(item.link)}
-              />
-            )
-          )}
-        </div>
+        <Separator className="my-2" />
+        <div className="space-y-1 px-2">{renderNavLinks(bottomMenuItems)}</div>
       </div>
     </div>
   );

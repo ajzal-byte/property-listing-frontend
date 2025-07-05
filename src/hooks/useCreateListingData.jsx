@@ -100,16 +100,15 @@ export function useCreateListingData() {
     property_finder_community: "",
     property_finder_sub_community: "",
     property_finder_tower: "",
-    property_finder_latitude: "",
-    property_finder_longitude: "",
 
     bayut_location: "",
     bayut_city: "",
     bayut_community: "",
     bayut_sub_community: "",
     bayut_tower: "",
-    bayut_latitude: "",
-    bayut_longitude: "",
+
+    latitude: "",
+    longitude: "",
 
     floor_plan_urls: [],
 

@@ -179,7 +179,7 @@ export async function uploadFilesAndCreateListing(formData) {
     title_ar: formData.titleAr,
     desc_en: formData.descriptionEn,
     desc_ar: formData.descriptionAr,
-    geopoints: `${formData.property_finder_latitude},${formData.property_finder_longitude}`,
+    geopoints: `${formData.latitude},${formData.longitude}`,
     listing_owner: formData.listingOwner || "",
     landlord_name: formData.landlordName,
     landlord_email: formData.landlordEmail,

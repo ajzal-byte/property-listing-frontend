@@ -4,6 +4,7 @@ import getAuthHeaders from "@/utils/getAuthHeader";
 import { toast } from "sonner";
 import {
   PropertyCards,
+  ListingsMap,
   PropertyFilters,
   PropertyPagination,
 } from "../components/PropertyListings";
@@ -12,11 +13,11 @@ import MainTabContext from "../contexts/TabContext";
 import { tabs } from "../enums/sidebarTabsEnums";
 
 const PropertyListings = () => {
-  const { mainTab, setMainTab } = useContext(MainTabContext);
-  
-    useEffect(() => {
-      setMainTab(tabs.SECONDARY);
-    }, [setMainTab]);
+  const { setMainTab } = useContext(MainTabContext);
+
+  useEffect(() => {
+    setMainTab(tabs.SECONDARY);
+  }, [setMainTab]);
 
   const [isMapView, setIsMapView] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -56,7 +57,6 @@ const PropertyListings = () => {
       developer: searchParams.getAll("developer") || [],
       agent_id: searchParams.getAll("agent_id") || [],
       owner_id: searchParams.getAll("owner_id") || [],
-
       page: searchParams.get("page") || 1,
       per_page: searchParams.get("per_page") || 10,
     };
@@ -64,7 +64,6 @@ const PropertyListings = () => {
 
   const [filters, setFilters] = useState(getFiltersFromParams());
 
-  // Fetch listings
   const fetchListings = async () => {
     try {
       setLoading(true);
@@ -95,22 +94,25 @@ const PropertyListings = () => {
     }
   };
 
-  // Update URL when filters change
   useEffect(() => {
     const params = createApiParams(filters);
+    // Don't set per_page to 1000 in the URL
+    // if (isMapView) {
+    //   params.delete("per_page");
+    //   params.delete("page");
+    // }
     setSearchParams(params);
-  }, [filters, setSearchParams]);
+  }, [filters, setSearchParams, isMapView]);
 
-  // Fetch listings when filters change
   useEffect(() => {
     fetchListings();
-  }, [filters]);
+  }, [filters, isMapView]); // Re-fetch when toggling map view
 
   const handleFilterChange = (newFilters) => {
     setFilters((prev) => ({
       ...prev,
       ...newFilters,
-      page: 1, // Reset to first page when filters change
+      page: 1,
     }));
   };
 
@@ -128,19 +130,23 @@ const PropertyListings = () => {
         isMapView={isMapView}
       />
 
-      <PropertyCards
-        listings={listings}
-        loading={loading}
-        totalItems={pagination.total}
-        isMapView={isMapView}
-      />
-
-      {pagination.last_page > 1 && (
-        <PropertyPagination
-          currentPage={pagination.current_page}
-          totalPages={pagination.last_page}
-          onPageChange={handlePageChange}
-        />
+      {isMapView ? (
+        <ListingsMap listings={listings} />
+      ) : (
+        <>
+          <PropertyCards
+            listings={listings}
+            loading={loading}
+            totalItems={pagination.total}
+          />
+          {pagination.last_page > 1 && !loading && (
+            <PropertyPagination
+              currentPage={pagination.current_page}
+              totalPages={pagination.last_page}
+              onPageChange={handlePageChange}
+            />
+          )}
+        </>
       )}
     </div>
   );

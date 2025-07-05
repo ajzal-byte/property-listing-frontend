@@ -177,10 +177,8 @@ const DetailedSecondary = () => {
         bayutLocationDetails={listing.bayut_location}
         showEdit={false}
         formData={{
-          property_finder_latitude: listing.geopoints?.split(",")[0],
-          property_finder_longitude: listing.geopoints?.split(",")[1],
-          bayut_latitude: listing.geopoints?.split(",")[0],
-          bayut_longitude: listing.geopoints?.split(",")[1],
+          latitude: listing.geopoints?.split(",")[0],
+          longitude: listing.geopoints?.split(",")[1],
         }}
       />
 

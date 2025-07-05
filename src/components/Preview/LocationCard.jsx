@@ -11,9 +11,7 @@ const LocationCard = ({
   stepNumber,
   showEdit = true,
 }) => {
-  const hasMapCoordinates =
-    (formData?.property_finder_latitude || formData?.bayut_latitude) &&
-    (formData?.property_finder_longitude || formData?.bayut_longitude);
+  const hasMapCoordinates = formData?.latitude && formData?.longitude;
 
   return (
     <Card>
@@ -34,12 +32,14 @@ const LocationCard = ({
           )}
         </div>
       </CardHeader>
+
       <CardContent className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Main grid for PF and Bayut sections */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-6">
           {/* Property Finder Location */}
-          <div className="border-r pr-4">
-            <h3 className="font-semibold mb-3">Property Finder</h3>
-            <div className="space-y-2">
+          <div className="space-y-3">
+            <h3 className="font-semibold border-b pb-2">Property Finder</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-3 pt-2">
               <DetailItem
                 label="City"
                 value={pfLocationDetails?.city || formData.property_finder_city}
@@ -64,21 +64,13 @@ const LocationCard = ({
                   pfLocationDetails?.building || formData.property_finder_tower
                 }
               />
-              <DetailItem
-                label="Latitude"
-                value={formData.property_finder_latitude}
-              />
-              <DetailItem
-                label="Longitude"
-                value={formData.property_finder_longitude}
-              />
             </div>
           </div>
 
           {/* Bayut Location */}
-          <div className="pl-4">
-            <h3 className="font-semibold mb-3">Bayut</h3>
-            <div className="space-y-2">
+          <div className="space-y-3 border-l pl-4 sm:pl-6">
+            <h3 className="font-semibold border-b pb-2">Bayut</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-3 pt-2">
               <DetailItem
                 label="City"
                 value={bayutLocationDetails?.city || formData.bayut_city}
@@ -100,29 +92,34 @@ const LocationCard = ({
                 label="Tower/Building"
                 value={bayutLocationDetails?.building || formData.bayut_tower}
               />
-              <DetailItem label="Latitude" value={formData.bayut_latitude} />
-              <DetailItem label="Longitude" value={formData.bayut_longitude} />
             </div>
           </div>
         </div>
 
+        {/* Shared Latitude & Longitude */}
+        <div className="flex flex-col sm:flex-row gap-6 border-t pt-4">
+          <DetailItem label="Latitude" value={formData.latitude} />
+          <DetailItem label="Longitude" value={formData.longitude} />
+        </div>
+
         {/* Map Section */}
         {hasMapCoordinates ? (
-          <div className="mt-6 h-64 rounded-lg overflow-hidden">
+          <div className="mt-4 h-64 rounded-lg overflow-hidden border">
             <iframe
+              title="Location Map"
               className="w-full h-full border-0"
               allowFullScreen
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
               src={`https://maps.google.com/maps?q=${encodeURIComponent(
-                formData?.property_finder_latitude || formData?.bayut_latitude
+                formData.latitude
               )},${encodeURIComponent(
-                formData?.property_finder_longitude || formData?.bayut_longitude
+                formData.longitude
               )}&hl=en&z=14&output=embed`}
             ></iframe>
           </div>
         ) : (
-          <div className="mt-6 text-gray-500 text-center">
+          <div className="mt-6 text-muted-foreground text-center py-10 border rounded-lg">
             Map not available. Please provide longitude and latitude.
           </div>
         )}
