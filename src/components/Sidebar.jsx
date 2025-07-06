@@ -75,16 +75,18 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
     () => ({
       main: [
         {
+          roles: ["super_admin"],
           icon: Home,
           label: "Off plan",
           link: "/off-plan",
         },
         {
+          roles: ["super_admin"],
           icon: Calculator,
           label: "Mortgage",
           link: "/mortgage",
         },
-        { icon: Users, label: "CRM", link: "/crm" },
+        { roles: ["super_admin"], icon: Users, label: "CRM", link: "/crm" },
         {
           icon: Building2,
           label: "Listings",
@@ -96,7 +98,7 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
           link: "/academy",
         },
         {
-          roles: ["super_admin"],
+          roles: ["super_admin", "admin"],
           icon: BarChart3,
           label: "Analytics",
           link: "/analytics",
@@ -149,7 +151,12 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
           link: "https://vortexwebclouds.bitrix24.in/marketplace/app/245/",
           isExternal: true,
         },
-        { icon: Building2, label: "My Company", link: "/company" },
+        {
+          roles: ["super_admin", "admin"],
+          icon: Building2,
+          label: "My Company",
+          link: "/company",
+        },
         { icon: User, label: "Profile", link: "/profile" },
         { icon: LogOut, label: "Log Out", action: "logout" },
       ],
@@ -162,7 +169,7 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
     items.filter((item) => !item.roles || item.roles.includes(role));
 
   const mainMenuItems = filterMenuByRole(menuConfig.main);
-  const bottomMenuItems = menuConfig.bottom;
+  const bottomMenuItems = filterMenuByRole(menuConfig.bottom);
 
   // Check if the current path or any sub-item path is active
   const isLinkActive = (item) => {

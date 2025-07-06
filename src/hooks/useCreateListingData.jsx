@@ -61,6 +61,7 @@ export function useCreateListingData() {
     reraIssueDate: "",
     reraExpirationDate: "",
     dtcmPermitNumber: "",
+    dtcmExpirationDate: "",
     // Pricing
     price: "",
     hidePrice: false,

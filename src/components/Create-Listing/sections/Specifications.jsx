@@ -93,11 +93,11 @@ const Specifications = ({ formData, setField }) => {
         <FormField
           control={control}
           name="titleDeed"
-          rules={{ required: "Title deed is required." }}
+          // rules={{ required: "Title deed is required." }}
           render={({ field }) => (
             <FormItem>
               <FormLabel className="flex items-center gap-1">
-                Title Deed <span className="text-red-500">*</span>
+                Title Deed
               </FormLabel>
               <FormControl>
                 <Input
@@ -180,7 +180,6 @@ const Specifications = ({ formData, setField }) => {
               <FormLabel>Unit No</FormLabel>
               <FormControl>
                 <Input
-                  type="number"
                   placeholder="Enter unit number"
                   value={field.value}
                   onChange={(e) => handleChange("unitNo", e.target.value)}
@@ -194,6 +193,9 @@ const Specifications = ({ formData, setField }) => {
         <FormField
           control={control}
           name="bedrooms"
+          rules={{
+            min: { value: 0, message: "Bedrooms must be 0 or greater than 0." },
+          }}
           render={({ field }) => (
             <FormItem>
               <FormLabel>Bedrooms</FormLabel>
@@ -205,6 +207,7 @@ const Specifications = ({ formData, setField }) => {
                   onChange={(e) => handleChange("bedrooms", e.target.value)}
                 />
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
@@ -213,6 +216,12 @@ const Specifications = ({ formData, setField }) => {
         <FormField
           control={control}
           name="bathrooms"
+          rules={{
+            min: {
+              value: 0,
+              message: "Bathrooms must be 0 or greater than 0.",
+            },
+          }}
           render={({ field }) => (
             <FormItem>
               <FormLabel>Bathrooms</FormLabel>
@@ -224,6 +233,7 @@ const Specifications = ({ formData, setField }) => {
                   onChange={(e) => handleChange("bathrooms", e.target.value)}
                 />
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
@@ -232,6 +242,12 @@ const Specifications = ({ formData, setField }) => {
         <FormField
           control={control}
           name="parkingSpaces"
+          rules={{
+            min: {
+              value: 0,
+              message: "Parking spaces must be 0 or greater than 0.",
+            },
+          }}
           render={({ field }) => (
             <FormItem>
               <FormLabel>Parking Spaces</FormLabel>
@@ -245,6 +261,7 @@ const Specifications = ({ formData, setField }) => {
                   }
                 />
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
@@ -275,6 +292,12 @@ const Specifications = ({ formData, setField }) => {
         <FormField
           control={control}
           name="totalPlotSize"
+          rules={{
+            min: {
+              value: 1,
+              message: "Total plot size must be greater than 0.",
+            },
+          }}
           render={({ field }) => (
             <FormItem>
               <FormLabel>Total Plot Size (sq.ft)</FormLabel>
@@ -288,6 +311,7 @@ const Specifications = ({ formData, setField }) => {
                   }
                 />
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
@@ -296,6 +320,9 @@ const Specifications = ({ formData, setField }) => {
         <FormField
           control={control}
           name="lotSize"
+          rules={{
+            min: { value: 1, message: "Lot size must be greater than 0." },
+          }}
           render={({ field }) => (
             <FormItem>
               <FormLabel>Lot Size (sq.ft)</FormLabel>
@@ -307,6 +334,7 @@ const Specifications = ({ formData, setField }) => {
                   onChange={(e) => handleChange("lotSize", e.target.value)}
                 />
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
@@ -315,6 +343,9 @@ const Specifications = ({ formData, setField }) => {
         <FormField
           control={control}
           name="builtUpArea"
+          rules={{
+            min: { value: 1, message: "Built-up area must be greater than 0." },
+          }}
           render={({ field }) => (
             <FormItem>
               <FormLabel>Built-up Area (sq.ft)</FormLabel>
@@ -326,6 +357,7 @@ const Specifications = ({ formData, setField }) => {
                   onChange={(e) => handleChange("builtUpArea", e.target.value)}
                 />
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
@@ -373,11 +405,11 @@ const Specifications = ({ formData, setField }) => {
         <FormField
           control={control}
           name="developer"
-          rules={{ required: "Developer is required." }}
+          // rules={{ required: "Developer is required." }}
           render={({ field }) => (
             <FormItem>
               <FormLabel className="flex items-center gap-1">
-                Developer <span className="text-red-500">*</span>
+                Developer
               </FormLabel>
               <Select
                 value={field.value}

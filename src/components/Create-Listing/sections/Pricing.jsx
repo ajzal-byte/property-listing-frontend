@@ -53,7 +53,10 @@ const Pricing = ({ formData, setField }) => {
             <FormField
               control={control}
               name="price"
-              rules={{ required: "Price is required." }}
+              rules={{
+                required: "Price is required.",
+                min: { value: 1, message: "Price must be greater than 0." },
+              }}
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="flex items-center gap-1">
@@ -87,7 +90,9 @@ const Pricing = ({ formData, setField }) => {
                       }
                     />
                   </FormControl>
-                  <FormLabel className="font-normal">Hide Price? (Property Finder Only)</FormLabel>
+                  <FormLabel className="font-normal">
+                    Hide Price? (Property Finder Only)
+                  </FormLabel>
                 </FormItem>
               )}
             />
@@ -188,7 +193,7 @@ const Pricing = ({ formData, setField }) => {
             <FormField
               control={control}
               name="rentAmount"
-              rules={{ required: "Rent Amount is required." }}
+              rules={{ required: "Rent Amount is required.", min: { value: 1, message: "Rent must be greater than 0." } }}
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="flex items-center gap-1">

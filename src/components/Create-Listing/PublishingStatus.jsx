@@ -24,7 +24,9 @@ const PublishingStatusForm = ({ formData, setField, nextStep, prevStep }) => {
   // filter based on role
   const filteredStatusOptions = statusOptions.filter((opt) => {
     if (role === "agent") {
-      return !["live", "published"].includes(opt.value);
+      return !["live", "published", "unpublished", "archived"].includes(
+        opt.value
+      );
     }
     if (role === "admin" || role === "super_admin") {
       return opt.value !== "send-for-approval";

@@ -201,6 +201,7 @@ export async function uploadFilesAndCreateListing(formData) {
     video_url: formData.video_tour_url,
     "360_view_url": formData.view_360_url,
     dtcm_permit_number: formData.dtcmPermitNumber,
+    dtcm_expiration_date: formData.dtcmExpirationDate,
     watermark: formData.watermark ? "1" : "0",
     pf_enable: formData.publishPF,
     bayut_enable: formData.publishBayut,

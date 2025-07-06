@@ -134,6 +134,25 @@ const PermitDetails = ({ formData, setField, isDubai = true }) => {
                 </FormItem>
               )}
             />
+            {/* DTCM Expiration Date */}
+            <FormField
+              control={control}
+              name="dtcmExpirationDate"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Expiration Date</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="date"
+                      value={field.value}
+                      onChange={(e) =>
+                        handleFieldChange("dtcmExpirationDate", e.target.value)
+                      }
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
           </div>
         </TabsContent>
       </Tabs>
