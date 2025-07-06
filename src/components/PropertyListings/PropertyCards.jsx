@@ -34,6 +34,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { PropertyTypeEnum } from "../../enums/createListingsEnums";
+import { AcceptDialog, RejectDialog } from "../ManageApprovals";
 
 // Status mapping
 const statusMap = {
@@ -43,9 +44,22 @@ const statusMap = {
   published: { label: "Published", color: "bg-blue-500 text-white" },
   unpublished: { label: "Unpublished", color: "bg-red-500 text-white" },
   pocket: { label: "Pocket Listing", color: "bg-purple-500 text-white" },
+  sendforapproval: {
+    label: "Send for Approval",
+    color: "bg-orange-500 text-white",
+  },
+  rejected: { label: "Rejected", color: "bg-red-600 text-white" },
+  approved: { label: "Approved", color: "bg-green-600 text-white" },
 };
 
-const PropertyCards = ({ listings, loading, totalItems, isMapView }) => {
+const PropertyCards = ({
+  listings,
+  loading,
+  totalItems,
+  isMapView,
+  isApprovalPage = false,
+  refreshList,
+}) => {
   const navigate = useNavigate();
 
   // Helper function to get property type name
@@ -95,16 +109,36 @@ const PropertyCards = ({ listings, loading, totalItems, isMapView }) => {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuItem>Download PDF</DropdownMenuItem>
-                    <DropdownMenuItem>Publish to All</DropdownMenuItem>
-                    <DropdownMenuItem>Publish to PF</DropdownMenuItem>
-                    <DropdownMenuItem>Publish to Bayut</DropdownMenuItem>
-                    <DropdownMenuItem>Publish to Website</DropdownMenuItem>
-                    <DropdownMenuItem>Make it Live</DropdownMenuItem>
-                    <DropdownMenuItem>Archive</DropdownMenuItem>
-                    <DropdownMenuItem className="text-destructive">
-                      Delete
-                    </DropdownMenuItem>
+                    {/* Approval-specific actions */}
+                    {isApprovalPage ? (
+                      <>
+                        <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                          <AcceptDialog
+                            listingId={listing.id}
+                            refreshList={refreshList}
+                          />
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                          <RejectDialog
+                            listingId={listing.id}
+                            refreshList={refreshList}
+                          />
+                        </DropdownMenuItem>
+                      </>
+                    ) : (
+                      <>
+                        <DropdownMenuItem>Download PDF</DropdownMenuItem>
+                        <DropdownMenuItem>Publish to All</DropdownMenuItem>
+                        <DropdownMenuItem>Publish to PF</DropdownMenuItem>
+                        <DropdownMenuItem>Publish to Bayut</DropdownMenuItem>
+                        <DropdownMenuItem>Publish to Website</DropdownMenuItem>
+                        <DropdownMenuItem>Make it Live</DropdownMenuItem>
+                        <DropdownMenuItem>Archive</DropdownMenuItem>
+                        <DropdownMenuItem className="text-destructive">
+                          Delete
+                        </DropdownMenuItem>
+                      </>
+                    )}
                   </DropdownMenuContent>
                 </DropdownMenu>
                 {isMapView ? (

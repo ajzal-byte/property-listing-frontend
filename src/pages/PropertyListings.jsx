@@ -25,7 +25,7 @@ const PropertyListings = () => {
   const [loading, setLoading] = useState(true);
   const [pagination, setPagination] = useState({
     current_page: 1,
-    per_page: 10,
+    per_page: 9,
     total: 0,
     last_page: 1,
   });
@@ -58,7 +58,7 @@ const PropertyListings = () => {
       agent_id: searchParams.getAll("agent_id") || [],
       owner_id: searchParams.getAll("owner_id") || [],
       page: searchParams.get("page") || 1,
-      per_page: searchParams.get("per_page") || 10,
+      per_page: searchParams.get("per_page") || 9,
     };
   };
 

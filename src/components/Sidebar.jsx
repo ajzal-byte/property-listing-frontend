@@ -16,6 +16,7 @@ import {
   Hand,
   LogOut,
   Settings,
+  LaptopMinimalCheck,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -95,10 +96,16 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
           link: "/academy",
         },
         {
-          roles: ["super_admin", "admin", "agent", "owner"],
+          roles: ["super_admin"],
           icon: BarChart3,
           label: "Analytics",
           link: "/analytics",
+        },
+        {
+          roles: ["admin"],
+          icon: LaptopMinimalCheck,
+          label: "Manage Approvals",
+          link: "/manage-approvals",
         },
         {
           roles: ["super_admin", "admin"],

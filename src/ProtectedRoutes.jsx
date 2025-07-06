@@ -17,6 +17,7 @@ import {
   Academy,
   AnalyticsDashboard,
   DetailedSecondary,
+  ManageApprovals,
   MyCompany,
   ProfilePage,
   Subscription,
@@ -60,6 +61,7 @@ export default function ProtectedRoutes() {
       />
       <Route path="/company" element={<MyCompany />} />
       <Route path="/analytics" element={<AnalyticsDashboard />} />
+      <Route path="/manage-approvals" element={<ManageApprovals />} />
       <Route path="/permissions" element={<CurrentUserRoles />} />
       <Route path="/permissions/edit" element={<PermissionManager />} />
       <Route path="/permissions/edit/add-role" element={<AddNewRole />} />

@@ -5,6 +5,7 @@ import DetailedSecondary from "./DetailedSecondary"
 import HomePage from "./HomePage"
 import IndividualOffPlan from "./IndividualOffPlan"
 import IndividualSecondary from "./IndividualSecondary"
+import ManageApprovals from "./ManageApprovals"
 import MyCompany from "./MyCompany"
 import ProfilePage from "./Profile"
 import Subscription from "./Subscription"
@@ -19,6 +20,7 @@ export {
   HomePage,
   IndividualOffPlan,
   IndividualSecondary,
+  ManageApprovals,
   MyCompany,
   ProfilePage,
   Subscription,
