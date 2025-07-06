@@ -30,6 +30,7 @@ import {
   PublishingInformationCard,
   AdditionalNotes,
 } from "../Preview";
+import { role } from "../../utils/getUserRole";
 
 const PreviewForm = ({ formData, prevStep, goToStep, onSubmit, isLoading }) => {
   const [resolvedData, setResolvedData] = useState({});
@@ -55,48 +56,63 @@ const PreviewForm = ({ formData, prevStep, goToStep, onSubmit, isLoading }) => {
       }
 
       // Resolve company
-      if (formData.company) {
-        const compRes = await fetch(
-          `${API_BASE_URL}/companies/${formData.company}`,
-          { headers }
-        );
-        const compData = await compRes.json();
-        console.log(compData);
-
-        resolved.companyName = compData?.name || "Unknown Company";
-
-        // Resolve agents and owners
-        resolved.listingAgentName =
-          compData?.users?.find((u) => u.id == formData.listingAgent)?.name ||
-          "Unknown Agent";
-        resolved.listingAgentReraNumber =
-          compData?.users?.find((u) => u.id == formData.listingAgent)
-            ?.rera_number || "Not specified";
-        resolved.listingAgentEmail =
-          compData?.users?.find((u) => u.id == formData.listingAgent)?.email ||
-          "Not specified";
-        resolved.listingAgentPhone =
-          compData?.users?.find((u) => u.id == formData.listingAgent)?.phone ||
-          "Not specified";
-        resolved.listingAgentProfileUrl =
-          compData?.users?.find((u) => u.id == formData.listingAgent)
-            ?.profile_url || "Not specified";
-        resolved.pfAgentName = formData.pfAgent
-          ? compData?.users?.find((u) => u.id == formData.pfAgent)?.name ||
-            "Unknown Agent"
-          : undefined;
-        resolved.bayutAgentName = formData.bayutAgent
-          ? compData?.users?.find((u) => u.id == formData.bayutAgent)?.name ||
-            "Unknown Agent"
-          : undefined;
-        resolved.websiteAgentName = formData.websiteAgent
-          ? compData?.users?.find((u) => u.id == formData.websiteAgent)?.name ||
-            "Unknown Agent"
-          : undefined;
-        resolved.listingOwnerName =
-          compData?.users?.find((u) => u.id == formData.listingOwner)?.name ||
-          "Unknown Owner";
+      let compRes;
+      if (role === "super_admin") {
+        if (formData.company) {
+          console.log("user is superadmin");
+          compRes = await fetch(
+            `${API_BASE_URL}/companies/${formData.company}`,
+            { headers }
+          );
+        }
+      } else {
+        compRes = await fetch(`${API_BASE_URL}/mycompany`, { headers });
       }
+
+      const compData = await compRes.json();
+
+      resolved.companyName = compData?.name || "Unknown Company";
+
+      // Resolve agents and owners
+      resolved.listingAgentName =
+        compData?.users?.find((u) => u.id == formData.listingAgent)?.name ||
+        "Unknown Agent";
+      resolved.listingAgentReraNumber =
+        compData?.users?.find((u) => u.id == formData.listingAgent)
+          ?.rera_number || "Not specified";
+      resolved.listingAgentEmail =
+        compData?.users?.find((u) => u.id == formData.listingAgent)?.email ||
+        "Not specified";
+      resolved.listingAgentPhone =
+        compData?.users?.find((u) => u.id == formData.listingAgent)?.phone ||
+        "Not specified";
+      resolved.listingAgentProfileUrl =
+        compData?.users?.find((u) => u.id == formData.listingAgent)
+          ?.profile_url || "Not specified";
+      resolved.pfAgentName = formData.pfAgent
+        ? compData?.users?.find((u) => u.id == formData.pfAgent)?.name ||
+          "Unknown Agent"
+        : undefined;
+      resolved.bayutAgentName = formData.bayutAgent
+        ? compData?.users?.find((u) => u.id == formData.bayutAgent)?.name ||
+          "Unknown Agent"
+        : undefined;
+      resolved.websiteAgentName = formData.websiteAgent
+        ? compData?.users?.find((u) => u.id == formData.websiteAgent)?.name ||
+          "Unknown Agent"
+        : undefined;
+      resolved.listingOwnerName =
+        compData?.users?.find((u) => u.id == formData.listingOwner)?.name ||
+        "Unknown Owner";
+      resolved.listingOwnerEmail =
+        compData?.users?.find((u) => u.id == formData.listingOwner)?.email ||
+        "Not specified";
+      resolved.listingOwnerPhone =
+        compData?.users?.find((u) => u.id == formData.listingOwner)?.phone ||
+        "Not specified";
+      resolved.listingOwnerProfileUrl =
+        compData?.users?.find((u) => u.id == formData.listingOwner)
+          ?.profile_url || "Not specified";
 
       if (formData.selectedAmenities && formData.selectedAmenities.length > 0) {
         const amenityPromises = formData.selectedAmenities.map((id) =>
@@ -287,12 +303,21 @@ const PreviewForm = ({ formData, prevStep, goToStep, onSubmit, isLoading }) => {
       />
 
       {/* Link & Contact Info */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 my-8">
         <LinksCard
           floorPlanUrls={formData.floor_plan_urls}
           documents={formData.documents}
           onEdit={goToStep}
           stepNumber={5}
+        />
+
+        <ContactCard
+          profileUrl={resolvedData.listingOwnerProfileUrl}
+          name={resolvedData.listingOwnerName}
+          email={resolvedData.listingOwnerEmail}
+          phone={resolvedData.listingOwnerPhone}
+          onEdit={goToStep}
+          stepNumber={0}
         />
 
         <ContactCard

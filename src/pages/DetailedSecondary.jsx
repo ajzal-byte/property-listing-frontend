@@ -213,12 +213,22 @@ const DetailedSecondary = () => {
       </div>
 
       {/* Links & Contact Info */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 my-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 my-8">
         <LinksCard
           floorPlanUrls={listing.floor_plan}
           documents={listing.documents?.map((url) => ({ url }))}
           showEdit={false}
         />
+
+        {listing.owner && (
+          <ContactCard
+            profileUrl={listing.owner.profile_url}
+            name={listing.owner.name}
+            email={listing.owner.email}
+            phone={listing.owner.phone}
+            showEdit={false}
+          />
+        )}
 
         <ContactCard
           profileUrl={listing.agent?.profile_url}
