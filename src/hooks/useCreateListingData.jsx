@@ -160,9 +160,31 @@ export function useCreateListingData() {
             companies,
             agents: [],
           }));
-        } else {
-          // non-admin: only agents list
+        } else if (user.role.name === "admin") {
+          // admin: only agents list
           const res = await fetch(`${API_BASE_URL}/listing/agents`, {
+            headers,
+          });
+          const { agents } = await res.json();
+          setFormData((f) => ({
+            ...f,
+            companies: [],
+            agents,
+          }));
+        } else if (user.role.name === "agent") {
+          // agent: only their own company
+          const res = await fetch(`${API_BASE_URL}/agents/list`, {
+            headers,
+          });
+          const { agents } = await res.json();
+          setFormData((f) => ({
+            ...f,
+            companies: [],
+            agents,
+          }));
+        } else if (user.role.name === "owner") {
+          // owner
+          const res = await fetch(`${API_BASE_URL}/agents/list/forowners`, {
             headers,
           });
           const { agents } = await res.json();

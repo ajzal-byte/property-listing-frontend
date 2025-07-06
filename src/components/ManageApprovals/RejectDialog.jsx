@@ -74,6 +74,8 @@ const RejectDialog = ({ listingId, refreshList }) => {
             onChange={(e) => setFeedback(e.target.value)}
             placeholder="Enter feedback for the agent..."
             rows={4}
+            autoFocus
+            onKeyDown={(e) => e.stopPropagation()}
           />
         </div>
         <DialogFooter>
