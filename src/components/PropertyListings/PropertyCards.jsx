@@ -6,7 +6,6 @@ import {
   Calendar,
   CheckCircle,
   User,
-  MoreVertical,
 } from "lucide-react";
 import {
   Card,
@@ -26,15 +25,9 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuItem,
-} from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { PropertyTypeEnum } from "../../enums/createListingsEnums";
-import { AcceptDialog, RejectDialog } from "../ManageApprovals";
+import ListingDropDown from "./ListingDropDown";
 
 // Status mapping
 const statusMap = {
@@ -56,7 +49,6 @@ const PropertyCards = ({
   listings,
   loading,
   totalItems,
-  isMapView,
   isApprovalPage = false,
   refreshList,
 }) => {
@@ -98,70 +90,12 @@ const PropertyCards = ({
               {/* Property Image or Map */}
               <CardHeader className="relative">
                 {/* dropdown menu */}
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="absolute top-2 right-2 z-10"
-                    >
-                      <MoreVertical className="h-4 w-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    {/* Approval-specific actions */}
-                    {isApprovalPage ? (
-                      <>
-                        <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                          <AcceptDialog
-                            listingId={listing.id}
-                            refreshList={refreshList}
-                          />
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                          <RejectDialog
-                            listingId={listing.id}
-                            refreshList={refreshList}
-                          />
-                        </DropdownMenuItem>
-                      </>
-                    ) : (
-                      <>
-                        <DropdownMenuItem>Download PDF</DropdownMenuItem>
-                        <DropdownMenuItem>Publish to All</DropdownMenuItem>
-                        <DropdownMenuItem>Publish to PF</DropdownMenuItem>
-                        <DropdownMenuItem>Publish to Bayut</DropdownMenuItem>
-                        <DropdownMenuItem>Publish to Website</DropdownMenuItem>
-                        <DropdownMenuItem>Make it Live</DropdownMenuItem>
-                        <DropdownMenuItem>Archive</DropdownMenuItem>
-                        <DropdownMenuItem className="text-destructive">
-                          Delete
-                        </DropdownMenuItem>
-                      </>
-                    )}
-                  </DropdownMenuContent>
-                </DropdownMenu>
-                {isMapView ? (
-                  latitude && longitude ? (
-                    <iframe
-                      className="w-full h-50 border-0 rounded-t-lg"
-                      allowFullScreen
-                      loading="lazy"
-                      referrerPolicy="no-referrer-when-downgrade"
-                      src={`https://maps.google.com/maps?q=${encodeURIComponent(
-                        latitude
-                      )},${encodeURIComponent(
-                        longitude
-                      )}&hl=en&z=14&output=embed`}
-                    />
-                  ) : (
-                    <div className="w-full h-50 bg-muted flex items-center justify-center rounded-lg">
-                      <span className="text-muted-foreground">
-                        Map view not available
-                      </span>
-                    </div>
-                  )
-                ) : listing.photos?.length > 0 ? (
+                <ListingDropDown
+                  listingId={listing.id}
+                  refreshList={refreshList}
+                  isApprovalPage={isApprovalPage}
+                />
+                {listing.photos?.length > 0 ? (
                   <Carousel className="w-full h-full">
                     <CarouselContent className="w-full h-full">
                       {listing.photos.map((photo, index) => (

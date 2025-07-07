@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Search, Map, PlusCircle, Filter, X } from "lucide-react";
+import { Search, Map, PlusCircle, Filter, X, List } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -30,6 +30,8 @@ const PropertyFilters = ({
   onFilterChange,
   isMapView,
   setIsMapView,
+  isListView,
+  setIsListView,
 }) => {
   const navigate = useNavigate();
   const [moreFiltersOpen, setMoreFiltersOpen] = useState(false);
@@ -575,9 +577,18 @@ const PropertyFilters = ({
       )}
 
       {/* Bottom Row - Map View and Clear */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center space-x-2">
         <Toggle
-          pressed={isMapView}
+          pressed={!isMapView && isListView}
+          onPressedChange={setIsListView}
+          variant="blue"
+        >
+          <List className="mr-2 h-4 w-4" />
+          List View
+        </Toggle>
+
+        <Toggle
+          pressed={isMapView && !isListView}
           onPressedChange={setIsMapView}
           variant="blue"
         >

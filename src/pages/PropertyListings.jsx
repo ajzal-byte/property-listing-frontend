@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import {
   PropertyCards,
   ListingsMap,
+  ListView,
   PropertyFilters,
   PropertyPagination,
 } from "../components/PropertyListings";
@@ -20,6 +21,7 @@ const PropertyListings = () => {
   }, [setMainTab]);
 
   const [isMapView, setIsMapView] = useState(false);
+  const [isListView, setIsListView] = useState(true);
   const [searchParams, setSearchParams] = useSearchParams();
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -102,11 +104,11 @@ const PropertyListings = () => {
     //   params.delete("page");
     // }
     setSearchParams(params);
-  }, [filters, setSearchParams, isMapView]);
+  }, [filters, setSearchParams, isMapView, isListView]);
 
   useEffect(() => {
     fetchListings();
-  }, [filters, isMapView]); // Re-fetch when toggling map view
+  }, [filters, isMapView, isListView]); // Re-fetch when toggling map view
 
   const handleFilterChange = (newFilters) => {
     setFilters((prev) => ({
@@ -128,17 +130,33 @@ const PropertyListings = () => {
         onFilterChange={handleFilterChange}
         setIsMapView={setIsMapView}
         isMapView={isMapView}
+        setIsListView={setIsListView}
+        isListView={isListView}
       />
 
       {isMapView ? (
         <ListingsMap listings={listings} />
       ) : (
         <>
-          <PropertyCards
-            listings={listings}
-            loading={loading}
-            totalItems={pagination.total}
-          />
+          {isListView ? (
+            <ListView
+              listings={listings}
+              loading={loading}
+              totalItems={pagination.total}
+              isApprovalPage={false}
+              refreshList={fetchListings}
+            />
+          ) : (
+            <PropertyCards
+              listings={listings}
+              loading={loading}
+              totalItems={pagination.total}
+              isApprovalPage={false}
+              refreshList={fetchListings}
+            />
+          )}
+
+          {/* pagination shown for both list & card views */}
           {pagination.last_page > 1 && !loading && (
             <PropertyPagination
               currentPage={pagination.current_page}
