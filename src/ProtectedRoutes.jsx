@@ -1,7 +1,4 @@
 import { Routes, Route } from "react-router-dom";
-import SimpleFilters from "./components/SimpleFilters";
-import CardGrid from "./components/DataView/CardGrid";
-import { cards } from "./mockdata/mockData";
 import CourseGrid from "./components/Academy/CourseGrid";
 import LessonsPage from "./components/Academy/Lessons";
 import LessonContent from "./components/Academy/Content/LessonContent";
@@ -18,6 +15,7 @@ import {
   AnalyticsDashboard,
   DetailedSecondary,
   ManageApprovals,
+  AgentApprovals,
   MyCompany,
   ProfilePage,
   Subscription,
@@ -62,6 +60,7 @@ export default function ProtectedRoutes() {
       <Route path="/company" element={<MyCompany />} />
       <Route path="/analytics" element={<AnalyticsDashboard />} />
       <Route path="/manage-approvals" element={<ManageApprovals />} />
+      <Route path="/my-requests" element={<AgentApprovals />} />
       <Route path="/permissions" element={<CurrentUserRoles />} />
       <Route path="/permissions/edit" element={<PermissionManager />} />
       <Route path="/permissions/edit/add-role" element={<AddNewRole />} />

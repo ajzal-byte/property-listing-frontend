@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { Building, GraduationCap, ChevronDown, BadgeHelp } from "lucide-react";
+import { Building, GraduationCap, ChevronDown, BadgeHelp, ChartNoAxesCombined, Signature, ClipboardCheck } from "lucide-react";
 import TabContext from "./../contexts/TabContext";
 import { tabs } from "../enums/sidebarTabsEnums";
 
@@ -56,6 +56,30 @@ const PageHeader = () => {
                   ${isHovered ? "animate-pulse" : ""}
                 `}
                   />
+                ) : mainTab == tabs.ACADEMY ? (
+                  <GraduationCap
+                    className={`w-8 h-8 text-white transition-all duration-300 ${
+                      isHovered ? "animate-pulse" : ""
+                    }`}
+                  />
+                ) : mainTab == tabs.ANALYTICS ? (
+                  <ChartNoAxesCombined
+                    className={`w-8 h-8 text-white transition-all duration-300 ${
+                      isHovered ? "animate-pulse" : ""
+                    }`}
+                  />
+                ) : mainTab == tabs.APPROVALS ? (
+                  <Signature
+                    className={`w-8 h-8 text-white transition-all duration-300 ${
+                      isHovered ? "animate-pulse" : ""
+                    }`}
+                  />
+                ) : mainTab == tabs.MY_REQUESTS ? (
+                  <ClipboardCheck
+                    className={`w-8 h-8 text-white transition-all duration-300 ${
+                      isHovered ? "animate-pulse" : ""
+                    }`}
+                  />
                 ) : mainTab == tabs.SUPPORT ? (
                   <BadgeHelp
                     className={`w-8 h-8 text-white transition-all duration-300 ${
@@ -93,6 +117,8 @@ const PageHeader = () => {
                     ? "Take insight into Analytics"
                     : mainTab == tabs.APPROVALS
                     ? "Manage Approvals"
+                    : mainTab == tabs.MY_REQUESTS
+                    ? "My Listing Requests"
                     : mainTab == tabs.SUPPORT
                     ? "Welcome to VortexWeb Support"
                     : ""}
@@ -119,6 +145,8 @@ const PageHeader = () => {
                       "Gain insights into your listings metrics"
                     ) : mainTab == tabs.APPROVALS ? (
                       "Manage and review property approvals"
+                    ) : mainTab == tabs.MY_REQUESTS ? (
+                      "View your listing requests"
                     ) : mainTab == tabs.SUPPORT ? (
                       <div className="bg-white/10 backdrop-blur-sm p-6 rounded-xl border border-white/20 max-w-md">
                         {" "}

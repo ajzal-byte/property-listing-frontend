@@ -37,7 +37,8 @@ export function LocationSelectField({
     const timer = setTimeout(async () => {
       setLoading(true);
       try {
-        const locs = await fetchLocations(locationFilters, searchQuery);
+        // no more cascading – always fetch the full list
+        const locs = await fetchLocations({}, searchQuery);
         const unique = Array.from(
           new Set(locs.map((l) => l[field]).filter(Boolean))
         ).map((v) => ({ value: v, label: v }));
@@ -49,8 +50,9 @@ export function LocationSelectField({
         setLoading(false);
       }
     }, 300);
+
     return () => clearTimeout(timer);
-  }, [field, locationFilters, searchQuery]);
+  }, [field, searchQuery]);
 
   const handleSelect = (val) => {
     if (value.includes(val)) {
@@ -88,7 +90,7 @@ export function LocationSelectField({
       <PopoverContent className="w-[200px] p-0" align="start">
         <Command shouldFilter={false}>
           <CommandInput
-            placeholder={`Search ${label}...`}
+            placeholder={`Search for more ${label}...`}
             value={searchQuery}
             onValueChange={setSearchQuery}
           />

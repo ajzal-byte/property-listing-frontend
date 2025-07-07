@@ -101,6 +101,8 @@ export function useCreateListingData() {
     property_finder_community: "",
     property_finder_sub_community: "",
     property_finder_tower: "",
+    property_finder_street_direction: "",
+    property_finder_uaeEmirates: "",
 
     bayut_location: "",
     bayut_city: "",

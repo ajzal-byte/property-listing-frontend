@@ -87,12 +87,7 @@ const PropertyFilters = ({
   };
 
   // Prepare location filters for the location select fields
-  const locationFilters = {
-    city: filters.city,
-    community: filters.community,
-    sub_community: filters.sub_community,
-    building: filters.building,
-  };
+  const locationFilters = {};
 
   return (
     <div className="space-y-6 mb-8">

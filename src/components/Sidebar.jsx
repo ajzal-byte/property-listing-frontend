@@ -110,6 +110,12 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
           link: "/manage-approvals",
         },
         {
+          roles: ["agent"],
+          icon: LaptopMinimalCheck,
+          label: "My Listing Requests",
+          link: "/my-requests",
+        },
+        {
           roles: ["super_admin", "admin"],
           icon: Users,
           label: "Manage Users",

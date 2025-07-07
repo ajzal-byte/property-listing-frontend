@@ -47,32 +47,25 @@ const LocationForm = ({ formData, setField, nextStep, prevStep }) => {
 
   // 1) Whenever `formData.pfLocations` arrives or the user types a new search, update filteredPf
   useEffect(() => {
-    // Initialize with the “all PF locations” if no search query
-    if (!searchQueryPF) {
-      setFilteredPf(formData.pfLocations);
-      return;
-    }
+    // always call PF API; use "dubai" if user hasn't typed yet
+    const q = searchQueryPF.trim() || "dubai";
 
-    // Debounce: wait 300ms after last keystroke before calling API
     const handle = setTimeout(async () => {
       try {
-        const API_BASE_URL = "https://backend.myemirateshome.com/api";
-        const headers = getAuthHeaders();
         const res = await fetch(
-          `${API_BASE_URL}/locations?type=pf&search=${encodeURIComponent(
-            searchQueryPF
-          )}`,
-          { headers }
+          `https://pf-api.connecteo.in/?action=listLocations&search=${encodeURIComponent(
+            q
+          )}`
         );
         const json = await res.json();
-        setFilteredPf(json.data || []);
+        setFilteredPf(Array.isArray(json) ? json : []);
       } catch (err) {
         console.error("Error fetching PF locations:", err);
       }
     }, 300);
 
     return () => clearTimeout(handle);
-  }, [searchQueryPF, formData.pfLocations]);
+  }, [searchQueryPF]);
 
   // 2) Similarly for Bayut locations
   useEffect(() => {
@@ -179,12 +172,15 @@ const LocationForm = ({ formData, setField, nextStep, prevStep }) => {
 
   // 4) When user selects a PF location, fill in the related fields automatically
   const onSelectPfLocation = (loc) => {
-    // `loc` is one object from `formData.pfLocations`: { id, city, community, sub_community, building, location, type }
     setField("property_finder_location", loc.id);
     setField("property_finder_city", loc.city || "");
     setField("property_finder_community", loc.community || "");
     setField("property_finder_sub_community", loc.sub_community || "");
     setField("property_finder_tower", loc.building || "");
+    setField("uaeEmirates", loc.uae_emirate || "");
+    // leave streetDirection untouched so user can type it
+    setField("latitude", loc.latitude);
+    setField("longitude", loc.longitude);
     setOpenPF(false);
     setSearchQueryPF("");
   };
@@ -289,6 +285,20 @@ const LocationForm = ({ formData, setField, nextStep, prevStep }) => {
               <div className="space-y-2">
                 <label className="text-sm font-medium">Tower/Building</label>
                 <Input value={formData.property_finder_tower} disabled />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium">UAE Emirates</label>
+                <Input value={formData.uaeEmirates} disabled />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Street Direction</label>
+                <Input
+                  value={formData.streetDirection || ""}
+                  onChange={(e) => setField("streetDirection", e.target.value)}
+                  placeholder="e.g. North, South-East…"
+                />
               </div>
             </CardContent>
           </Card>
