@@ -73,18 +73,25 @@ const ListView = ({
           return (
             <div
               key={listing.id}
-              className="flex flex-col md:flex-row gap-4 p-4 border rounded-lg hover:shadow-md transition-shadow h-full overflow-hidden"
+              className="flex flex-col md:flex-row gap-4 p-4 border rounded-lg hover:shadow-md transition-shadow overflow-hidden"
             >
-              {/* Image Carousel */}
-              <div className="w-full md:w-1/3 h-full relative">
+              {/* Image + Dropdown Overlay */}
+              <div className="relative w-full md:w-1/4 h-58 flex-shrink-0 rounded-lg overflow-hidden">
+                <ListingDropDown
+                  listingId={listing.id}
+                  refreshList={refreshList}
+                  isApprovalPage={isApprovalPage}
+                  className="absolute top-2 right-2 z-10"
+                />
+
                 {listing.photos?.length > 0 ? (
                   <Carousel className="w-full h-full">
                     <CarouselContent className="w-full h-full">
-                      {listing.photos.map((photo, index) => (
-                        <CarouselItem key={index}>
+                      {listing.photos.map((photo, idx) => (
+                        <CarouselItem key={idx}>
                           <img
                             src={photo.image_url}
-                            alt={`Property ${index + 1}`}
+                            alt={`Property ${idx + 1}`}
                             className="w-full h-full object-cover rounded-lg"
                           />
                         </CarouselItem>
@@ -98,12 +105,11 @@ const ListView = ({
                     )}
                   </Carousel>
                 ) : (
-                  <div className="w-full h-full bg-muted flex items-center justify-center rounded-lg">
+                  <div className="w-full h-full bg-muted flex items-center justify-center">
                     <Home className="h-12 w-12 text-muted-foreground" />
                   </div>
                 )}
 
-                {/* Status Badge */}
                 {listing.status && statusMap[listing.status] && (
                   <Badge
                     className={`absolute top-2 left-2 ${
@@ -131,11 +137,6 @@ const ListView = ({
                       Ref: {listing.reference_no}
                     </p>
                   </div>
-                  <ListingDropDown
-                    listingId={listing.id}
-                    refreshList={refreshList}
-                    isApprovalPage={isApprovalPage}
-                  />
                 </div>
 
                 {/* Specifications */}
@@ -168,7 +169,9 @@ const ListView = ({
                   </div>
                   <div className="flex items-center gap-2">
                     <CheckCircle className="h-4 w-4 text-primary" />
-                    <span>{listing.furnished ? "Furnished" : "Unfurnished"}</span>
+                    <span>
+                      {listing.furnished ? "Furnished" : "Unfurnished"}
+                    </span>
                   </div>
                 </div>
 
@@ -205,7 +208,9 @@ const ListView = ({
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => navigate(`/secondary-listings/${listing.id}`)}
+                      onClick={() =>
+                        navigate(`/secondary-listings/${listing.id}`)
+                      }
                     >
                       View Details
                     </Button>
