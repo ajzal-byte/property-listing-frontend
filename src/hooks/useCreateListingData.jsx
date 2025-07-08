@@ -47,7 +47,7 @@ export function useCreateListingData() {
     // Management
     reference_no: "",
     company: "",
-    listingAgent: "",
+    agent_id: "",
     pfAgent: "",
     bayutAgent: "",
     websiteAgent: "",
@@ -81,6 +81,7 @@ export function useCreateListingData() {
     selectedAmenities: [],
 
     // Option lists (populated from APIs)
+    propertyTypes: [],
     developers: [],
     companies: [],
     agents: [],
@@ -121,10 +122,10 @@ export function useCreateListingData() {
     bayutLocations: [],
 
     // PUBLISHING
-    publishPF: false,
-    publishBayutPlatform: false,
-    publishBayut: false,
-    publishDubizzle: false,
+    pf_enable: false,
+    bayut_platform_enable: false,
+    bayut_enable: false,
+    dubizzle_enable: false,
     publishWebsite: false,
 
     // NOTES
@@ -200,16 +201,21 @@ export function useCreateListingData() {
         }
 
         // b) Developers, owners, amenities
-        const [devRes, ownerRes, amenRes] = await Promise.all([
+        const [devRes, ownerRes, propTypeRes, amenRes] = await Promise.all([
           fetch(`${API_BASE_URL}/developers`, { headers }),
           fetch(`${API_BASE_URL}/listOwners`, { headers }),
+          fetch(`${API_BASE_URL}/property-types`, { headers }),
           fetch(`${API_BASE_URL}/amenities`, { headers }),
         ]);
-        const [devData, ownerData, amenData] = await Promise.all([
+        const [devData, ownerData, propTypeData, amenData] = await Promise.all([
           devRes.json(),
           ownerRes.json(),
+          propTypeRes.json(),
           amenRes.json(),
         ]);
+
+        console.log("propTypeData", propTypeData);
+        
 
         setFormData((f) => ({
           ...f,
@@ -217,6 +223,7 @@ export function useCreateListingData() {
           // keep full owner list for filtering, but only populate owners[] for non-superadmins
           allOwners: ownerData.owners,
           owners: user.role.name === "super_admin" ? [] : ownerData.owners,
+          propertyTypes: propTypeData.property_types || [],
           amenitiesList: amenData,
         }));
 

@@ -42,7 +42,7 @@ const PropertyListings = () => {
       price_min: searchParams.get("price_min") || "",
       price_max: searchParams.get("price_max") || "",
       reference_no: searchParams.get("reference_no") || "",
-      rera_permit_number: searchParams.get("rera_permit_number") || "",
+      rera_number: searchParams.get("rera_permit_number") || "",
       dtcm_permit_number: searchParams.get("dtcm_permit_number") || "",
       title: searchParams.get("title") || "",
       status: searchParams.get("status") || "",

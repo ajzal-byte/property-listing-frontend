@@ -37,7 +37,7 @@ export function useCreateListingData() {
     developer: "",
     reference_no: "",
     company: "",
-    listingAgent: "",
+    agent_id: "",
     pfAgent: "",
     bayutAgent: "",
     websiteAgent: "",

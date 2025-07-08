@@ -29,7 +29,7 @@ const PublishingStatusForm = ({ formData, setField, nextStep, prevStep }) => {
       );
     }
     if (role === "admin" || role === "super_admin") {
-      return opt.value !== "send-for-approval";
+      return opt.value !== "sendforapproval";
     }
     return true;
   });

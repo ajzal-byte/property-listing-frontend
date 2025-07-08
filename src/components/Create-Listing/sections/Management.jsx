@@ -32,9 +32,9 @@ const Management = ({ formData, setField }) => {
     if (name === "company" && user.role.name === "super_admin") {
       const selected = formData.companies.find((c) => String(c.id) === value);
       const agentsForCompany = selected?.agents ?? [];
-      // Reset listingAgent
-      setValue("listingAgent", "");
-      setField("listingAgent", "");
+      // Reset agent_id
+      setValue("agent_id", "");
+      setField("agent_id", "");
       // Update agents list
       setField("agents", agentsForCompany);
       setValue("agents", agentsForCompany);
@@ -158,7 +158,7 @@ const Management = ({ formData, setField }) => {
         {/* Listing Agent */}
         <FormField
           control={control}
-          name="listingAgent"
+          name="agent_id"
           rules={{ required: "Please select a listing agent" }}
           render={({ field }) => (
             <FormItem className="w-full">
@@ -167,7 +167,7 @@ const Management = ({ formData, setField }) => {
               </FormLabel>
               <Select
                 value={field.value}
-                onValueChange={(val) => handleChange("listingAgent", val)}
+                onValueChange={(val) => handleChange("agent_id", val)}
               >
                 <FormControl>
                   <SelectTrigger className="h-10 w-full text-base">
@@ -207,7 +207,6 @@ const Management = ({ formData, setField }) => {
                     onCheckedChange={(checked) =>
                       handleChange("useDifferentAgents", checked)
                     }
-                    className="h-5 w-10"
                   />
                   <span className="text-base">
                     {field.value ? "Yes" : "No"}

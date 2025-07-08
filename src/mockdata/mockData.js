@@ -1122,7 +1122,7 @@ export const secondaryListings = [
   {
     management: {
       reference: "REF001",
-      listingAgent: "John Doe",
+      agent_id: "John Doe",
       listingOwner: "Jane Smith",
       landlordName: "Ali Al-Mansoori",
       landlordEmail: "ali@landlord.com",
@@ -1167,7 +1167,7 @@ export const secondaryListings = [
   {
     management: {
       reference: "REF002",
-      listingAgent: "Sarah Lee",
+      agent_id: "Sarah Lee",
       listingOwner: "Mohammed Khan",
       landlordName: "Fatima Al-Farsi",
       landlordEmail: "fatima@landlord.com",
@@ -1211,7 +1211,7 @@ export const secondaryListings = [
   {
     management: {
       reference: "REF003",
-      listingAgent: "Michael Brown",
+      agent_id: "Michael Brown",
       listingOwner: "Laila Ahmed",
       landlordName: "Omar Al-Hamadi",
       landlordEmail: "omar@landlord.com",
@@ -1255,7 +1255,7 @@ export const secondaryListings = [
   {
     management: {
       reference: "REF004",
-      listingAgent: "Emily White",
+      agent_id: "Emily White",
       listingOwner: "Zayed Ali",
       landlordName: "Nora Al-Suwaidi",
       landlordEmail: "nora@landlord.com",
@@ -1299,7 +1299,7 @@ export const secondaryListings = [
   {
     management: {
       reference: "REF005",
-      listingAgent: "David Green",
+      agent_id: "David Green",
       listingOwner: "Sara Nasser",
       landlordName: "Khalid Al-Qasimi",
       landlordEmail: "khalid@landlord.com",

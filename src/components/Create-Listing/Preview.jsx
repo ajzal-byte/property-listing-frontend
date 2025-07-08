@@ -75,20 +75,20 @@ const PreviewForm = ({ formData, prevStep, goToStep, onSubmit, isLoading }) => {
 
       // Resolve agents and owners
       resolved.listingAgentName =
-        compData?.users?.find((u) => u.id == formData.listingAgent)?.name ||
+        compData?.users?.find((u) => u.id == formData.agent_id)?.name ||
         "Unknown Agent";
       resolved.listingAgentReraNumber =
-        compData?.users?.find((u) => u.id == formData.listingAgent)
-          ?.rera_number || "Not specified";
+        compData?.users?.find((u) => u.id == formData.agent_id)?.rera_number ||
+        "Not specified";
       resolved.listingAgentEmail =
-        compData?.users?.find((u) => u.id == formData.listingAgent)?.email ||
+        compData?.users?.find((u) => u.id == formData.agent_id)?.email ||
         "Not specified";
       resolved.listingAgentPhone =
-        compData?.users?.find((u) => u.id == formData.listingAgent)?.phone ||
+        compData?.users?.find((u) => u.id == formData.agent_id)?.phone ||
         "Not specified";
       resolved.listingAgentProfileUrl =
-        compData?.users?.find((u) => u.id == formData.listingAgent)
-          ?.profile_url || "Not specified";
+        compData?.users?.find((u) => u.id == formData.agent_id)?.profile_url ||
+        "Not specified";
       resolved.pfAgentName = formData.pfAgent
         ? compData?.users?.find((u) => u.id == formData.pfAgent)?.name ||
           "Unknown Agent"

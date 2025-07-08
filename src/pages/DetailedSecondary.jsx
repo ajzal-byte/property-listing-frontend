@@ -243,10 +243,10 @@ const DetailedSecondary = () => {
       {/* Publishing Information */}
       <PublishingInformationCard
         formData={{
-          publishPF: listing.pf_enable === 1,
-          publishBayutPlatform: listing.bayut_enable === 1,
-          publishBayut: listing.bayut_enable === 1,
-          publishDubizzle: listing.dubizzle_enable === 1,
+          pf_enable: listing.pf_enable === 1,
+          bayut_platform_enable: listing.bayut_enable === 1,
+          bayut_enable: listing.bayut_enable === 1,
+          dubizzle_enable: listing.dubizzle_enable === 1,
           publishWebsite: listing.website_enable === 1,
         }}
         showEdit={false}

@@ -58,7 +58,7 @@ const PublishingInfoCard = ({ formData, goToStep, showEdit = true }) => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {/* Property Finder */}
           <PlatformBox
-            enabled={formData.publishPF}
+            enabled={formData.pf_enable}
             title="Property Finder"
             icon={{
               content: (
@@ -70,7 +70,7 @@ const PublishingInfoCard = ({ formData, goToStep, showEdit = true }) => {
               ),
             }}
             description={
-              formData.publishPF
+              formData.pf_enable
                 ? "This property will be published on Property Finder"
                 : "Not publishing on Property Finder"
             }
@@ -80,7 +80,7 @@ const PublishingInfoCard = ({ formData, goToStep, showEdit = true }) => {
 
           {/* Bayut */}
           <PlatformBox
-            enabled={formData.publishBayutPlatform}
+            enabled={formData.bayut_platform_enable}
             title="Bayut"
             icon={{
               content: (
@@ -92,7 +92,7 @@ const PublishingInfoCard = ({ formData, goToStep, showEdit = true }) => {
               ),
             }}
             description={
-              formData.publishBayutPlatform
+              formData.bayut_platform_enable
                 ? "Bayut group platforms selected below"
                 : "Not publishing on Bayut"
             }
@@ -103,7 +103,7 @@ const PublishingInfoCard = ({ formData, goToStep, showEdit = true }) => {
               <div className="flex items-center">
                 <Checkbox
                   id="bayut-platform"
-                  checked={formData.publishBayut}
+                  checked={formData.bayut_enable}
                   disabled
                   className="mr-2"
                 />
@@ -114,7 +114,7 @@ const PublishingInfoCard = ({ formData, goToStep, showEdit = true }) => {
               <div className="flex items-center">
                 <Checkbox
                   id="dubizzle"
-                  checked={formData.publishDubizzle}
+                  checked={formData.dubizzle_enable}
                   disabled
                   className="mr-2"
                 />

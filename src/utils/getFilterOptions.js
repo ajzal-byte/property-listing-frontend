@@ -113,7 +113,7 @@ export const getAllFilterOptions = async (locationFilters = {}) => {
     // superadmin: group by o.company.name
     const grouped = {};
     ownersRaw.forEach((o) => {
-      const compName = o.company.name;
+      const compName = o.company?.name;
       if (!grouped[compName]) grouped[compName] = [];
       grouped[compName].push({ value: o.id, label: o.name });
     });
@@ -130,9 +130,9 @@ export const getAllFilterOptions = async (locationFilters = {}) => {
   let agents;
   if (Array.isArray(agentsRes.companies)) {
     // superadmin: each company has its own agents array
-    agents = agentsRes.companies.map((company) => ({
-      label: company.name,
-      options: company.agents.map((agent) => ({
+    agents = agentsRes.companies?.map((company) => ({
+      label: company?.name,
+      options: company?.agents.map((agent) => ({
         value: agent.id,
         label: agent.name,
       })),

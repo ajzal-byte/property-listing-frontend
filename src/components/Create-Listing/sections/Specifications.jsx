@@ -15,11 +15,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import {
-  PropertyTypeEnum,
   OfferingTypeEnum,
   bedroomOptions,
   bathroomOptions,
@@ -27,16 +25,16 @@ import {
   finishingTypeEnum,
 } from "../../../enums/createListingsEnums";
 
-// Define residential and commercial property types based on offering type
-const residentialTypes = PropertyTypeEnum.filter((type) =>
-  type.category.includes("residential")
-);
-const commercialTypes = PropertyTypeEnum.filter((type) =>
-  type.category.includes("commercial")
-);
-
 const Specifications = ({ formData, setField }) => {
   const { control, setValue, trigger } = useFormContext();
+
+  // Define residential and commercial property types based on offering type
+const residentialTypes = formData.propertyTypes.filter((type) =>
+  type.category.includes("residential")
+);
+const commercialTypes = formData.propertyTypes.filter((type) =>
+  type.category.includes("commercial")
+);
 
   const handleChange = (name, value) => {
     setValue(name, value);
@@ -527,7 +525,6 @@ const Specifications = ({ formData, setField }) => {
                     onCheckedChange={(checked) =>
                       handleChange("hasGarden", checked)
                     }
-                    className="h-5 w-10"
                   />
                   <span className="text-base">
                     {field.value ? "Yes" : "No"}
@@ -555,7 +552,6 @@ const Specifications = ({ formData, setField }) => {
                     onCheckedChange={(checked) =>
                       handleChange("hasKitchen", checked)
                     }
-                    className="h-5 w-10"
                   />
                   <span className="text-base">
                     {field.value ? "Yes" : "No"}

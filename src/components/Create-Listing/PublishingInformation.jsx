@@ -24,15 +24,15 @@ const PublishingInformationForm = ({
     setField(platform, pressed);
 
     // Special handling for Bayut
-    if (platform === "publishBayutPlatform") {
+    if (platform === "bayut_platform_enable") {
       if (pressed) {
         // When Bayut is toggled on, enable and check both sub-platforms
-        setField("publishBayut", true);
-        setField("publishDubizzle", true);
+        setField("bayut_enable", true);
+        setField("dubizzle_enable", true);
       } else {
         // When Bayut is toggled off, uncheck both sub-platforms
-        setField("publishBayut", false);
-        setField("publishDubizzle", false);
+        setField("bayut_enable", false);
+        setField("dubizzle_enable", false);
       }
     }
   };
@@ -42,8 +42,8 @@ const PublishingInformationForm = ({
     setField(field, checked);
 
     // If both sub-platforms are unchecked, untoggle the Bayut card
-    if (!checked && !formData.publishBayut && !formData.publishDubizzle) {
-      setField("publishBayutPlatform", false);
+    if (!checked && !formData.bayut_enable && !formData.dubizzle_enable) {
+      setField("bayut_platform_enable", false);
     }
   };
 
@@ -82,13 +82,13 @@ const PublishingInformationForm = ({
               </div>
               <div className="mt-auto">
                 <Toggle
-                  pressed={formData.publishPF}
+                  pressed={formData.pf_enable}
                   onPressedChange={(pressed) =>
-                    handlePlatformToggle("publishPF", pressed)
+                    handlePlatformToggle("pf_enable", pressed)
                   }
                   className="w-full py-3 data-[state=on]:bg-blue-600 data-[state=on]:text-white"
                 >
-                  {formData.publishPF ? "Selected" : "Select"}
+                  {formData.pf_enable ? "Selected" : "Select"}
                 </Toggle>
               </div>
             </CardContent>
@@ -120,16 +120,16 @@ const PublishingInformationForm = ({
                   <div className="flex items-center space-x-2">
                     <Checkbox
                       id="bayut-platform"
-                      checked={formData.publishBayut}
+                      checked={formData.bayut_enable}
                       onCheckedChange={(checked) =>
-                        handleBayutSubPlatformChange("publishBayut", checked)
+                        handleBayutSubPlatformChange("bayut_enable", checked)
                       }
-                      disabled={!formData.publishBayutPlatform}
+                      disabled={!formData.bayut_platform_enable}
                     />
                     <label
                       htmlFor="bayut-platform"
                       className={`text-sm font-medium leading-none ${
-                        !formData.publishBayutPlatform
+                        !formData.bayut_platform_enable
                           ? "text-muted-foreground"
                           : ""
                       }`}
@@ -141,16 +141,16 @@ const PublishingInformationForm = ({
                   <div className="flex items-center space-x-2">
                     <Checkbox
                       id="dubizzle"
-                      checked={formData.publishDubizzle}
+                      checked={formData.dubizzle_enable}
                       onCheckedChange={(checked) =>
-                        handleBayutSubPlatformChange("publishDubizzle", checked)
+                        handleBayutSubPlatformChange("dubizzle_enable", checked)
                       }
-                      disabled={!formData.publishBayutPlatform}
+                      disabled={!formData.bayut_platform_enable}
                     />
                     <label
                       htmlFor="dubizzle"
                       className={`text-sm font-medium leading-none ${
-                        !formData.publishBayutPlatform
+                        !formData.bayut_platform_enable
                           ? "text-muted-foreground"
                           : ""
                       }`}
@@ -162,13 +162,13 @@ const PublishingInformationForm = ({
               </div>
               <div className="mt-auto">
                 <Toggle
-                  pressed={formData.publishBayutPlatform}
+                  pressed={formData.bayut_platform_enable}
                   onPressedChange={(pressed) =>
-                    handlePlatformToggle("publishBayutPlatform", pressed)
+                    handlePlatformToggle("bayut_platform_enable", pressed)
                   }
                   className="w-full py-3 data-[state=on]:bg-orange-500 data-[state=on]:text-white"
                 >
-                  {formData.publishBayutPlatform ? "Selected" : "Select"}
+                  {formData.bayut_platform_enable ? "Selected" : "Select"}
                 </Toggle>
               </div>
             </CardContent>

@@ -25,7 +25,7 @@ import TabContext from "./../contexts/TabContext";
 const propertyData = {
   management: {
     reference: "REF001",
-    listingAgent: "John Doe",
+    agent_id: "John Doe",
     listingOwner: "Jane Smith",
     landlordName: "Ali Al-Mansoori",
     landlordEmail: "ali@landlord.com",
@@ -272,7 +272,7 @@ export default function IndividualSecondary() {
                     <User className="h-5 w-5 text-blue-600" />
                     <div>
                       <p className="font-medium">
-                        {propertyData.management.listingAgent}
+                        {propertyData.management.agent_id}
                       </p>
                       <p className="text-sm text-gray-500">Listing Agent</p>
                     </div>
