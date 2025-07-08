@@ -1,5 +1,14 @@
 import { useEffect, useState } from "react";
-import { Search, Map, PlusCircle, Filter, X, List } from "lucide-react";
+import {
+  Search,
+  Map,
+  PlusCircle,
+  Filter,
+  X,
+  List,
+  LayoutGrid,
+} from "lucide-react";
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -18,6 +27,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from "@/components/ui/tooltip";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -29,9 +43,9 @@ const PropertyFilters = ({
   filters,
   onFilterChange,
   isMapView,
-  setIsMapView,
   isListView,
-  setIsListView,
+  isGridView,
+  handleViewChange = () => {},
 }) => {
   const navigate = useNavigate();
   const [moreFiltersOpen, setMoreFiltersOpen] = useState(false);
@@ -581,23 +595,50 @@ const PropertyFilters = ({
 
       {/* Bottom Row - Map View and Clear */}
       <div className="flex items-center space-x-2">
-        <Toggle
-          pressed={!isMapView && isListView}
-          onPressedChange={setIsListView}
-          variant="blue"
-        >
-          <List className="mr-2 h-4 w-4" />
-          List View
-        </Toggle>
+        {/* List View */}
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Toggle
+              pressed={isListView}
+              onPressedChange={() => handleViewChange("list")}
+              size="sm"
+              className={cn(isListView && "bg-blue-500 text-white")}
+            >
+              <List className="h-4 w-4" />
+            </Toggle>
+          </TooltipTrigger>
+          <TooltipContent side="top">List View</TooltipContent>
+        </Tooltip>
 
-        <Toggle
-          pressed={isMapView && !isListView}
-          onPressedChange={setIsMapView}
-          variant="blue"
-        >
-          <Map className="mr-2 h-4 w-4" />
-          Map View
-        </Toggle>
+        {/* Grid View */}
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Toggle
+              pressed={isGridView}
+              onPressedChange={() => handleViewChange("grid")}
+              size="sm"
+              className={cn(isGridView && "bg-blue-500 text-white")}
+            >
+              <LayoutGrid className="h-4 w-4" />
+            </Toggle>
+          </TooltipTrigger>
+          <TooltipContent side="top">Grid View</TooltipContent>
+        </Tooltip>
+
+        {/* Map View */}
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Toggle
+              pressed={isMapView}
+              onPressedChange={() => handleViewChange("map")}
+              size="sm"
+              className={cn(isMapView && "bg-blue-500 text-white")}
+            >
+              <Map className="h-4 w-4" />
+            </Toggle>
+          </TooltipTrigger>
+          <TooltipContent side="top">Map View</TooltipContent>
+        </Tooltip>
       </div>
     </div>
   );

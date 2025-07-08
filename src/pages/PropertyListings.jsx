@@ -21,7 +21,8 @@ const PropertyListings = () => {
   }, [setMainTab]);
 
   const [isMapView, setIsMapView] = useState(false);
-  const [isListView, setIsListView] = useState(false);
+  const [isListView, setIsListView] = useState(true);
+  const [isGridView, setIsGridView] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -110,6 +111,23 @@ const PropertyListings = () => {
     fetchListings();
   }, [filters, isMapView, isListView]); // Re-fetch when toggling map view
 
+  const handleViewChange = (view) => {
+    if (view === "map") {
+      setIsMapView(true);
+      setIsListView(false);
+      setIsGridView(false);
+    } else if (view === "list") {
+      setIsMapView(false);
+      setIsListView(true);
+      setIsGridView(false);
+    } else if (view === "grid") {
+      setIsMapView(false);
+      setIsListView(false);
+      setIsGridView(true);
+    }
+    // window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   const handleFilterChange = (newFilters) => {
     setFilters((prev) => ({
       ...prev,
@@ -128,11 +146,11 @@ const PropertyListings = () => {
       <PropertyFilters
         filters={filters}
         onFilterChange={handleFilterChange}
-        setIsMapView={setIsMapView}
         isMapView={isMapView}
-        setIsListView={setIsListView}
         isListView={isListView}
-      />
+        isGridView={isGridView}
+        handleViewChange={handleViewChange}
+        />
 
       {isMapView ? (
         <ListingsMap listings={listings} />
