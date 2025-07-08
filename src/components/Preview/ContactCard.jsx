@@ -41,7 +41,7 @@ const ContactCard = ({
           <div>
             <h3 className="font-semibold">{name}</h3>
             <p className="text-muted-foreground text-sm">
-              RERA: {reraNumber || "Not specified"}
+              BRN: {reraNumber || "Not specified"}
             </p>
           </div>
         </div>

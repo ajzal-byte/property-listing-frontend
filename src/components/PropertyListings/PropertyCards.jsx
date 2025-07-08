@@ -25,6 +25,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { PropertyTypeEnum } from "../../enums/createListingsEnums";
 import ListingDropDown from "./ListingDropDown";
@@ -186,14 +187,15 @@ const PropertyCards = ({
                   <div className="flex justify-between items-start gap-6 pt-3 border-t">
                     {/* Owner Info */}
                     {listing.owner && (
-                      <div className="flex items-center gap-3">
-                        <Avatar className="h-8 w-8">
-                          <AvatarImage src={listing.owner.profile_url} />
-                          <AvatarFallback>
-                            <User className="h-4 w-4" />
-                          </AvatarFallback>
-                        </Avatar>
-                        <div>
+                      <div className="flex flex-col items-start gap-2">
+                        <Label className="text-xs">Listing Owner</Label>
+                        <div className="flex items-center gap-3">
+                          <Avatar className="h-8 w-8">
+                            <AvatarImage src={listing.owner.profile_url} />
+                            <AvatarFallback>
+                              <User className="h-4 w-4" />
+                            </AvatarFallback>
+                          </Avatar>
                           <p className="text-sm font-medium">
                             {listing.owner.name}
                           </p>
@@ -203,14 +205,15 @@ const PropertyCards = ({
 
                     {/* Agent Info */}
                     {listing.agent && (
-                      <div className="flex items-center gap-3">
-                        <Avatar className="h-8 w-8">
-                          <AvatarImage src={listing.agent.profile_url} />
-                          <AvatarFallback>
-                            <User className="h-4 w-4" />
-                          </AvatarFallback>
-                        </Avatar>
-                        <div>
+                      <div className="flex flex-col items-start gap-2">
+                        <Label className="text-xs">Listing Agent</Label>
+                        <div className="flex items-center gap-3">
+                          <Avatar className="h-8 w-8">
+                            <AvatarImage src={listing.agent.profile_url} />
+                            <AvatarFallback>
+                              <User className="h-4 w-4" />
+                            </AvatarFallback>
+                          </Avatar>
                           <p className="text-sm font-medium">
                             {listing.agent.name}
                           </p>
@@ -231,28 +234,26 @@ const PropertyCards = ({
                 </Button>
                 <Button
                   asChild
-                  disabled={!(listing.agent?.phone || listing.agent?.email)}
+                  disabled={!(listing.owner?.phone || listing.owner?.email)}
                   variant="blue"
                 >
-                  {listing.agent?.phone ? (
+                  {listing.owner?.phone ? (
                     <a
-                      href={`https://wa.me/${listing.agent.phone}`}
+                      href={`https://wa.me/${listing.owner.phone}`}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      Contact Agent
+                      Contact Owner
                     </a>
-                  ) : listing.agent?.email ? (
+                  ) : listing.owner?.email ? (
                     <a
-                      href={`mailto:${listing.agent.email}`}
+                      href={`mailto:${listing.owner.email}`}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      Contact Agent
+                      Contact Owner
                     </a>
-                  ) : (
-                    <span>Contact Agent</span>
-                  )}
+                  ) : null}
                 </Button>
               </CardFooter>
             </Card>
