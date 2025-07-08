@@ -18,7 +18,10 @@ const ListingsMap = ({ listings }) => {
 
   // Filter listings to only include those with valid geopoints
   const listingsWithGeo = listings.filter(
-    (listing) => listing.geopoints && listing.geopoints.includes(",")
+    (listing) =>
+      listing.geopoints &&
+      typeof listing.geopoints === "string" &&
+      listing.geopoints.includes(",")
   );
 
   // Set a default center for the map (e.g., Dubai)
@@ -51,20 +54,33 @@ const ListingsMap = ({ listings }) => {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         {listingsWithGeo.map((listing) => {
-          const [latitude, longitude] = listing.geopoints.split(",");
+          // --- Start of Fix ---
+          const parts = listing.geopoints.split(",");
 
-          // Ensure coordinates are valid numbers
-          if (isNaN(latitude) || isNaN(longitude)) {
+          // Ensure there are exactly two parts after splitting
+          if (parts.length !== 2) {
             return null;
           }
 
-          const position = [parseFloat(latitude), parseFloat(longitude)];
+          const lat = parseFloat(parts[0]);
+          const lon = parseFloat(parts[1]);
+
+          // Ensure both parsed values are valid numbers before creating the marker
+          if (isNaN(lat) || isNaN(lon)) {
+            console.warn("Skipping invalid geopoint:", listing.geopoints);
+            return null;
+          }
+
+          const position = [lat, lon];
+          // --- End of Fix ---
 
           return (
             <Marker key={listing.id} position={position}>
               <Popup>
-                <div className="space-y-2">
-                  <h3 className="font-bold text-md">{listing.title_en}</h3>
+                <div className="space-y-2 w-48">
+                  <h3 className="font-bold text-md truncate">
+                    {listing.title_en}
+                  </h3>
                   <p className="text-blue-600 font-semibold">
                     AED {new Intl.NumberFormat().format(listing.price)}
                   </p>
