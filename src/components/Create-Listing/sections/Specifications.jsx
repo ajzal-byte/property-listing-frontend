@@ -21,93 +21,75 @@ import { Label } from "@/components/ui/label";
 import {
   PropertyTypeEnum,
   OfferingTypeEnum,
+  bedroomOptions,
+  bathroomOptions,
+  furnishing_typeEnum,
+  finishingTypeEnum,
 } from "../../../enums/createListingsEnums";
 
+// Define residential and commercial property types based on offering type
+const residentialTypes = PropertyTypeEnum.filter((type) =>
+  type.category.includes("residential")
+);
+const commercialTypes = PropertyTypeEnum.filter((type) =>
+  type.category.includes("commercial")
+);
+
 const Specifications = ({ formData, setField }) => {
-  // Grab the shared form context provided in PropertyDetails.jsx
   const { control, setValue, trigger } = useFormContext();
 
-  // useEffect(() => {
-  //   // Trigger validation for required fields in this section
-  //   trigger([
-  //     "offeringType",
-  //     "titleDeed",
-  //     "propertyType",
-  //     "size",
-  //     "developer",
-  //   ]).then((isValid) => {
-  //     // Report the overall validity of this section to the parent
-  //     updateSectionValidity(sectionId, isValid);
-  //   });
-  // }, [formData, trigger, updateSectionValidity, sectionId, errors]);
-
-  // Central handler to update both RHF state and your own formData
   const handleChange = (name, value) => {
     setValue(name, value);
     setField(name, value);
     trigger(name);
   };
 
+  // Determine property types based on offering type
+  const getPropertyTypes = (category) => {
+    if (category === "residential") {
+      return residentialTypes;
+    }
+    return commercialTypes;
+  };
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-8 rounded-lg bg-background p-6 shadow-sm">
       <div className="border-b pb-4">
-        <h2 className="text-xl font-semibold">Specifications</h2>
-        <p className="text-muted-foreground text-sm">
-          Enter the basic details about your property.
+        <h2 className="text-2xl font-semibold">Property Specifications</h2>
+        <p className="mt-1 text-base text-muted-foreground">
+          Provide essential details about your property
         </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-6 gap-y-4">
-        {/* Offering Type */}
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {/* Category */}
         <FormField
           control={control}
-          name="offeringType"
-          rules={{ required: "Offering type is required." }}
-          render={({ field }) => (
-            <FormItem className="space-y-2">
-              <FormLabel className="flex items-center gap-1">
-                Offering Type<span className="text-red-500">*</span>
-              </FormLabel>
-              <FormControl>
-                <RadioGroup
-                  className="flex flex-col gap-2"
-                  value={field.value}
-                  onValueChange={(val) => handleChange("offeringType", val)}
-                >
-                  {OfferingTypeEnum.map(({ value, name }) => (
-                    <div key={value} className="flex items-center space-x-2">
-                      <RadioGroupItem id={value} value={value} />
-                      <Label htmlFor={value} className="cursor-pointer">
-                        {name}
-                      </Label>
-                    </div>
-                  ))}
-                </RadioGroup>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        {/* Title Deed */}
-        <FormField
-          control={control}
-          name="titleDeed"
-          // rules={{ required: "Title deed is required." }}
+          name="category"
+          rules={{ required: "Please select a category" }}
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="flex items-center gap-1">
-                Title Deed
+              <FormLabel className="text-base font-medium">
+                Category <span className="text-red-500">*</span>
               </FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="Enter title deed number"
-                  value={field.value}
-                  onChange={(e) => handleChange("titleDeed", e.target.value)}
-                  onBlur={() => trigger("titleDeed")}
-                />
-              </FormControl>
-              <FormMessage />
+              <Select
+                value={field.value}
+                onValueChange={(val) => handleChange("category", val)}
+              >
+                <FormControl>
+                  <SelectTrigger className="h-10 text-base w-full">
+                    <SelectValue placeholder="Select category" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {OfferingTypeEnum.map(({ value, name }) => (
+                    <SelectItem key={value} value={value} className="text-base">
+                      {name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage className="text-base" />
             </FormItem>
           )}
         />
@@ -115,31 +97,59 @@ const Specifications = ({ formData, setField }) => {
         {/* Property Type */}
         <FormField
           control={control}
-          name="propertyType"
-          rules={{ required: "Property type is required." }}
+          name="property_type"
+          rules={{ required: "Please select a property type" }}
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="flex items-center gap-1">
+              <FormLabel className="text-base font-medium">
                 Property Type <span className="text-red-500">*</span>
               </FormLabel>
               <Select
                 value={field.value}
-                onValueChange={(val) => handleChange("propertyType", val)}
+                onValueChange={(val) => handleChange("property_type", val)}
               >
                 <FormControl>
-                  <SelectTrigger>
+                  <SelectTrigger className="h-10 text-base w-full">
                     <SelectValue placeholder="Select property type" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {PropertyTypeEnum.map(({ value, name }) => (
-                    <SelectItem key={value} value={value}>
-                      {name}
-                    </SelectItem>
-                  ))}
+                  {getPropertyTypes(formData.category).map(
+                    ({ value, name }) => (
+                      <SelectItem
+                        key={value}
+                        value={value}
+                        className="text-base"
+                      >
+                        {name}
+                      </SelectItem>
+                    )
+                  )}
                 </SelectContent>
               </Select>
-              <FormMessage />
+              <FormMessage className="text-base" />
+            </FormItem>
+          )}
+        />
+
+        {/* Title Deed */}
+        <FormField
+          control={control}
+          name="title_deed"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-base font-medium">
+                Title Deed
+              </FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="Enter title deed number"
+                  value={field.value || ""}
+                  onChange={(e) => handleChange("title_deed", e.target.value)}
+                  className="h-10 text-base"
+                />
+              </FormControl>
+              <FormMessage className="text-base" />
             </FormItem>
           )}
         />
@@ -149,42 +159,26 @@ const Specifications = ({ formData, setField }) => {
           control={control}
           name="size"
           rules={{
-            required: "Size is required.",
-            min: { value: 1, message: "Size must be greater than 0." },
+            required: "Please enter property size",
+            min: { value: 1, message: "Size must be greater than 0" },
           }}
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="flex items-center gap-1">
+              <FormLabel className="text-base font-medium">
                 Size (sq.ft) <span className="text-red-500">*</span>
               </FormLabel>
               <FormControl>
                 <Input
                   type="number"
                   placeholder="Enter size in sq.ft"
-                  value={field.value}
+                  value={field.value || ""}
+                  min={1}
+                  step={0.01}
                   onChange={(e) => handleChange("size", e.target.value)}
-                  onBlur={() => trigger("size")}
+                  className="h-10 text-base"
                 />
               </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        {/* Unit No */}
-        <FormField
-          control={control}
-          name="unitNo"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Unit No</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="Enter unit number"
-                  value={field.value}
-                  onChange={(e) => handleChange("unitNo", e.target.value)}
-                />
-              </FormControl>
+              <FormMessage className="text-base" />
             </FormItem>
           )}
         />
@@ -193,21 +187,30 @@ const Specifications = ({ formData, setField }) => {
         <FormField
           control={control}
           name="bedrooms"
-          rules={{
-            min: { value: 0, message: "Bedrooms must be 0 or greater than 0." },
-          }}
+          rules={{ required: "Please select no. of bedrooms" }}
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Bedrooms</FormLabel>
-              <FormControl>
-                <Input
-                  type="number"
-                  placeholder="Number of bedrooms"
-                  value={field.value}
-                  onChange={(e) => handleChange("bedrooms", e.target.value)}
-                />
-              </FormControl>
-              <FormMessage />
+              <FormLabel className="text-base font-medium">
+                Bedrooms <span className="text-red-500">*</span>
+              </FormLabel>
+              <Select
+                value={field.value}
+                onValueChange={(val) => handleChange("bedrooms", val)}
+              >
+                <FormControl>
+                  <SelectTrigger className="h-10 text-base w-full">
+                    <SelectValue placeholder="Select no. of bedrooms" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {bedroomOptions.map((item) => (
+                    <SelectItem key={item} value={item} className="text-base">
+                      {item}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage className="text-base" />
             </FormItem>
           )}
         />
@@ -216,24 +219,93 @@ const Specifications = ({ formData, setField }) => {
         <FormField
           control={control}
           name="bathrooms"
-          rules={{
-            min: {
-              value: 0,
-              message: "Bathrooms must be 0 or greater than 0.",
-            },
-          }}
+          rules={{ required: "Please select no. of bathrooms" }}
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Bathrooms</FormLabel>
-              <FormControl>
-                <Input
-                  type="number"
-                  placeholder="Number of bathrooms"
-                  value={field.value}
-                  onChange={(e) => handleChange("bathrooms", e.target.value)}
-                />
-              </FormControl>
-              <FormMessage />
+              <FormLabel className="text-base font-medium">
+                Bathrooms <span className="text-red-500">*</span>
+              </FormLabel>
+              <Select
+                value={field.value}
+                onValueChange={(val) => handleChange("bathrooms", val)}
+              >
+                <FormControl>
+                  <SelectTrigger className="h-10 text-base w-full">
+                    <SelectValue placeholder="Select no. of bathrooms" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {bathroomOptions.map((item) => (
+                    <SelectItem key={item} value={item} className="text-base">
+                      {item}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage className="text-base" />
+            </FormItem>
+          )}
+        />
+
+        {/* Furnishing Type */}
+        <FormField
+          control={control}
+          name="furnishing_type"
+          rules={{ required: "Please select furnishing type" }}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-base font-medium">
+                Furnishing Type <span className="text-red-500">*</span>
+              </FormLabel>
+              <Select
+                value={field.value}
+                onValueChange={(val) => handleChange("furnishing_type", val)}
+              >
+                <FormControl>
+                  <SelectTrigger className="h-10 text-base w-full">
+                    <SelectValue placeholder="Select furnishing type" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {furnishing_typeEnum.map(({ value, name }) => (
+                    <SelectItem key={value} value={value} className="text-base">
+                      {name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage className="text-base" />
+            </FormItem>
+          )}
+        />
+
+        {/* Finishing Type */}
+        <FormField
+          control={control}
+          name="finishingType"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-base font-medium">
+                Finishing Type
+              </FormLabel>
+              <Select
+                value={field.value}
+                onValueChange={(val) => handleChange("finishingType", val)}
+              >
+                <FormControl>
+                  <SelectTrigger className="h-10 text-base w-full">
+                    <SelectValue placeholder="Select finishing type" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {finishingTypeEnum.map(({ value, name }) => (
+                    <SelectItem key={value} value={value} className="text-base">
+                      {name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage className="text-base" />
             </FormItem>
           )}
         />
@@ -241,49 +313,46 @@ const Specifications = ({ formData, setField }) => {
         {/* Parking Spaces */}
         <FormField
           control={control}
-          name="parkingSpaces"
-          rules={{
-            min: {
-              value: 0,
-              message: "Parking spaces must be 0 or greater than 0.",
-            },
-          }}
+          name="parking"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Parking Spaces</FormLabel>
+              <FormLabel className="text-base font-medium">
+                Parking Spaces
+              </FormLabel>
               <FormControl>
                 <Input
                   type="number"
-                  placeholder="Number of parking spaces"
-                  value={field.value}
-                  onChange={(e) =>
-                    handleChange("parkingSpaces", e.target.value)
-                  }
+                  placeholder="Enter number of parking spaces"
+                  value={field.value || ""}
+                  min={0}
+                  step={1}
+                  onChange={(e) => handleChange("parking", e.target.value)}
+                  className="h-10 text-base"
                 />
               </FormControl>
-              <FormMessage />
+              <FormMessage className="text-base" />
             </FormItem>
           )}
         />
 
-        {/* Furnished */}
+        {/* Unit Number */}
         <FormField
           control={control}
-          name="isFurnished"
+          name="unit_no"
           render={({ field }) => (
-            <FormItem className="flex items-center gap-6">
-              <FormLabel>Furnished</FormLabel>
+            <FormItem>
+              <FormLabel className="text-base font-medium">
+                Unit Number
+              </FormLabel>
               <FormControl>
-                <div className="flex items-center space-x-2">
-                  <Switch
-                    checked={field.value}
-                    onCheckedChange={(checked) =>
-                      handleChange("isFurnished", checked)
-                    }
-                  />
-                  <span className="text-sm">{field.value ? "Yes" : "No"}</span>
-                </div>
+                <Input
+                  placeholder="Enter unit number"
+                  value={field.value || ""}
+                  onChange={(e) => handleChange("unit_no", e.target.value)}
+                  className="h-10 text-base"
+                />
               </FormControl>
+              <FormMessage className="text-base" />
             </FormItem>
           )}
         />
@@ -291,27 +360,26 @@ const Specifications = ({ formData, setField }) => {
         {/* Total Plot Size */}
         <FormField
           control={control}
-          name="totalPlotSize"
-          rules={{
-            min: {
-              value: 1,
-              message: "Total plot size must be greater than 0.",
-            },
-          }}
+          name="total_plot_size"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Total Plot Size (sq.ft)</FormLabel>
+              <FormLabel className="text-base font-medium">
+                Total Plot Size (sq.ft)
+              </FormLabel>
               <FormControl>
                 <Input
                   type="number"
                   placeholder="Enter total plot size"
-                  value={field.value}
+                  value={field.value || ""}
+                  min={1}
+                  step={0.01}
                   onChange={(e) =>
-                    handleChange("totalPlotSize", e.target.value)
+                    handleChange("total_plot_size", e.target.value)
                   }
+                  className="h-10 text-base"
                 />
               </FormControl>
-              <FormMessage />
+              <FormMessage className="text-base" />
             </FormItem>
           )}
         />
@@ -320,21 +388,23 @@ const Specifications = ({ formData, setField }) => {
         <FormField
           control={control}
           name="lotSize"
-          rules={{
-            min: { value: 1, message: "Lot size must be greater than 0." },
-          }}
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Lot Size (sq.ft)</FormLabel>
+              <FormLabel className="text-base font-medium">
+                Lot Size (sq.ft)
+              </FormLabel>
               <FormControl>
                 <Input
                   type="number"
                   placeholder="Enter lot size"
-                  value={field.value}
+                  value={field.value || ""}
+                  min={1}
+                  step={0.01}
                   onChange={(e) => handleChange("lotSize", e.target.value)}
+                  className="h-10 text-base"
                 />
               </FormControl>
-              <FormMessage />
+              <FormMessage className="text-base" />
             </FormItem>
           )}
         />
@@ -342,22 +412,26 @@ const Specifications = ({ formData, setField }) => {
         {/* Built-up Area */}
         <FormField
           control={control}
-          name="builtUpArea"
-          rules={{
-            min: { value: 1, message: "Built-up area must be greater than 0." },
-          }}
+          name="built_up_area"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Built-up Area (sq.ft)</FormLabel>
+              <FormLabel className="text-base font-medium">
+                Built-up Area (sq.ft)
+              </FormLabel>
               <FormControl>
                 <Input
                   type="number"
                   placeholder="Enter built-up area"
-                  value={field.value}
-                  onChange={(e) => handleChange("builtUpArea", e.target.value)}
+                  value={field.value || ""}
+                  min={1}
+                  step={0.01}
+                  onChange={(e) =>
+                    handleChange("built_up_area", e.target.value)
+                  }
+                  className="h-10 text-base"
                 />
               </FormControl>
-              <FormMessage />
+              <FormMessage className="text-base" />
             </FormItem>
           )}
         />
@@ -365,20 +439,21 @@ const Specifications = ({ formData, setField }) => {
         {/* Layout Type */}
         <FormField
           control={control}
-          name="layoutType"
+          name="layout_type"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Layout Type</FormLabel>
+              <FormLabel className="text-base font-medium">
+                Layout Type
+              </FormLabel>
               <FormControl>
                 <Input
                   placeholder="Enter layout type"
-                  {...field}
-                  onChange={(e) => {
-                    field.onChange(e);
-                    handleChange("layoutType", e.target.value);
-                  }}
+                  value={field.value || ""}
+                  onChange={(e) => handleChange("layout_type", e.target.value)}
+                  className="h-10 text-base"
                 />
               </FormControl>
+              <FormMessage className="text-base" />
             </FormItem>
           )}
         />
@@ -389,14 +464,16 @@ const Specifications = ({ formData, setField }) => {
           name="ownership"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Ownership</FormLabel>
+              <FormLabel className="text-base font-medium">Ownership</FormLabel>
               <FormControl>
                 <Input
                   placeholder="Enter ownership type"
-                  value={field.value}
+                  value={field.value || ""}
                   onChange={(e) => handleChange("ownership", e.target.value)}
+                  className="h-10 text-base"
                 />
               </FormControl>
+              <FormMessage className="text-base" />
             </FormItem>
           )}
         />
@@ -405,30 +482,87 @@ const Specifications = ({ formData, setField }) => {
         <FormField
           control={control}
           name="developer"
-          // rules={{ required: "Developer is required." }}
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="flex items-center gap-1">
-                Developer
-              </FormLabel>
+              <FormLabel className="text-base font-medium">Developer</FormLabel>
               <Select
                 value={field.value}
                 onValueChange={(val) => handleChange("developer", val)}
               >
                 <FormControl>
-                  <SelectTrigger>
+                  <SelectTrigger className="h-10 text-base w-full">
                     <SelectValue placeholder="Select developer" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
                   {formData.developers.map((dev) => (
-                    <SelectItem key={dev.id} value={String(dev.id)}>
+                    <SelectItem
+                      key={dev.id}
+                      value={String(dev.id)}
+                      className="text-base"
+                    >
                       {dev.name}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
-              <FormMessage />
+              <FormMessage className="text-base" />
+            </FormItem>
+          )}
+        />
+
+        {/* Garden Switch */}
+        <FormField
+          control={control}
+          name="hasGarden"
+          render={({ field }) => (
+            <FormItem className="flex items-center gap-4">
+              <FormLabel className="text-base font-medium">
+                Has Garden?
+              </FormLabel>
+              <FormControl>
+                <div className="flex items-center gap-2">
+                  <Switch
+                    checked={field.value}
+                    onCheckedChange={(checked) =>
+                      handleChange("hasGarden", checked)
+                    }
+                    className="h-5 w-10"
+                  />
+                  <span className="text-base">
+                    {field.value ? "Yes" : "No"}
+                  </span>
+                </div>
+              </FormControl>
+              <FormMessage className="text-base" />
+            </FormItem>
+          )}
+        />
+
+        {/* Kitchen Switch */}
+        <FormField
+          control={control}
+          name="hasKitchen"
+          render={({ field }) => (
+            <FormItem className="flex items-center gap-4">
+              <FormLabel className="text-base font-medium">
+                Has Kitchen?
+              </FormLabel>
+              <FormControl>
+                <div className="flex items-center gap-2">
+                  <Switch
+                    checked={field.value}
+                    onCheckedChange={(checked) =>
+                      handleChange("hasKitchen", checked)
+                    }
+                    className="h-5 w-10"
+                  />
+                  <span className="text-base">
+                    {field.value ? "Yes" : "No"}
+                  </span>
+                </div>
+              </FormControl>
+              <FormMessage className="text-base" />
             </FormItem>
           )}
         />

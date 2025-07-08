@@ -142,91 +142,73 @@ export async function uploadFilesAndCreateListing(formData) {
       : "available";
 
   const payload = {
-    reference_no: formData.referenceNumber,
-    title: formData.titleEn,
-    title_deed: formData.titleDeed,
-    property_type: formData.propertyType,
-    offering_type: formData.offeringType,
-    size: Number(formData.size),
-    unit_no: formData.unitNo,
-    bedrooms: Number(formData.bedrooms),
-    bathrooms: Number(formData.bathrooms),
-    parking: Number(formData.parkingSpaces),
-    furnished: formData.isFurnished ? "1" : "0",
-    total_plot_size: Number(formData.totalPlotSize),
-    plot_size: formData.lotSize,
-    built_up_area: formData.builtUpArea,
-    layout_type: formData.layoutType,
-    ownership: formData.ownership,
-    developer_id: formData.developer,
-    // project_name: formData.developerName || "",
-    // project_status: "",           // fill if you have it
-    // sale_type: "1",
-    // build_year: "",               // add if you collected
-    // customer: "",                 // add if you collected
-    rera_permit_number: formData.reraPermitNumber,
-    rera_issue_date: formData.reraIssueDate,
-    rera_expiration_date: formData.reraExpirationDate,
-    contract_expiry_date: "",
-    rental_period: formData.rentFrequency,
-    price: Number(formData.price) || Number(formData.rentAmount),
-    hide_price: formData.hidePrice,
-    payment_method: formData.paymentMethod,
-    down_payment_amount: Number(formData.downPayment) || 0,
-    financial_status: formData.financialStatus,
-    // sale_type_1: "",              // if needed
+    ...formData,
+
     title_en: formData.titleEn,
     title_ar: formData.titleAr,
     desc_en: formData.descriptionEn,
     desc_ar: formData.descriptionAr,
-    geopoints: `${formData.latitude},${formData.longitude}`,
+    developer_id: formData.developer,
     listing_owner: formData.listingOwner || "",
-    landlord_name: formData.landlordName,
-    landlord_email: formData.landlordEmail,
-    landlord_contact: formData.landlordContact,
+
+    // Structured location field
     collectionpf_location: {
+      id: formData.property_finder_location_id,
       city: formData.property_finder_city,
       community: formData.property_finder_community,
       sub_community: formData.property_finder_sub_community,
-      building: formData.property_finder_building,
+      building: formData.property_finder_tower,
       street_direction: formData.property_finder_street_direction,
-      uaeEmirates: formData.property_finder_uaeEmirates,
+      uaeEmirates: formData.property_finder_uae_emirate,
     },
-    bayut_location: formData.bayut_location,
-    // availability,
-    available_from: formData.availableFrom,
-    emirate_amount: Number(formData.serviceCharges),
+
+    // Transformed fields
+    size: Number(formData.size),
+    total_plot_size: Number(formData.total_plot_size),
+    built_up_area: Number(formData.built_up_area),
+    plot_size: Number(formData.lotSize),
+    parking: Number(formData.parking),
+    price: Number(formData.price),
+    down_payment_amount: Number(formData.downPayment) || 0,
+    emirate_amount: Number(formData.service_charges),
+    contract_charges: Number(formData.service_charges),
+
+    // Logic-based formatting
     payment_option: formData.numberOfCheques
       ? `${formData.numberOfCheques} cheques`
       : "Upfront",
-    no_of_cheques: formData.numberOfCheques,
-    contract_charges: Number(formData.serviceCharges),
-    contract_expiry: "",
-    qr_code: formData.qr_code_property_booster,
-    qr_code_image: formData.qr_code_image_websites,
-    brochure: "",
-    video_url: formData.video_tour_url,
-    "360_view_url": formData.view_360_url,
-    dtcm_permit_number: formData.dtcmPermitNumber,
-    dtcm_expiry_date: formData.dtcmExpirationDate,
+
     watermark: formData.watermark ? "1" : "0",
-    pf_enable: formData.publishPF,
-    bayut_enable: formData.publishBayut,
-    dubizzle_enable: formData.publishDubizzle,
-    website_enable: formData.publishWebsite,
-    company_id: formData.company,
-    agent_id: formData.listingAgent,
-    owner_id: formData.listingOwner,
-    status: formData.publishingStatus,
-    amenities: formData.selectedAmenities,
-    comments: formData.notes,
-    pf_agent_id: formData.pfAgent,
-    website_agent_id: formData.websiteAgent,
-    bayut_dubizzle_agent_id: formData.bayutAgent,
+
+    // Defaults
+    contract_expiry_date: "",
+    contract_expiry: "",
+    brochure: "",
+
     photo_urls,
     floor_plan,
     documents,
   };
+
+  // Remove unused fields
+  delete payload.agents;
+  delete payload.allOwners;
+  delete payload.amenitiesList;
+  delete payload.bayutLocations;
+  delete payload.pfLocations;
+  delete payload.companies;
+  delete payload.developers;
+  delete payload.owners;
+  delete payload.descriptionAr;
+  delete payload.descriptionEn;
+  delete payload.titleAr;
+  delete payload.titleEn;
+  // Remove empty fields
+  Object.keys(payload).forEach((key) => {
+    if (payload[key] === "") delete payload[key];
+  });
+
+  console.log("Final payload: ", payload);
 
   // 6) POST create listing
   const res = await fetch(`${API_BASE_URL}/listings`, {

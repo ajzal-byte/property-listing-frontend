@@ -141,7 +141,7 @@ const PropertyCards = ({
                   {listing.offering_type === "RS" ||
                   listing.offering_type === "CS"
                     ? ""
-                    : ` / ${listing.rental_period}`}
+                    : ` / ${listing.amount_type}`}
                 </CardTitle>
                 <div className="text-sm text-muted-foreground mb-3">
                   Ref: {listing.reference_no}

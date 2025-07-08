@@ -30,7 +30,7 @@ export default function ListingEditForm({
     property_type: "",
     offering_type: "",
     dtcm_permit_number: "",
-    rental_period: "",
+    amount_type: "",
     size: "",
     bedrooms: "",
     bathrooms: "",
@@ -59,7 +59,7 @@ export default function ListingEditForm({
   const [success, setSuccess] = useState(false);
   const [removeImagesList, setRemoveImagesList] = useState([]);
   const [uploading, setUploading] = useState(false);
-  const [currentFile, setCurrentFile] = useState('');
+  const [currentFile, setCurrentFile] = useState("");
   const [newlyUploadedImages, setNewlyUploadedImages] = useState([]);
   // debugging purpose
   useEffect(() => {
@@ -70,12 +70,12 @@ export default function ListingEditForm({
     console.log("sendableData updated:", sendableData);
   }, [sendableData]);
 
-  useEffect(()=>{
+  useEffect(() => {
     setSendableData((prev) => ({
       ...prev,
       remove_images: removeImagesList,
     }));
-  },[removeImagesList])
+  }, [removeImagesList]);
 
   // Pre-fill form with existing listing data
   useEffect(() => {
@@ -137,7 +137,6 @@ export default function ListingEditForm({
   // Upload file to S3 via presigned URL
   const uploadFile = async (file) => {
     try {
-      
       setUploading(true);
 
       // Get presigned URL
@@ -167,12 +166,12 @@ export default function ListingEditForm({
         file_url: fileUrl.replace(/ /g, "%20"), //replaces " " with "%20"
         is_main: formData.photo_urls.length === 0, // First image is main by default
       };
-      
-      if(formData.photo_urls.find(p=> p.file_url == newPhotoUrl.file_url)){
-        setError("Uploading Duplicate Image is not allowed")
-        setUploading(false)
+
+      if (formData.photo_urls.find((p) => p.file_url == newPhotoUrl.file_url)) {
+        setError("Uploading Duplicate Image is not allowed");
+        setUploading(false);
         setTimeout(() => {
-          setError(null); 
+          setError(null);
         }, 1500);
         return;
       }
@@ -181,21 +180,21 @@ export default function ListingEditForm({
       //   photo_urls: [...formData.photo_urls, newPhotoUrl],
       // });
 
-      if(!formData.photo_urls.find(p=> (p.file_url == newPhotoUrl.file_url))){
-        setNewlyUploadedImages((prev)=> [...prev, newPhotoUrl.file_url])
+      if (
+        !formData.photo_urls.find((p) => p.file_url == newPhotoUrl.file_url)
+      ) {
+        setNewlyUploadedImages((prev) => [...prev, newPhotoUrl.file_url]);
       }
 
-      
       setFormData((prev) => ({
         ...prev,
-        photo_urls: [...formData.photo_urls, newPhotoUrl]
-      }));
-  
-      setSendableData((prev) => ({
-        ...prev,
-        photo_urls: [...sendableData.photo_urls,newPhotoUrl]
+        photo_urls: [...formData.photo_urls, newPhotoUrl],
       }));
 
+      setSendableData((prev) => ({
+        ...prev,
+        photo_urls: [...sendableData.photo_urls, newPhotoUrl],
+      }));
 
       setCurrentFile(null);
       setUploading(false);
@@ -215,7 +214,6 @@ export default function ListingEditForm({
     );
 
     console.log("photo to remove:", photoToRemove);
-    
 
     // setSendableData((prev) => ({
     //   ...prev,
@@ -229,24 +227,21 @@ export default function ListingEditForm({
     // console.log(`delete logs:`);
     // formData.photo_urls.map(p=> console.log(p.fileUrl)
     // )
-    
 
     setFormData((prev) => ({
       ...prev,
-      photo_urls: formData.photo_urls.filter(p=> p.file_url != fileUrl),
+      photo_urls: formData.photo_urls.filter((p) => p.file_url != fileUrl),
     }));
 
     setSendableData((prev) => ({
       ...prev,
-      photo_urls: sendableData.photo_urls.filter(p=> p.file_url != fileUrl),
+      photo_urls: sendableData.photo_urls.filter((p) => p.file_url != fileUrl),
       remove_images: removeImagesList,
     }));
 
-    newlyUploadedImages.filter(p => p != fileUrl )
+    newlyUploadedImages.filter((p) => p != fileUrl);
 
     console.log(formData);
-
-   
   };
 
   const handleSetMainPhoto = (fileUrl) => {
@@ -255,36 +250,35 @@ export default function ListingEditForm({
       is_main: photo.file_url == fileUrl,
     }));
 
-    const isMainPhoto = formData.photo_urls.find(p => p.file_url == fileUrl)
+    const isMainPhoto = formData.photo_urls.find((p) => p.file_url == fileUrl);
     console.log("isMainPhoto : ", isMainPhoto);
     // const isMainId = `${formData.photos.find(p => p.image_url == isMainPhoto.file_url).id}`
 
-    
     console.log(formData.photos);
-    
+
     // console.log(isMainId);
-    
 
     setFormData((prev) => ({
       ...prev,
       photo_urls: updatedPhotos,
     }));
 
-   if (!newlyUploadedImages.find (p => p == fileUrl)){
-     setSendableData((prev) => ({
-       ...prev,
-       main_image: `${formData.photos.find(p => p.image_url == isMainPhoto.file_url).id}`,
-     }))
-   }else{
-    setSendableData((prev) => ({
-      ...prev,
-      photo_urls: sendableData.photo_urls.map((photo) => ({
-        ...photo,
-        is_main: photo.file_url == fileUrl,
-      }))
-    }));
-   }
-    
+    if (!newlyUploadedImages.find((p) => p == fileUrl)) {
+      setSendableData((prev) => ({
+        ...prev,
+        main_image: `${
+          formData.photos.find((p) => p.image_url == isMainPhoto.file_url).id
+        }`,
+      }));
+    } else {
+      setSendableData((prev) => ({
+        ...prev,
+        photo_urls: sendableData.photo_urls.map((photo) => ({
+          ...photo,
+          is_main: photo.file_url == fileUrl,
+        })),
+      }));
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -325,7 +319,8 @@ export default function ListingEditForm({
       setSuccess(true);
       alert("Successfully updated");
       onSuccess();
-      window.location.href = window.location.pathname + '?reload=' + new Date().getTime();
+      window.location.href =
+        window.location.pathname + "?reload=" + new Date().getTime();
     } catch (err) {
       setError(err.message);
     } finally {
@@ -443,7 +438,7 @@ export default function ListingEditForm({
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Offering Type
+                Category
               </label>
               <select
                 name="offering_type"
@@ -451,7 +446,7 @@ export default function ListingEditForm({
                 onChange={handleChange}
                 className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               >
-                <option value="">Select Offering Type</option>
+                <option value="">Select Category</option>
                 {OfferingTypeEnum.map((type) => (
                   <option key={type.value} value={type.value}>
                     {type.name}
@@ -522,8 +517,8 @@ export default function ListingEditForm({
                 Rental Period
               </label>
               <select
-                name="rental_period"
-                value={formData.rental_period || ""}
+                name="amount_type"
+                value={formData.amount_type || ""}
                 onChange={handleChange}
                 className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               >
@@ -814,8 +809,6 @@ export default function ListingEditForm({
             </h2>
 
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-             
-
               {formData.photo_urls?.map((photo, index) => {
                 return (
                   <div
@@ -864,42 +857,41 @@ export default function ListingEditForm({
             </div>
 
             <div className="mb-4">
-            <div className="flex items-center justify-center w-full">
-              <label
-                className={`flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 ${
-                  uploading ? "opacity-50 cursor-not-allowed" : ""
-                }`}
-              >
-                <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                  <Upload className="w-8 h-8 mb-2 text-gray-500" />
-                  <p className="mb-2 text-sm text-gray-500">
-                    <span className="font-semibold">Click to upload</span> or
-                    drag and drop
-                  </p>
-                  <p className="text-xs text-gray-500">
-                    PNG, JPG, GIF up to 10MB
-                  </p>
-                </div>
-                <input
-                  type="file"
-                  className="hidden"
-                  onChange={handleFileSelect}
-                  disabled={uploading}
-                  accept="image/*"
-                />
-              </label>
-            </div>
-
-            {uploading && (
-              <div className="mt-2 flex items-center justify-center">
-                <Loader className="animate-spin h-5 w-5 mr-2 text-blue-500" />
-                <span className="text-sm text-gray-600">
-                  Uploading {currentFile?.name}...
-                </span>
+              <div className="flex items-center justify-center w-full">
+                <label
+                  className={`flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 ${
+                    uploading ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
+                >
+                  <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                    <Upload className="w-8 h-8 mb-2 text-gray-500" />
+                    <p className="mb-2 text-sm text-gray-500">
+                      <span className="font-semibold">Click to upload</span> or
+                      drag and drop
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      PNG, JPG, GIF up to 10MB
+                    </p>
+                  </div>
+                  <input
+                    type="file"
+                    className="hidden"
+                    onChange={handleFileSelect}
+                    disabled={uploading}
+                    accept="image/*"
+                  />
+                </label>
               </div>
-            )}
-          </div>
 
+              {uploading && (
+                <div className="mt-2 flex items-center justify-center">
+                  <Loader className="animate-spin h-5 w-5 mr-2 text-blue-500" />
+                  <span className="text-sm text-gray-600">
+                    Uploading {currentFile?.name}...
+                  </span>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </form>

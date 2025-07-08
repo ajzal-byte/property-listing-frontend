@@ -20,22 +20,22 @@ export function useCreateListingData() {
   // 3) Master formData state (all fields across all sections)
   const [formData, setFormData] = useState({
     // …―― Property Details section (unchanged) ――…
-    offeringType: "",
-    titleDeed: "",
-    propertyType: "",
+    category: "",
+    title_deed: "",
+    property_type: "",
     size: "",
-    unitNo: "",
+    unit_no: "",
     bedrooms: "",
     bathrooms: "",
-    parkingSpaces: "",
-    isFurnished: false,
-    totalPlotSize: "",
+    parking: "",
+    furnishing_type: false,
+    total_plot_size: "",
     lotSize: "",
-    builtUpArea: "",
-    layoutType: "",
+    built_up_area: "",
+    layout_type: "",
     ownership: "",
     developer: "",
-    referenceNumber: "",
+    reference_no: "",
     company: "",
     listingAgent: "",
     pfAgent: "",
@@ -46,16 +46,16 @@ export function useCreateListingData() {
     landlordEmail: "",
     landlordContact: "",
     availableFrom: "",
-    reraPermitNumber: "",
-    reraIssueDate: "",
+    rera_permit_number: "",
+    rera_issue_date: "",
     reraExpirationDate: "",
-    dtcmPermitNumber: "",
+    dtcm_permit_number: "",
     price: "",
-    hidePrice: false,
+    hide_price: false,
     paymentMethod: "",
     downPayment: "",
     numberOfCheques: "",
-    serviceCharges: "",
+    service_charges: "",
     financialStatus: "",
     rentFrequency: "",
     rentAmount: "",
@@ -77,7 +77,7 @@ export function useCreateListingData() {
 
     // — NEW: Location step defaults —
     // (These hold the user’s chosen ID, not the raw strings)
-    property_finder_location: "",   // selected PF location ID
+    property_finder_location: "", // selected PF location ID
     property_finder_city: "",
     property_finder_community: "",
     property_finder_sub_community: "",
@@ -85,7 +85,7 @@ export function useCreateListingData() {
     property_finder_latitude: "",
     property_finder_longitude: "",
 
-    bayut_location: "",             // selected Bayut location ID
+    bayut_location: "", // selected Bayut location ID
     bayut_city: "",
     bayut_community: "",
     bayut_sub_community: "",

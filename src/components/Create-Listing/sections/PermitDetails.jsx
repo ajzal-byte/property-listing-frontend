@@ -8,14 +8,11 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 const PermitDetails = ({ formData, setField, isDubai = true }) => {
-  // Local tab state
   const [activeTab, setActiveTab] = useState("rera");
-
-  // Pull in shared form context
-  const { control, setValue, trigger, getValues } = useFormContext();
+  const { control, setValue, trigger } = useFormContext();
 
   const handleFieldChange = (name, value) => {
     setValue(name, value);
@@ -24,44 +21,50 @@ const PermitDetails = ({ formData, setField, isDubai = true }) => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8 rounded-lg bg-background p-6 shadow-sm">
       <div className="border-b pb-4">
-        <h2 className="text-xl font-semibold">Permit Details</h2>
-        <p className="text-muted-foreground text-sm">
-          Enter permit information for your property.
+        <h2 className="text-2xl font-semibold">Permit Details</h2>
+        <p className="mt-1 text-base text-muted-foreground">
+          Provide permit information for your property
         </p>
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="rera">RERA</TabsTrigger>
-          <TabsTrigger value="dtcm">DTCM</TabsTrigger>
+          <TabsTrigger value="rera" className="text-base">
+            RERA
+          </TabsTrigger>
+          <TabsTrigger value="dtcm" className="text-base">
+            DTCM
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="rera" className="mt-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-6 gap-y-4">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {/* RERA Permit Number */}
             <FormField
               control={control}
-              name="reraPermitNumber"
-              rules={{ required: "Permit Number is required." }}
+              name="rera_permit_number"
+              rules={{
+                required: isDubai ? "Please enter a RERA permit number" : false,
+              }}
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="flex items-center gap-1">
-                    RERA Permit Number
+                <FormItem className="w-full">
+                  <FormLabel className="text-base font-medium">
+                    RERA Permit Number{" "}
                     {isDubai && <span className="text-red-500">*</span>}
                   </FormLabel>
                   <FormControl>
                     <Input
                       placeholder="Enter RERA permit number"
-                      value={field.value}
+                      value={field.value || ""}
                       onChange={(e) =>
-                        handleFieldChange("reraPermitNumber", e.target.value)
+                        handleFieldChange("rera_permit_number", e.target.value)
                       }
-                      onBlur={() => trigger("reraPermitNumber")}
+                      className="h-10 w-full text-base"
                     />
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage className="text-base" />
                 </FormItem>
               )}
             />
@@ -69,19 +72,23 @@ const PermitDetails = ({ formData, setField, isDubai = true }) => {
             {/* RERA Issue Date */}
             <FormField
               control={control}
-              name="reraIssueDate"
+              name="rera_issue_date"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Issue Date</FormLabel>
+                <FormItem className="w-full">
+                  <FormLabel className="text-base font-medium">
+                    Issue Date
+                  </FormLabel>
                   <FormControl>
                     <Input
-                      type="date"
-                      value={field.value}
+                      type="datetime-local"
+                      value={field.value || ""}
                       onChange={(e) =>
-                        handleFieldChange("reraIssueDate", e.target.value)
+                        handleFieldChange("rera_issue_date", e.target.value)
                       }
+                      className="h-10 w-full text-base"
                     />
                   </FormControl>
+                  <FormMessage className="text-base" />
                 </FormItem>
               )}
             />
@@ -91,17 +98,21 @@ const PermitDetails = ({ formData, setField, isDubai = true }) => {
               control={control}
               name="reraExpirationDate"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Expiration Date</FormLabel>
+                <FormItem className="w-full">
+                  <FormLabel className="text-base font-medium">
+                    Expiration Date
+                  </FormLabel>
                   <FormControl>
                     <Input
-                      type="date"
-                      value={field.value}
+                      type="datetime-local"
+                      value={field.value || ""}
                       onChange={(e) =>
                         handleFieldChange("reraExpirationDate", e.target.value)
                       }
+                      className="h-10 w-full text-base"
                     />
                   </FormControl>
+                  <FormMessage className="text-base" />
                 </FormItem>
               )}
             />
@@ -109,47 +120,52 @@ const PermitDetails = ({ formData, setField, isDubai = true }) => {
         </TabsContent>
 
         <TabsContent value="dtcm" className="mt-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-6 gap-y-4">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {/* DTCM Permit Number */}
             <FormField
               control={control}
-              name="dtcmPermitNumber"
-              rules={{ required: "DTCM Permit Number is required." }}
+              name="dtcm_permit_number"
+              rules={{ required: "Please enter a DTCM permit number" }}
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="flex items-center gap-1">
+                <FormItem className="w-full">
+                  <FormLabel className="text-base font-medium">
                     DTCM Permit Number <span className="text-red-500">*</span>
                   </FormLabel>
                   <FormControl>
                     <Input
                       placeholder="Enter DTCM permit number"
-                      value={field.value}
+                      value={field.value || ""}
                       onChange={(e) =>
-                        handleFieldChange("dtcmPermitNumber", e.target.value)
+                        handleFieldChange("dtcm_permit_number", e.target.value)
                       }
-                      onBlur={() => trigger("dtcmPermitNumber")}
+                      className="h-10 w-full text-base"
                     />
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage className="text-base" />
                 </FormItem>
               )}
             />
+
             {/* DTCM Expiration Date */}
             <FormField
               control={control}
-              name="dtcmExpirationDate"
+              name="dtcm_expiry_date"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Expiration Date</FormLabel>
+                <FormItem className="w-full">
+                  <FormLabel className="text-base font-medium">
+                    Expiration Date
+                  </FormLabel>
                   <FormControl>
                     <Input
-                      type="date"
-                      value={field.value}
+                      type="datetime-local"
+                      value={field.value || ""}
                       onChange={(e) =>
-                        handleFieldChange("dtcmExpirationDate", e.target.value)
+                        handleFieldChange("dtcm_expiry_date", e.target.value)
                       }
+                      className="h-10 w-full text-base"
                     />
                   </FormControl>
+                  <FormMessage className="text-base" />
                 </FormItem>
               )}
             />

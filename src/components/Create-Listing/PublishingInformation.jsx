@@ -88,7 +88,7 @@ const PublishingInformationForm = ({
                   }
                   className="w-full py-3 data-[state=on]:bg-blue-600 data-[state=on]:text-white"
                 >
-                  {formData.publishPF ? "Published" : "Publish"}
+                  {formData.publishPF ? "Selected" : "Select"}
                 </Toggle>
               </div>
             </CardContent>
@@ -168,7 +168,7 @@ const PublishingInformationForm = ({
                   }
                   className="w-full py-3 data-[state=on]:bg-orange-500 data-[state=on]:text-white"
                 >
-                  {formData.publishBayutPlatform ? "Published" : "Publish"}
+                  {formData.publishBayutPlatform ? "Selected" : "Select"}
                 </Toggle>
               </div>
             </CardContent>
@@ -202,7 +202,7 @@ const PublishingInformationForm = ({
                   }
                   className="w-full py-3 data-[state=on]:bg-purple-600 data-[state=on]:text-white"
                 >
-                  {formData.publishWebsite ? "Published" : "Publish"}
+                  {formData.publishWebsite ? "Selected" : "Select"}
                 </Toggle>
               </div>
             </CardContent>

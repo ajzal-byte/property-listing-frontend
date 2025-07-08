@@ -1,33 +1,170 @@
 export const PropertyTypeEnum = [
-  { value: "AP", name: "Apartment / Flat" },
-  { value: "TH", name: "Townhouse" },
-  { value: "VH", name: "Villa / House" },
-  { value: "PH", name: "Penthouse" },
-  { value: "LP", name: "Residential / Commercial Land" },
-  { value: "FF", name: "Full Floor" },
-  { value: "BU", name: "Bulk Units" },
-  { value: "CD", name: "Compound" },
-  { value: "DX", name: "Duplex" },
-  { value: "FA", name: "Factory / Farm" },
-  { value: "HA", name: "Hotel Apartment" },
-  { value: "HF", name: "Half Floor" },
-  { value: "LC", name: "Labor Camp" },
-  { value: "OF", name: "Office Space" },
-  { value: "RE", name: "Retail / Restaurant" },
-  { value: "SA", name: "Staff Accommodation" },
-  { value: "WB", name: "Whole / Commercial Building" },
-  { value: "SH", name: "Shop" },
-  { value: "SR", name: "Show Room" },
-  { value: "WH", name: "Warehouse / Storage" },
-  { value: "RF", name: "Residential Floor" },
-  { value: "CF", name: "Commercial Floor" },
+  {
+    value: "compound",
+    name: "Compound",
+    types: ["Building"],
+    category: ["residential"],
+  },
+  {
+    value: "whole-building",
+    name: "Whole Building",
+    types: ["Building", "Land"],
+    category: ["residential", "commercial"],
+  },
+  {
+    value: "factory",
+    name: "Factory",
+    types: ["Building"],
+    category: ["commercial"],
+  },
+  {
+    value: "land",
+    name: "Land",
+    types: ["Land"],
+    category: ["residential", "commercial"],
+  },
+  { value: "rest-house", name: "Rest House", types: [], category: [] },
+  {
+    value: "apartment",
+    name: "Apartment",
+    types: ["Unit"],
+    category: ["residential"],
+  },
+  {
+    value: "shop",
+    name: "Shop",
+    types: ["Building"],
+    category: ["commercial"],
+  },
+  {
+    value: "warehouse",
+    name: "Warehouse",
+    types: ["Building"],
+    category: ["commercial"],
+  },
+  { value: "chalet", name: "Chalet", types: [], category: [] },
+  {
+    value: "office-space",
+    name: "Office Space",
+    types: ["Building"],
+    category: ["commercial"],
+  },
+  {
+    value: "full-floor",
+    name: "Full Floor",
+    types: ["Unit"],
+    category: ["residential", "commercial"],
+  },
+  {
+    value: "villa",
+    name: "Villa",
+    types: ["Villa", "Land"],
+    category: ["residential", "commercial"],
+  },
+  { value: "farm", name: "Farm", types: ["Land"], category: ["commercial"] },
+  {
+    value: "show-room",
+    name: "Show Room",
+    types: ["Building"],
+    category: ["commercial"],
+  },
+  {
+    value: "bulk-sale-unit",
+    name: "Bulk Sale Unit",
+    types: ["Building"],
+    category: ["residential", "commercial"],
+  },
+  { value: "restaurant", name: "Restaurant", types: [], category: [] },
+  { value: "roof", name: "Roof", types: [], category: [] },
+  {
+    value: "half-floor",
+    name: "Half Floor",
+    types: ["Unit"],
+    category: ["residential", "commercial"],
+  },
+  { value: "twin-house", name: "Twin House", types: [], category: [] },
+  { value: "cabin", name: "Cabin", types: [], category: [] },
+  {
+    value: "bulk-rent-unit",
+    name: "Bulk Rent Unit",
+    types: ["Building"],
+    category: ["residential", "commercial"],
+  },
+  { value: "ivilla", name: "iVilla", types: [], category: [] },
+  {
+    value: "co-working-space",
+    name: "Co-working Space",
+    types: ["Building"],
+    category: ["commercial"],
+  },
+  {
+    value: "hotel-apartment",
+    name: "Hotel Apartment",
+    types: ["Unit"],
+    category: ["residential"],
+  },
+  {
+    value: "retail",
+    name: "Retail",
+    types: ["Building"],
+    category: ["commercial"],
+  },
+  {
+    value: "duplex",
+    name: "Duplex",
+    types: ["Unit"],
+    category: ["residential"],
+  },
+  {
+    value: "townhouse",
+    name: "Townhouse",
+    types: ["Villa", "Land"],
+    category: ["residential"],
+  },
+  {
+    value: "staff-accommodation",
+    name: "Staff Accommodation",
+    types: ["Building"],
+    category: ["commercial"],
+  },
+  {
+    value: "medical-facility",
+    name: "Medical Facility",
+    types: [],
+    category: [],
+  },
+  { value: "palace", name: "Palace", types: [], category: [] },
+  {
+    value: "penthouse",
+    name: "Penthouse",
+    types: ["Unit"],
+    category: ["residential"],
+  },
+  { value: "clinic", name: "Clinic", types: [], category: [] },
+  { value: "cafeteria", name: "Cafeteria", types: [], category: [] },
+  {
+    value: "bungalow",
+    name: "Bungalow",
+    types: ["Villa", "Land"],
+    category: ["residential"],
+  },
+  {
+    value: "labor-camp",
+    name: "Labor Camp",
+    types: ["Building"],
+    category: ["commercial"],
+  },
+  {
+    value: "business-center",
+    name: "Business Center",
+    types: ["Building"],
+    category: ["commercial"],
+  },
 ];
 
 export const OfferingTypeEnum = [
-  { value: "RR", name: "Residential Rent" },
-  { value: "RS", name: "Residential Sale" },
-  { value: "CR", name: "Commercial Rent" },
-  { value: "CS", name: "Commercial Sale" },
+  { value: "residential", name: "Residential" },
+  { value: "commercial", name: "Commercial" },
 ];
 
 export const StatusEnum = [
@@ -56,7 +193,8 @@ export const portalOptions = [
   { value: "website_enable", label: "Website" },
 ];
 
-export const bedroomBathroomOptions = [
+export const bedroomOptions = [
+  "studio",
   "1",
   "2",
   "3",
@@ -69,13 +207,74 @@ export const bedroomBathroomOptions = [
   "10",
   "11",
   "12",
+  "13",
+  "14",
+  "15",
+  "16",
+  "17",
+  "18",
+  "19",
+  "20",
+];
+
+export const bathroomOptions = [
+  "none",
+  "1",
+  "2",
+  "3",
+  "4",
+  "5",
+  "6",
+  "7",
+  "8",
+  "9",
+  "10",
+  "11",
+  "12",
+  "13",
+  "14",
+  "15",
+  "16",
+  "17",
+  "18",
+  "19",
+  "20",
 ];
 
 export const TimePeriodEnum = [
+  { value: "sale", name: "Sale" },
   { value: "yearly", name: "Yearly" },
   { value: "monthly", name: "Monthly" },
-  { value: "quarterly", name: "Quarterly" },
+  { value: "weekly", name: "Weekly" },
+  { value: "daily", name: "Daily" },
 ];
+
+export const furnishing_typeEnum = [
+  { value: "unfurnished", name: "Unfurnished" },
+  { value: "semi-furnished", name: "Semi-Furnished" },
+  { value: "furnished", name: "Furnished" },
+];
+
+export const finishingTypeEnum = [
+  { value: "unfinished", name: "Unfinished" },
+  { value: "semi-finished", name: "Semi-Finished" },
+  { value: "fully-finished", name: "Fully-Finished" },
+];
+
+export const projectStautusEnum = [
+  { value: "completed", name: "Completed" },
+  { value: "off_plan", name: "Off Plan" },
+  { value: "completed_primary", name: "Completed Primary" },
+  { value: "off_plan_primary", name: "Off Plan Primary" },
+];
+
+export const uaeEmirateEnum = [
+  { value: "dubai", name: "Dubai" },
+  { value: "abu_dhabi", name: "Abu Dhabi" },
+  { value: "northern_emirates", name: "Northern Emirates" },
+];
+
+export const amenitiesEnum = [{ value: "parking", name: "Parking" }];
 
 export function getEnumName(enumArray, value) {
   const found = enumArray.find((item) => item.value === value);

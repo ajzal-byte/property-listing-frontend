@@ -16,36 +16,37 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 
 const Management = ({ formData, setField }) => {
   const user = JSON.parse(localStorage.getItem("userData") || "{}");
   const { control, setValue, getValues, trigger } = useFormContext();
 
   const handleChange = (name, value) => {
-    // store all IDs as strings
+    // Store all IDs as strings
     setValue(name, value);
     setField(name, value);
     trigger(name);
 
-    // when a super_admin picks a company, update agents
+    // When a super_admin picks a company, update agents and owners
     if (name === "company" && user.role.name === "super_admin") {
       const selected = formData.companies.find((c) => String(c.id) === value);
       const agentsForCompany = selected?.agents ?? [];
-      // reset listingAgent
+      // Reset listingAgent
       setValue("listingAgent", "");
       setField("listingAgent", "");
-      // update agents list
+      // Update agents list
       setField("agents", agentsForCompany);
       setValue("agents", agentsForCompany);
 
-      // now also filter owners by company
+      // Filter owners by company
       const ownersForCompany = formData.allOwners.filter(
         (o) => o.company_id === selected.id
       );
-      // reset listingOwner
+      // Reset listingOwner
       setValue("listingOwner", "");
       setField("listingOwner", "");
-      // update owners list
+      // Update owners list
       setField("owners", ownersForCompany);
       setValue("owners", ownersForCompany);
     }
@@ -55,7 +56,6 @@ const Management = ({ formData, setField }) => {
 
   // Set initial agents and owners based on selected company
   useEffect(() => {
-    // Get the current selected company ID from form state
     const selectedCompanyId = getValues("company");
     if (selectedCompanyId && user.role.name === "super_admin") {
       const selected = formData.companies.find(
@@ -76,43 +76,43 @@ const Management = ({ formData, setField }) => {
       }
     }
   }, [
-    getValues("company"),
+    getValues,
     formData.companies,
     formData.allOwners,
     user.role.name,
+    setField,
+    setValue,
   ]);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8 rounded-lg bg-background p-6 shadow-sm">
       <div className="border-b pb-4">
-        <h2 className="text-xl font-semibold">Management</h2>
-        <p className="text-muted-foreground text-sm">
-          Enter management and contact details for your property.
+        <h2 className="text-2xl font-semibold">Management</h2>
+        <p className="mt-1 text-base text-muted-foreground">
+          Provide management and contact details for your property
         </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-6 gap-y-4">
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {/* Reference Number */}
         <FormField
           control={control}
-          name="referenceNumber"
-          rules={{ required: "Reference Number is required." }}
+          name="reference_no"
+          rules={{ required: "Please enter a reference number" }}
           render={({ field }) => (
-            <FormItem>
-              <FormLabel className="flex items-center gap-1">
+            <FormItem className="w-full">
+              <FormLabel className="text-base font-medium">
                 Reference Number <span className="text-red-500">*</span>
               </FormLabel>
               <FormControl>
                 <Input
                   placeholder="Enter reference number"
-                  value={field.value}
-                  onChange={(e) =>
-                    handleChange("referenceNumber", e.target.value)
-                  }
-                  onBlur={() => trigger("referenceNumber")}
+                  value={field.value || ""}
+                  onChange={(e) => handleChange("reference_no", e.target.value)}
+                  className="h-10 w-full text-base"
                 />
               </FormControl>
-              <FormMessage />
+              <FormMessage className="text-base" />
             </FormItem>
           )}
         />
@@ -122,10 +122,10 @@ const Management = ({ formData, setField }) => {
           <FormField
             control={control}
             name="company"
-            rules={{ required: "Company is required." }}
+            rules={{ required: "Please select a company" }}
             render={({ field }) => (
-              <FormItem>
-                <FormLabel className="flex items-center gap-1">
+              <FormItem className="w-full">
+                <FormLabel className="text-base font-medium">
                   Company <span className="text-red-500">*</span>
                 </FormLabel>
                 <Select
@@ -133,19 +133,23 @@ const Management = ({ formData, setField }) => {
                   onValueChange={(val) => handleChange("company", val)}
                 >
                   <FormControl>
-                    <SelectTrigger>
+                    <SelectTrigger className="h-10 w-full text-base">
                       <SelectValue placeholder="Select company" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
                     {formData.companies.map((c) => (
-                      <SelectItem key={c.id} value={String(c.id)}>
+                      <SelectItem
+                        key={c.id}
+                        value={String(c.id)}
+                        className="text-base"
+                      >
                         {c.name}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
-                <FormMessage />
+                <FormMessage className="text-base" />
               </FormItem>
             )}
           />
@@ -155,10 +159,10 @@ const Management = ({ formData, setField }) => {
         <FormField
           control={control}
           name="listingAgent"
-          rules={{ required: "Listing Agent is required." }}
+          rules={{ required: "Please select a listing agent" }}
           render={({ field }) => (
-            <FormItem>
-              <FormLabel className="flex items-center gap-1">
+            <FormItem className="w-full">
+              <FormLabel className="text-base font-medium">
                 Listing Agent <span className="text-red-500">*</span>
               </FormLabel>
               <Select
@@ -166,19 +170,23 @@ const Management = ({ formData, setField }) => {
                 onValueChange={(val) => handleChange("listingAgent", val)}
               >
                 <FormControl>
-                  <SelectTrigger>
+                  <SelectTrigger className="h-10 w-full text-base">
                     <SelectValue placeholder="Select listing agent" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
                   {agents.map((agent) => (
-                    <SelectItem key={agent.id} value={String(agent.id)}>
+                    <SelectItem
+                      key={agent.id}
+                      value={String(agent.id)}
+                      className="text-base"
+                    >
                       {agent.name}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
-              <FormMessage />
+              <FormMessage className="text-base" />
             </FormItem>
           )}
         />
@@ -188,16 +196,25 @@ const Management = ({ formData, setField }) => {
           control={control}
           name="useDifferentAgents"
           render={({ field }) => (
-            <FormItem className="flex items-center gap-6 col-span-full">
-              <FormLabel>Use different agents per portal?</FormLabel>
+            <FormItem className="flex w-full items-center gap-4">
+              <FormLabel className="text-base font-medium">
+                Use different agents per portal?
+              </FormLabel>
               <FormControl>
-                <Switch
-                  checked={field.value}
-                  onCheckedChange={(checked) =>
-                    handleChange("useDifferentAgents", checked)
-                  }
-                />
+                <div className="flex items-center gap-2">
+                  <Switch
+                    checked={field.value}
+                    onCheckedChange={(checked) =>
+                      handleChange("useDifferentAgents", checked)
+                    }
+                    className="h-5 w-10"
+                  />
+                  <span className="text-base">
+                    {field.value ? "Yes" : "No"}
+                  </span>
+                </div>
               </FormControl>
+              <FormMessage className="text-base" />
             </FormItem>
           )}
         />
@@ -210,25 +227,32 @@ const Management = ({ formData, setField }) => {
               control={control}
               name="pfAgent"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>PF Agent</FormLabel>
+                <FormItem className="w-full">
+                  <FormLabel className="text-base font-medium">
+                    PF Agent
+                  </FormLabel>
                   <Select
                     value={field.value}
                     onValueChange={(val) => handleChange("pfAgent", val)}
                   >
                     <FormControl>
-                      <SelectTrigger>
+                      <SelectTrigger className="h-10 w-full text-base">
                         <SelectValue placeholder="Select PF agent" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
                       {agents.map((agent) => (
-                        <SelectItem key={agent.id} value={String(agent.id)}>
+                        <SelectItem
+                          key={agent.id}
+                          value={String(agent.id)}
+                          className="text-base"
+                        >
                           {agent.name}
                         </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
+                  <FormMessage className="text-base" />
                 </FormItem>
               )}
             />
@@ -238,25 +262,32 @@ const Management = ({ formData, setField }) => {
               control={control}
               name="bayutAgent"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Bayut Agent</FormLabel>
+                <FormItem className="w-full">
+                  <FormLabel className="text-base font-medium">
+                    Bayut Agent
+                  </FormLabel>
                   <Select
                     value={field.value}
                     onValueChange={(val) => handleChange("bayutAgent", val)}
                   >
                     <FormControl>
-                      <SelectTrigger>
+                      <SelectTrigger className="h-10 w-full text-base">
                         <SelectValue placeholder="Select Bayut agent" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
                       {agents.map((agent) => (
-                        <SelectItem key={agent.id} value={String(agent.id)}>
+                        <SelectItem
+                          key={agent.id}
+                          value={String(agent.id)}
+                          className="text-base"
+                        >
                           {agent.name}
                         </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
+                  <FormMessage className="text-base" />
                 </FormItem>
               )}
             />
@@ -266,25 +297,32 @@ const Management = ({ formData, setField }) => {
               control={control}
               name="websiteAgent"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Website Agent</FormLabel>
+                <FormItem className="w-full">
+                  <FormLabel className="text-base font-medium">
+                    Website Agent
+                  </FormLabel>
                   <Select
                     value={field.value}
                     onValueChange={(val) => handleChange("websiteAgent", val)}
                   >
                     <FormControl>
-                      <SelectTrigger>
+                      <SelectTrigger className="h-10 w-full text-base">
                         <SelectValue placeholder="Select website agent" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
                       {agents.map((agent) => (
-                        <SelectItem key={agent.id} value={String(agent.id)}>
+                        <SelectItem
+                          key={agent.id}
+                          value={String(agent.id)}
+                          className="text-base"
+                        >
                           {agent.name}
                         </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
+                  <FormMessage className="text-base" />
                 </FormItem>
               )}
             />
@@ -295,10 +333,10 @@ const Management = ({ formData, setField }) => {
         <FormField
           control={control}
           name="listingOwner"
-          rules={{ required: "Listing Owner is required." }}
+          rules={{ required: "Please select a listing owner" }}
           render={({ field }) => (
-            <FormItem>
-              <FormLabel className="flex items-center gap-1">
+            <FormItem className="w-full">
+              <FormLabel className="text-base font-medium">
                 Listing Owner <span className="text-red-500">*</span>
               </FormLabel>
               <Select
@@ -306,19 +344,23 @@ const Management = ({ formData, setField }) => {
                 onValueChange={(val) => handleChange("listingOwner", val)}
               >
                 <FormControl>
-                  <SelectTrigger>
+                  <SelectTrigger className="h-10 w-full text-base">
                     <SelectValue placeholder="Select listing owner" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
                   {formData.owners.map((owner) => (
-                    <SelectItem key={owner.id} value={String(owner.id)}>
+                    <SelectItem
+                      key={owner.id}
+                      value={String(owner.id)}
+                      className="text-base"
+                    >
                       {owner.name}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
-              <FormMessage />
+              <FormMessage className="text-base" />
             </FormItem>
           )}
         />
@@ -328,15 +370,19 @@ const Management = ({ formData, setField }) => {
           control={control}
           name="landlordName"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel>Landlord Name</FormLabel>
+            <FormItem className="w-full">
+              <FormLabel className="text-base font-medium">
+                Landlord Name
+              </FormLabel>
               <FormControl>
                 <Input
                   placeholder="Enter landlord name"
-                  value={field.value}
+                  value={field.value || ""}
                   onChange={(e) => handleChange("landlordName", e.target.value)}
+                  className="h-10 w-full text-base"
                 />
               </FormControl>
+              <FormMessage className="text-base" />
             </FormItem>
           )}
         />
@@ -346,18 +392,22 @@ const Management = ({ formData, setField }) => {
           control={control}
           name="landlordEmail"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel>Landlord Email</FormLabel>
+            <FormItem className="w-full">
+              <FormLabel className="text-base font-medium">
+                Landlord Email
+              </FormLabel>
               <FormControl>
                 <Input
                   type="email"
                   placeholder="Enter landlord email"
-                  value={field.value}
+                  value={field.value || ""}
                   onChange={(e) =>
                     handleChange("landlordEmail", e.target.value)
                   }
+                  className="h-10 w-full text-base"
                 />
               </FormControl>
+              <FormMessage className="text-base" />
             </FormItem>
           )}
         />
@@ -367,18 +417,22 @@ const Management = ({ formData, setField }) => {
           control={control}
           name="landlordContact"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel>Landlord Contact</FormLabel>
+            <FormItem className="w-full">
+              <FormLabel className="text-base font-medium">
+                Landlord Contact
+              </FormLabel>
               <FormControl>
                 <Input
                   type="tel"
                   placeholder="Enter landlord contact number"
-                  value={field.value}
+                  value={field.value || ""}
                   onChange={(e) =>
                     handleChange("landlordContact", e.target.value)
                   }
+                  className="h-10 w-full text-base"
                 />
               </FormControl>
+              <FormMessage className="text-base" />
             </FormItem>
           )}
         />
@@ -387,23 +441,23 @@ const Management = ({ formData, setField }) => {
         <FormField
           control={control}
           name="availableFrom"
-          rules={{ required: "Availability date is required." }}
+          rules={{ required: "Please select an availability date" }}
           render={({ field }) => (
-            <FormItem>
-              <FormLabel className="flex items-center gap-1">
+            <FormItem className="w-full">
+              <FormLabel className="text-base font-medium">
                 Available From <span className="text-red-500">*</span>
               </FormLabel>
               <FormControl>
                 <Input
                   type="date"
-                  value={field.value}
+                  value={field.value || ""}
                   onChange={(e) =>
                     handleChange("availableFrom", e.target.value)
                   }
-                  onBlur={() => trigger("availableFrom")}
+                  className="h-10 w-full text-base"
                 />
               </FormControl>
-              <FormMessage />
+              <FormMessage className="text-base" />
             </FormItem>
           )}
         />

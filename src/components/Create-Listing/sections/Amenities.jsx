@@ -11,14 +11,14 @@ const Amenities = ({ formData, setField }) => {
     name: "selectedAmenities",
   });
 
-  // Subscribe to "offeringType" so we know which subset to display
-  const offeringType = useWatch({
+  // Subscribe to "category" so we know which subset to display
+  const category = useWatch({
     control,
-    name: "offeringType",
+    name: "category",
   });
 
-  const showCommercial = offeringType === "CS" || offeringType === "CR";
-  const showPrivate = offeringType === "RS" || offeringType === "RR";
+  const showCommercial = category === "commercial";
+  const showPrivate = category === "residential";
 
   // Filter the fetched amenitiesList based on amenity_type
   const filteredAmenities = formData.amenitiesList.filter((amenity) => {
@@ -58,7 +58,7 @@ const Amenities = ({ formData, setField }) => {
           No amenities available for the selected offering type.
         </p>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
           {filteredAmenities.map((amenity) => {
             const code = amenity.id;
             const name = amenity.amenity_name;

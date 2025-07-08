@@ -6,25 +6,24 @@ import {
 export const prepareSpecificationsData = (formData, resolvedData) => {
   return [
     {
-      label: "Offering Type",
-      value: OfferingTypeEnum.find((i) => i.value === formData.offeringType)
-        ?.name,
+      label: "Category",
+      value: OfferingTypeEnum.find((i) => i.value === formData.category)?.name,
     },
     {
       label: "Property Type",
-      value: PropertyTypeEnum.find((i) => i.value === formData.propertyType)
+      value: PropertyTypeEnum.find((i) => i.value === formData.property_type)
         ?.name,
     },
     { label: "Size", value: `${formData.size} sq.ft` },
-    { label: "Unit No", value: formData.unitNo },
+    { label: "Unit No", value: formData.unit_no },
     { label: "Bedrooms", value: formData.bedrooms },
     { label: "Bathrooms", value: formData.bathrooms },
-    { label: "Parking", value: formData.parkingSpaces },
-    { label: "Furnished", value: formData.isFurnished ? "Yes" : "No" },
-    { label: "Total Plot Size", value: formData.totalPlotSize },
+    { label: "Parking", value: formData.parking },
+    { label: "Furnished", value: formData.furnishing_type ? "Yes" : "No" },
+    { label: "Total Plot Size", value: formData.total_plot_size },
     { label: "Lot Size", value: formData.lotSize },
-    { label: "Built-up Area", value: formData.builtUpArea },
-    { label: "Layout Type", value: formData.layoutType },
+    { label: "Built-up Area", value: formData.built_up_area },
+    { label: "Layout Type", value: formData.layout_type },
     { label: "Ownership", value: formData.ownership },
     { label: "Developer", value: resolvedData.developerName },
   ];
@@ -32,7 +31,7 @@ export const prepareSpecificationsData = (formData, resolvedData) => {
 
 export const prepareManagementData = (formData, resolvedData) => {
   return [
-    { label: "Reference No", value: formData.referenceNumber },
+    { label: "Reference No", value: formData.reference_no },
     { label: "Company", value: resolvedData.companyName },
     { label: "Listing Agent", value: resolvedData.listingAgentName },
     { label: "PF Agent", value: resolvedData.pfAgentName },
@@ -53,12 +52,12 @@ export const prepareManagementData = (formData, resolvedData) => {
 
 export const preparePermitData = (formData) => {
   return [
-    { label: "RERA Permit No", value: formData.reraPermitNumber },
+    { label: "RERA Permit No", value: formData.rera_permit_number },
     {
       label: "RERA Issue Date",
       value:
-        formData.reraIssueDate &&
-        new Date(formData.reraIssueDate).toLocaleDateString(),
+        formData.rera_issue_date &&
+        new Date(formData.rera_issue_date).toLocaleDateString(),
     },
     {
       label: "RERA Expiry Date",
@@ -66,7 +65,7 @@ export const preparePermitData = (formData) => {
         formData.reraExpirationDate &&
         new Date(formData.reraExpirationDate).toLocaleDateString(),
     },
-    { label: "DTCM Permit No", value: formData.dtcmPermitNumber },
+    { label: "DTCM Permit No", value: formData.dtcm_permit_number },
   ];
 };
 
@@ -75,16 +74,16 @@ export const preparePricingData = (formData, formatPrice) => {
     { label: "No. of Cheques", value: formData.numberOfCheques },
     {
       label: "Service Charges",
-      value: formData.serviceCharges && `AED ${formData.serviceCharges}`,
+      value: formData.service_charges && `AED ${formData.service_charges}`,
     },
     { label: "Financial Status", value: formData.financialStatus },
     { label: "Cheques", value: formData.cheques },
   ];
 
-  if (["RS", "CS"].includes(formData.offeringType)) {
+  if (["RS", "CS"].includes(formData.category)) {
     return [
       ...baseItems,
-      { label: "Hide Price", value: formData.hidePrice ? "Yes" : "No" },
+      { label: "Hide Price", value: formData.hide_price ? "Yes" : "No" },
       { label: "Payment Method", value: formData.paymentMethod },
       { label: "Down Payment", value: formatPrice(formData.downPayment) },
     ];

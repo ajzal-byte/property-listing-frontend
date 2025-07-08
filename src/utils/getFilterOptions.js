@@ -3,7 +3,8 @@ import {
   OfferingTypeEnum,
   statusOptions,
   portalOptions,
-  bedroomBathroomOptions,
+  bedroomOptions,
+  bathroomOptions,
 } from "@/enums/createListingsEnums";
 import getAuthHeaders from "@/utils/getAuthHeader";
 
@@ -163,9 +164,13 @@ export const getAllFilterOptions = async (locationFilters = {}) => {
       value: opt.value,
       label: opt.label,
     })),
-    bedroomBathroomOptions: bedroomBathroomOptions.map((opt) => ({
+    bedroomOptions: bedroomOptions.map((opt) => ({
       value: opt,
       label: opt,
+    })),
+    bathroomOptions: bathroomOptions.map((opt) => ({
+      value: opt,
+      label: opt === "none" ? "0" : opt,
     })),
     cities,
     communities,

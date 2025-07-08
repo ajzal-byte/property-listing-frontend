@@ -6,6 +6,13 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Camera, Upload, X } from "lucide-react";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   Command,
   CommandInput,
   CommandEmpty,
@@ -172,13 +179,15 @@ const LocationForm = ({ formData, setField, nextStep, prevStep }) => {
 
   // 4) When user selects a PF location, fill in the related fields automatically
   const onSelectPfLocation = (loc) => {
-    setField("property_finder_location", loc.id);
+    console.log("Selected location:", loc);
+    setField("property_finder_location_id", loc.id);
+    setField("property_finder_location", loc.location || "");
     setField("property_finder_city", loc.city || "");
     setField("property_finder_community", loc.community || "");
     setField("property_finder_sub_community", loc.sub_community || "");
     setField("property_finder_tower", loc.building || "");
-    setField("uaeEmirates", loc.uae_emirate || "");
-    // leave streetDirection untouched so user can type it
+    setField("property_finder_uae_emirate", loc.uae_emirate || "");
+    // leave property_finder_street_direction untouched so user can type it
     setField("latitude", loc.latitude);
     setField("longitude", loc.longitude);
     setOpenPF(false);
@@ -288,17 +297,39 @@ const LocationForm = ({ formData, setField, nextStep, prevStep }) => {
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium">UAE Emirates</label>
-                <Input value={formData.uaeEmirates} disabled />
+                <label className="text-sm font-medium">UAE Emirate</label>
+                <Input
+                  value={
+                    formData?.property_finder_uae_emirate &&
+                    formData?.property_finder_uae_emirate[0]?.toUpperCase() +
+                      formData?.property_finder_uae_emirate?.slice(1)
+                  }
+                  disabled
+                />
               </div>
 
               <div className="space-y-2">
                 <label className="text-sm font-medium">Street Direction</label>
-                <Input
-                  value={formData.streetDirection || ""}
-                  onChange={(e) => setField("streetDirection", e.target.value)}
-                  placeholder="e.g. North, South-East…"
-                />
+                <Select
+                  value={formData.property_finder_street_direction || ""}
+                  onValueChange={(value) =>
+                    setField("property_finder_street_direction", value)
+                  }
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select direction" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="North">North</SelectItem>
+                    <SelectItem value="South">South</SelectItem>
+                    <SelectItem value="West">West</SelectItem>
+                    <SelectItem value="East">East</SelectItem>
+                    <SelectItem value="Northeast">Northeast</SelectItem>
+                    <SelectItem value="Northwest">Northwest</SelectItem>
+                    <SelectItem value="Southeast">Southeast</SelectItem>
+                    <SelectItem value="Southwest">Southwest</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </CardContent>
           </Card>

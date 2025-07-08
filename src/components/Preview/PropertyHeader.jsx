@@ -10,12 +10,12 @@ import {
 import { Edit } from "lucide-react";
 
 const PropertyHeader = ({
-  offeringType,
+  category,
   price,
   rentAmount,
   rentFrequency,
   titleEn,
-  titleDeed,
+  title_deed,
   descriptionEn,
   onEdit,
   formatPrice,
@@ -26,7 +26,7 @@ const PropertyHeader = ({
       {/* Pricing Section */}
       <div className="mb-6">
         <h1 className="text-3xl font-bold">
-          {["RS", "CS"].includes(offeringType) ? (
+          {["RS", "CS"].includes(category) ? (
             formatPrice(price)
           ) : (
             <>
@@ -48,9 +48,9 @@ const PropertyHeader = ({
               </Button>
             )}
           </div>
-          {titleDeed && (
+          {title_deed && (
             <p className="text-sm text-muted-foreground">
-              Title Deed: {titleDeed}
+              Title Deed: {title_deed}
             </p>
           )}
         </div>
@@ -66,8 +66,8 @@ const PropertyHeader = ({
           <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>{titleEn}</DialogTitle>
-              {titleDeed && (
-                <DialogDescription>Title Deed: {titleDeed}</DialogDescription>
+              {title_deed && (
+                <DialogDescription>Title Deed: {title_deed}</DialogDescription>
               )}
             </DialogHeader>
             <p className="whitespace-pre-line text-sm">{descriptionEn}</p>

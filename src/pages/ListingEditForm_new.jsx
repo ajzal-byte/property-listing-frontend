@@ -1,19 +1,13 @@
 import { useState, useEffect } from "react";
-import { 
-  PropertyTypeEnum, 
-  OfferingTypeEnum, 
-  StatusEnum, 
-  TimePeriodEnum 
+import {
+  PropertyTypeEnum,
+  OfferingTypeEnum,
+  StatusEnum,
+  TimePeriodEnum,
 } from "../enums/createListingsEnums";
-import { 
-  Save, 
-  X, 
-  Upload, 
-  Image,
-  Trash2
-} from "lucide-react";
+import { Save, X, Upload, Image, Trash2 } from "lucide-react";
 
-export default function ListingEditForm({ 
+export default function ListingEditForm({
   listing,
   authToken,
   developers = [],
@@ -21,7 +15,7 @@ export default function ListingEditForm({
   agents = [],
   amenitiesList = [],
   onSuccess = () => {},
-  onCancel = () => {}
+  onCancel = () => {},
 }) {
   const [formData, setFormData] = useState({
     title_en: "",
@@ -32,7 +26,7 @@ export default function ListingEditForm({
     property_type: "",
     offering_type: "",
     dtcm_permit_number: "",
-    rental_period: "",
+    amount_type: "",
     size: "",
     bedrooms: "",
     bathrooms: "",
@@ -50,9 +44,9 @@ export default function ListingEditForm({
     available_from: "",
     status: "",
     amenities: [],
-    photo_urls: []
+    photo_urls: [],
   });
-  
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
@@ -64,12 +58,15 @@ export default function ListingEditForm({
       const transformedListing = {
         ...listing,
         // Ensure photo_urls is correctly formatted
-        photo_urls: listing.photos?.map(photo => ({
-          file_url: photo.image_url,
-          is_main: photo.is_main
-        })) || listing.photo_urls || []
+        photo_urls:
+          listing.photos?.map((photo) => ({
+            file_url: photo.image_url,
+            is_main: photo.is_main,
+          })) ||
+          listing.photo_urls ||
+          [],
       };
-      
+
       setFormData(transformedListing);
     }
   }, [listing]);
@@ -82,13 +79,13 @@ export default function ListingEditForm({
   const handleAmenitiesChange = (amenityId) => {
     const updatedAmenities = [...formData.amenities];
     const index = updatedAmenities.indexOf(amenityId);
-    
+
     if (index === -1) {
       updatedAmenities.push(amenityId);
     } else {
       updatedAmenities.splice(index, 1);
     }
-    
+
     setFormData({ ...formData, amenities: updatedAmenities });
   };
 
@@ -101,7 +98,7 @@ export default function ListingEditForm({
   const handleSetMainPhoto = (index) => {
     const updatedPhotos = formData.photo_urls.map((photo, i) => ({
       ...photo,
-      is_main: i === index
+      is_main: i === index,
     }));
     setFormData({ ...formData, photo_urls: updatedPhotos });
   };
@@ -115,12 +112,15 @@ export default function ListingEditForm({
       const transformedListing = {
         ...listing,
         // Ensure photo_urls is correctly formatted
-        photo_urls: listing.photos?.map(photo => ({
-          file_url: photo.image_url,
-          is_main: photo.is_main
-        })) || listing.photo_urls || []
+        photo_urls:
+          listing.photos?.map((photo) => ({
+            file_url: photo.image_url,
+            is_main: photo.is_main,
+          })) ||
+          listing.photo_urls ||
+          [],
       };
-      
+
       // Store original data for later comparison
       setOriginalData(transformedListing);
     }
@@ -130,51 +130,56 @@ export default function ListingEditForm({
     e.preventDefault();
     setIsSubmitting(true);
     setError(null);
-    
+
     // Only include fields that have changed
     const changedFields = {};
-    
+
     // Compare each field with original data
-    Object.keys(formData).forEach(key => {
+    Object.keys(formData).forEach((key) => {
       // Skip if the field is undefined or null in the form
       if (formData[key] === undefined || formData[key] === null) return;
-      
+
       // Special handling for arrays
       if (Array.isArray(formData[key])) {
         // Simple check for amenities which are just IDs
-        if (key === 'amenities') {
+        if (key === "amenities") {
           // If arrays are different lengths or content changed
-          if (!originalData[key] || 
-              JSON.stringify(formData[key].sort()) !== JSON.stringify(originalData[key].sort())) {
-            changedFields[key] = formData[key];
-          }
-        } 
-        // For photo_urls with objects inside
-        else if (key === 'photo_urls') {
-          // Photos likely changed if user interacted with them
-          if (!originalData[key] || 
-              JSON.stringify(formData[key]) !== JSON.stringify(originalData[key])) {
+          if (
+            !originalData[key] ||
+            JSON.stringify(formData[key].sort()) !==
+              JSON.stringify(originalData[key].sort())
+          ) {
             changedFields[key] = formData[key];
           }
         }
-      } 
+        // For photo_urls with objects inside
+        else if (key === "photo_urls") {
+          // Photos likely changed if user interacted with them
+          if (
+            !originalData[key] ||
+            JSON.stringify(formData[key]) !== JSON.stringify(originalData[key])
+          ) {
+            changedFields[key] = formData[key];
+          }
+        }
+      }
       // For primitive values
       else if (formData[key] !== originalData[key]) {
         changedFields[key] = formData[key];
       }
     });
-    
+
     // If photos are in the wrong format, ensure they're correctly formatted
     if (changedFields.photos && !changedFields.photo_urls) {
-      changedFields.photo_urls = changedFields.photos.map(photo => ({
+      changedFields.photo_urls = changedFields.photos.map((photo) => ({
         file_url: photo.image_url,
-        is_main: photo.is_main
+        is_main: photo.is_main,
       }));
       delete changedFields.photos;
     }
-    
+
     console.log("Submitting changed fields:", JSON.stringify(changedFields));
-    
+
     // If nothing changed, just return
     if (Object.keys(changedFields).length === 0) {
       setIsSubmitting(false);
@@ -182,21 +187,24 @@ export default function ListingEditForm({
       alert("No changes to update");
       return;
     }
-    
+
     try {
-      const response = await fetch(`https://backend.myemirateshome.com/api/listings/${listing.id}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${authToken}`
-        },
-        body: JSON.stringify(changedFields)
-      });
-      
+      const response = await fetch(
+        `https://backend.myemirateshome.com/api/listings/${listing.id}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${authToken}`,
+          },
+          body: JSON.stringify(changedFields),
+        }
+      );
+
       if (!response.ok) {
-        throw new Error('Failed to update listing');
+        throw new Error("Failed to update listing");
       }
-      
+
       setSuccess(true);
       alert("Successfully updated");
       onSuccess();
@@ -212,13 +220,13 @@ export default function ListingEditForm({
       <div className="mb-6 flex justify-between items-center">
         <h1 className="text-2xl font-bold text-blue-800">Edit Listing</h1>
         <div className="flex gap-4">
-          <button 
+          <button
             onClick={onCancel}
             className="px-4 py-2 rounded-md flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700"
           >
             <X size={16} /> Cancel
           </button>
-          <button 
+          <button
             type="submit"
             form="listing-form"
             disabled={isSubmitting}
@@ -240,17 +248,19 @@ export default function ListingEditForm({
           Listing updated successfully!
         </div>
       )}
-      
+
       <form id="listing-form" onSubmit={handleSubmit}>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {/* Basic Information */}
           <div className="space-y-4">
-            <h2 className="text-lg font-semibold text-blue-700 border-b border-blue-200 pb-2">Basic Information</h2>
-            
-            
-            
+            <h2 className="text-lg font-semibold text-blue-700 border-b border-blue-200 pb-2">
+              Basic Information
+            </h2>
+
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Title (English)</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Title (English)
+              </label>
               <input
                 type="text"
                 name="title_en"
@@ -259,9 +269,11 @@ export default function ListingEditForm({
                 className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
-            
+
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Title (Arabic)</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Title (Arabic)
+              </label>
               <input
                 type="text"
                 name="title_ar"
@@ -271,9 +283,11 @@ export default function ListingEditForm({
                 dir="rtl"
               />
             </div>
-            
+
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Reference Number</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Reference Number
+              </label>
               <input
                 type="text"
                 name="reference_no"
@@ -283,13 +297,17 @@ export default function ListingEditForm({
               />
             </div>
           </div>
-          
+
           {/* Property Details */}
           <div className="space-y-4">
-            <h2 className="text-lg font-semibold text-blue-700 border-b border-blue-200 pb-2">Property Details</h2>
-            
+            <h2 className="text-lg font-semibold text-blue-700 border-b border-blue-200 pb-2">
+              Property Details
+            </h2>
+
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Property Type</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Property Type
+              </label>
               <select
                 name="property_type"
                 value={formData.property_type || ""}
@@ -297,29 +315,37 @@ export default function ListingEditForm({
                 className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               >
                 <option value="">Select Property Type</option>
-                {PropertyTypeEnum.map(type => (
-                  <option key={type.value} value={type.value}>{type.name}</option>
+                {PropertyTypeEnum.map((type) => (
+                  <option key={type.value} value={type.value}>
+                    {type.name}
+                  </option>
                 ))}
               </select>
             </div>
-            
+
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Offering Type</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Category
+              </label>
               <select
                 name="offering_type"
                 value={formData.offering_type || ""}
                 onChange={handleChange}
                 className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               >
-                <option value="">Select Offering Type</option>
-                {OfferingTypeEnum.map(type => (
-                  <option key={type.value} value={type.value}>{type.name}</option>
+                <option value="">Select Category</option>
+                {OfferingTypeEnum.map((type) => (
+                  <option key={type.value} value={type.value}>
+                    {type.name}
+                  </option>
                 ))}
               </select>
             </div>
-            
+
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Size (sqft)</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Size (sqft)
+              </label>
               <input
                 type="text"
                 name="size"
@@ -328,10 +354,12 @@ export default function ListingEditForm({
                 className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
-            
+
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Bedrooms</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Bedrooms
+                </label>
                 <input
                   type="text"
                   name="bedrooms"
@@ -340,9 +368,11 @@ export default function ListingEditForm({
                   className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 />
               </div>
-              
+
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Bathrooms</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Bathrooms
+                </label>
                 <input
                   type="text"
                   name="bathrooms"
@@ -352,9 +382,11 @@ export default function ListingEditForm({
                 />
               </div>
             </div>
-            
+
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Furnished</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Furnished
+              </label>
               <select
                 name="furnished"
                 value={formData.furnished || ""}
@@ -366,29 +398,37 @@ export default function ListingEditForm({
                 <option value="0">No</option>
               </select>
             </div>
-            
+
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Rental Period</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Rental Period
+              </label>
               <select
-                name="rental_period"
-                value={formData.rental_period || ""}
+                name="amount_type"
+                value={formData.amount_type || ""}
                 onChange={handleChange}
                 className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               >
                 <option value="">Select Rental Period</option>
-                {TimePeriodEnum.map(period => (
-                  <option key={period.value} value={period.value}>{period.name}</option>
+                {TimePeriodEnum.map((period) => (
+                  <option key={period.value} value={period.value}>
+                    {period.name}
+                  </option>
                 ))}
               </select>
             </div>
           </div>
-          
+
           {/* Additional Information */}
           <div className="space-y-4">
-            <h2 className="text-lg font-semibold text-blue-700 border-b border-blue-200 pb-2">Additional Information</h2>
-            
+            <h2 className="text-lg font-semibold text-blue-700 border-b border-blue-200 pb-2">
+              Additional Information
+            </h2>
+
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Developer</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Developer
+              </label>
               <select
                 name="developer_id"
                 value={formData.developer_id || ""}
@@ -396,14 +436,18 @@ export default function ListingEditForm({
                 className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               >
                 <option value="">Select Developer</option>
-                {developers.map(developer => (
-                  <option key={developer.id} value={developer.id}>{developer.name}</option>
+                {developers.map((developer) => (
+                  <option key={developer.id} value={developer.id}>
+                    {developer.name}
+                  </option>
                 ))}
               </select>
             </div>
-            
+
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Property Finder Location</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Property Finder Location
+              </label>
               <select
                 name="pf_location"
                 value={formData.pf_location || ""}
@@ -411,14 +455,18 @@ export default function ListingEditForm({
                 className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               >
                 <option value="">Select Location</option>
-                {locations.map(location => (
-                  <option key={location.id} value={location.id}>{location.location}</option>
+                {locations.map((location) => (
+                  <option key={location.id} value={location.id}>
+                    {location.location}
+                  </option>
                 ))}
               </select>
             </div>
-            
+
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Bayut Location</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Bayut Location
+              </label>
               <select
                 name="bayut_location"
                 value={formData.bayut_location || ""}
@@ -426,14 +474,18 @@ export default function ListingEditForm({
                 className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               >
                 <option value="">Select Location</option>
-                {locations.map(location => (
-                  <option key={location.id} value={location.id}>{location.location}</option>
+                {locations.map((location) => (
+                  <option key={location.id} value={location.id}>
+                    {location.location}
+                  </option>
                 ))}
               </select>
             </div>
-            
+
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Agent</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Agent
+              </label>
               <select
                 name="agent_id"
                 value={formData.agent_id || ""}
@@ -441,14 +493,18 @@ export default function ListingEditForm({
                 className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               >
                 <option value="">Select Agent</option>
-                {agents.map(agent => (
-                  <option key={agent.id} value={agent.id}>{agent.name}</option>
+                {agents.map((agent) => (
+                  <option key={agent.id} value={agent.id}>
+                    {agent.name}
+                  </option>
                 ))}
               </select>
             </div>
-            
+
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Financial Status</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Financial Status
+              </label>
               <select
                 name="financial_status_id"
                 value={formData.financial_status_id || ""}
@@ -461,9 +517,11 @@ export default function ListingEditForm({
                 <option value="3">Bank</option>
               </select>
             </div>
-            
+
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Status
+              </label>
               <select
                 name="status"
                 value={formData.status || ""}
@@ -471,19 +529,25 @@ export default function ListingEditForm({
                 className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               >
                 <option value="">Select Status</option>
-                {StatusEnum.map(status => (
-                  <option key={status.value} value={status.value}>{status.name}</option>
+                {StatusEnum.map((status) => (
+                  <option key={status.value} value={status.value}>
+                    {status.name}
+                  </option>
                 ))}
               </select>
             </div>
           </div>
-          
+
           {/* Permits & Dates */}
           <div className="space-y-4">
-            <h2 className="text-lg font-semibold text-blue-700 border-b border-blue-200 pb-2">Permits & Dates</h2>
-            
+            <h2 className="text-lg font-semibold text-blue-700 border-b border-blue-200 pb-2">
+              Permits & Dates
+            </h2>
+
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">DTCM Permit Number</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                DTCM Permit Number
+              </label>
               <input
                 type="text"
                 name="dtcm_permit_number"
@@ -492,9 +556,11 @@ export default function ListingEditForm({
                 className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
-            
+
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">RERA Permit Number</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                RERA Permit Number
+              </label>
               <input
                 type="text"
                 name="rera_permit_number"
@@ -503,9 +569,11 @@ export default function ListingEditForm({
                 className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
-            
+
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">RERA Issue Date</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                RERA Issue Date
+              </label>
               <input
                 type="date"
                 name="rera_issue_date"
@@ -514,9 +582,11 @@ export default function ListingEditForm({
                 className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
-            
+
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">RERA Expiration Date</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                RERA Expiration Date
+              </label>
               <input
                 type="date"
                 name="rera_expiration_date"
@@ -525,9 +595,11 @@ export default function ListingEditForm({
                 className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
-            
+
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Contract Expiry Date</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Contract Expiry Date
+              </label>
               <input
                 type="date"
                 name="contract_expiry_date"
@@ -536,9 +608,11 @@ export default function ListingEditForm({
                 className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
-            
+
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Available From</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Available From
+              </label>
               <input
                 type="date"
                 name="available_from"
@@ -548,13 +622,17 @@ export default function ListingEditForm({
               />
             </div>
           </div>
-          
+
           {/* Description */}
           <div className="space-y-4">
-            <h2 className="text-lg font-semibold text-blue-700 border-b border-blue-200 pb-2">Description</h2>
-            
+            <h2 className="text-lg font-semibold text-blue-700 border-b border-blue-200 pb-2">
+              Description
+            </h2>
+
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Description (English)</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Description (English)
+              </label>
               <textarea
                 name="desc_en"
                 value={formData.desc_en || ""}
@@ -563,9 +641,11 @@ export default function ListingEditForm({
                 className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               ></textarea>
             </div>
-            
+
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Description (Arabic)</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Description (Arabic)
+              </label>
               <textarea
                 name="desc_ar"
                 value={formData.desc_ar || ""}
@@ -576,13 +656,15 @@ export default function ListingEditForm({
               ></textarea>
             </div>
           </div>
-          
+
           {/* Amenities */}
           <div className="space-y-4">
-            <h2 className="text-lg font-semibold text-blue-700 border-b border-blue-200 pb-2">Amenities</h2>
-            
+            <h2 className="text-lg font-semibold text-blue-700 border-b border-blue-200 pb-2">
+              Amenities
+            </h2>
+
             <div className="grid grid-cols-2 gap-2">
-              {amenitiesList.map(amenity => (
+              {amenitiesList.map((amenity) => (
                 <div key={amenity.id} className="flex items-center">
                   <input
                     type="checkbox"
@@ -591,37 +673,49 @@ export default function ListingEditForm({
                     onChange={() => handleAmenitiesChange(amenity.id)}
                     className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                   />
-                  <label htmlFor={`amenity-${amenity.id}`} className="ml-2 text-sm text-gray-700">
+                  <label
+                    htmlFor={`amenity-${amenity.id}`}
+                    className="ml-2 text-sm text-gray-700"
+                  >
                     {amenity.amenity_name}
                   </label>
                 </div>
               ))}
             </div>
           </div>
-          
+
           {/* Photos */}
           <div className="space-y-4 col-span-full">
-            <h2 className="text-lg font-semibold text-blue-700 border-b border-blue-200 pb-2">Photos</h2>
-            
+            <h2 className="text-lg font-semibold text-blue-700 border-b border-blue-200 pb-2">
+              Photos
+            </h2>
+
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {formData.photo_urls?.map((photo, index) => (
-                <div key={index} className="relative group border border-gray-200 rounded-lg overflow-hidden">
-                  <img 
-                    src={photo.file_url || photo.image_url} 
+                <div
+                  key={index}
+                  className="relative group border border-gray-200 rounded-lg overflow-hidden"
+                >
+                  <img
+                    src={photo.file_url || photo.image_url}
                     alt={`Property photo ${index + 1}`}
                     className="w-full h-40 object-cover"
                   />
-                  
+
                   <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-opacity duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
                     <button
                       type="button"
                       onClick={() => handleSetMainPhoto(index)}
-                      className={`p-2 mr-2 rounded-full ${photo.is_main ? 'bg-blue-600 text-white' : 'bg-white text-blue-600'}`}
-                      title={photo.is_main ? 'Main Photo' : 'Set as Main Photo'}
+                      className={`p-2 mr-2 rounded-full ${
+                        photo.is_main
+                          ? "bg-blue-600 text-white"
+                          : "bg-white text-blue-600"
+                      }`}
+                      title={photo.is_main ? "Main Photo" : "Set as Main Photo"}
                     >
                       <Image size={16} />
                     </button>
-                    
+
                     <button
                       type="button"
                       onClick={() => handlePhotoDelete(index)}
@@ -631,7 +725,7 @@ export default function ListingEditForm({
                       <Trash2 size={16} />
                     </button>
                   </div>
-                  
+
                   {photo.is_main && (
                     <div className="absolute top-2 left-2 bg-blue-600 text-white text-xs px-2 py-1 rounded-md">
                       Main
@@ -641,7 +735,6 @@ export default function ListingEditForm({
               ))}
             </div>
           </div>
-
         </div>
       </form>
     </div>

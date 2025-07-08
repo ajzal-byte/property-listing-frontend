@@ -21,7 +21,7 @@ const PropertyListings = () => {
   }, [setMainTab]);
 
   const [isMapView, setIsMapView] = useState(false);
-  const [isListView, setIsListView] = useState(true);
+  const [isListView, setIsListView] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);

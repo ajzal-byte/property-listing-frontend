@@ -44,7 +44,8 @@ const PropertyFilters = ({
     developers: [],
     agents: [],
     owners: [],
-    bedroomBathroomOptions: [],
+    bedroomOptions: [],
+    bathroomOptions: [],
     statusOptions: [],
     portalOptions: [],
   });
@@ -173,7 +174,7 @@ const PropertyFilters = ({
               <SelectValue placeholder="Bedrooms" />
             </SelectTrigger>
             <SelectContent>
-              {filterOptions.bedroomBathroomOptions.map((opt) => (
+              {filterOptions.bedroomOptions.map((opt) => (
                 <SelectItem key={opt.value} value={opt.value}>
                   {opt.label}
                 </SelectItem>
@@ -190,7 +191,7 @@ const PropertyFilters = ({
               <SelectValue placeholder="Bathrooms" />
             </SelectTrigger>
             <SelectContent>
-              {filterOptions.bedroomBathroomOptions.map((opt) => (
+              {filterOptions.bathroomOptions.map((opt) => (
                 <SelectItem key={opt.value} value={opt.value}>
                   {opt.label}
                 </SelectItem>
@@ -506,8 +507,10 @@ const PropertyFilters = ({
                   ? filterOptions.subCommunities
                   : key === "building"
                   ? filterOptions.buildings
-                  : key === "bedrooms" || key === "bathrooms"
-                  ? filterOptions.bedroomBathroomOptions
+                  : key === "bedrooms"
+                  ? filterOptions.bedroomOptions
+                  : key === "bathrooms"
+                  ? filterOptions.bathroomOptions
                   : key === "status"
                   ? filterOptions.statusOptions
                   : null;

@@ -25,7 +25,7 @@ export const mockUsers = [
       currency: "USD",
       units: "ft²",
       behomesCountry: "United States",
-    }
+    },
   },
   {
     id: 2,
@@ -53,7 +53,7 @@ export const mockUsers = [
       currency: "GBP",
       units: "m²",
       behomesCountry: "United Kingdom",
-    }
+    },
   },
   {
     id: 3,
@@ -81,7 +81,7 @@ export const mockUsers = [
       currency: "EUR",
       units: "m²",
       behomesCountry: "France",
-    }
+    },
   },
   {
     id: 4,
@@ -109,7 +109,7 @@ export const mockUsers = [
       currency: "EUR",
       units: "m²",
       behomesCountry: "Germany",
-    }
+    },
   },
   {
     id: 5,
@@ -137,7 +137,7 @@ export const mockUsers = [
       currency: "AUD",
       units: "m²",
       behomesCountry: "Australia",
-    }
+    },
   },
   {
     id: 6,
@@ -165,7 +165,7 @@ export const mockUsers = [
       currency: "MXN",
       units: "m²",
       behomesCountry: "Mexico",
-    }
+    },
   },
   {
     id: 7,
@@ -193,7 +193,7 @@ export const mockUsers = [
       currency: "CAD",
       units: "ft²",
       behomesCountry: "Canada",
-    }
+    },
   },
   {
     id: 8,
@@ -221,7 +221,7 @@ export const mockUsers = [
       currency: "KRW",
       units: "m²",
       behomesCountry: "South Korea",
-    }
+    },
   },
   {
     id: 9,
@@ -249,7 +249,7 @@ export const mockUsers = [
       currency: "INR",
       units: "ft²",
       behomesCountry: "India",
-    }
+    },
   },
   {
     id: 10,
@@ -277,8 +277,8 @@ export const mockUsers = [
       currency: "BRL",
       units: "m²",
       behomesCountry: "Brazil",
-    }
-  }
+    },
+  },
 ];
 
 // mockdata for property cards
@@ -1131,14 +1131,14 @@ export const secondaryListings = [
       availableFrom: "2025-02-25",
     },
     specifications: {
-      propertyType: "Apartment",
-      offeringType: "Residential Rent",
+      property_type: "Apartment",
+      category: "Residential Rent",
       size: 1200,
       noOfBedrooms: 2,
       noOfBathrooms: 2,
       noOfParkingSpaces: 1,
       furnished: "Furnished",
-      totalPlotSize: 1200,
+      total_plot_size: 1200,
     },
     pricing: {
       price: 75000,
@@ -1176,14 +1176,14 @@ export const secondaryListings = [
       availableFrom: "2025-02-20",
     },
     specifications: {
-      propertyType: "Villa",
-      offeringType: "Residential Sale",
+      property_type: "Villa",
+      category: "Residential Sale",
       size: 3000,
       noOfBedrooms: 4,
       noOfBathrooms: 3,
       noOfParkingSpaces: 2,
       furnished: "Semi Furnished",
-      totalPlotSize: 3500,
+      total_plot_size: 3500,
     },
     pricing: {
       price: 2500000,
@@ -1220,14 +1220,14 @@ export const secondaryListings = [
       availableFrom: "2025-03-01",
     },
     specifications: {
-      propertyType: "Penthouse",
-      offeringType: "Residential Sale",
+      property_type: "Penthouse",
+      category: "Residential Sale",
       size: 4000,
       noOfBedrooms: 5,
       noOfBathrooms: 5,
       noOfParkingSpaces: 3,
       furnished: "Furnished",
-      totalPlotSize: 4500,
+      total_plot_size: 4500,
     },
     pricing: {
       price: 5000000,
@@ -1264,14 +1264,14 @@ export const secondaryListings = [
       availableFrom: null,
     },
     specifications: {
-      propertyType: "Townhouse",
-      offeringType: "Residential Sale",
+      property_type: "Townhouse",
+      category: "Residential Sale",
       size: 2500,
       noOfBedrooms: 3,
       noOfBathrooms: 2,
       noOfParkingSpaces: 2,
       furnished: "Unfurnished",
-      totalPlotSize: 3000,
+      total_plot_size: 3000,
     },
     pricing: {
       price: 1800000,
@@ -1308,14 +1308,14 @@ export const secondaryListings = [
       availableFrom: "2025-02-15",
     },
     specifications: {
-      propertyType: "Apartment",
-      offeringType: "Commercial Rent",
+      property_type: "Apartment",
+      category: "Commercial Rent",
       size: 800,
       noOfBedrooms: 1,
       noOfBathrooms: 1,
       noOfParkingSpaces: 1,
       furnished: "Furnished",
-      totalPlotSize: 800,
+      total_plot_size: 800,
     },
     pricing: {
       price: 60000,
@@ -3030,104 +3030,104 @@ export const mockDeals = [
 export const pricingData = {
   monthly: [
     {
-      id: 'agent',
-      name: 'Agent',
+      id: "agent",
+      name: "Agent",
       price: 250,
-      description: 'Access to offplan and secondary listings.',
+      description: "Access to offplan and secondary listings.",
       features: [
-        'Create secondary listing',
-        'View offplan and secondary listing',
-        'Interactive map',
-        'Online presentations',
-        'Developer contacts',
-        'Fixing partner leads',
-        'Educational materials',
-        'PDF download options to share property details',
-        'Access to multiple offplan properties and distress deals'
-      ]
-    },
-    {
-      id: 'admin',
-      name: 'Admin',
-      price: 300,
-      description: 'Includes all Agent features plus admin tools.',
-      features: [
-        'All from Agent plan',
-        'Publish secondary listing on Bayut and Dubizzle',
-        'Manage documents',
-        'Download images to get permit number',
-        'Bulk options',
-        'Adding new listing for agent/owner',
-        'Analytics',
-        'Permission management'
-      ]
-    },
-    {
-      id: 'super_admin',
-      name: 'Super Admin',
-      price: 500,
-      description: 'Full control with advanced administrative features.',
-      features: [
-        'All from Admin plan',
-        'Full access to all listings and modifications',
-        'Advanced bulk listing management',
-        'Complete permission and role management',
-        'Company-wide analytics and reporting',
-        'Custom branding options',
-        'Priority support and dedicated account manager'
+        "Create secondary listing",
+        "View offplan and secondary listing",
+        "Interactive map",
+        "Online presentations",
+        "Developer contacts",
+        "Fixing partner leads",
+        "Educational materials",
+        "PDF download options to share property details",
+        "Access to multiple offplan properties and distress deals",
       ],
-      popular: true
-    }
+    },
+    {
+      id: "admin",
+      name: "Admin",
+      price: 300,
+      description: "Includes all Agent features plus admin tools.",
+      features: [
+        "All from Agent plan",
+        "Publish secondary listing on Bayut and Dubizzle",
+        "Manage documents",
+        "Download images to get permit number",
+        "Bulk options",
+        "Adding new listing for agent/owner",
+        "Analytics",
+        "Permission management",
+      ],
+    },
+    {
+      id: "super_admin",
+      name: "Super Admin",
+      price: 500,
+      description: "Full control with advanced administrative features.",
+      features: [
+        "All from Admin plan",
+        "Full access to all listings and modifications",
+        "Advanced bulk listing management",
+        "Complete permission and role management",
+        "Company-wide analytics and reporting",
+        "Custom branding options",
+        "Priority support and dedicated account manager",
+      ],
+      popular: true,
+    },
   ],
   yearly: [
     {
-      id: 'agent',
-      name: 'Agent',
+      id: "agent",
+      name: "Agent",
       price: 2500,
-      description: 'Access to offplan and secondary listings.',
+      description: "Access to offplan and secondary listings.",
       features: [
-        'Create secondary listing',
-        'View offplan and secondary listing',
-        'Interactive map',
-        'Online presentations',
-        'Developer contacts',
-        'Fixing partner leads',
-        'Educational materials',
-        'PDF download options to share property details',
-        'Access to multiple offplan properties and distress deals'
-      ]
-    },
-    {
-      id: 'admin',
-      name: 'Admin',
-      price: 3000,
-      description: 'Includes all Agent features plus admin tools.',
-      features: [
-        'All from Agent plan',
-        'Publish secondary listing on Bayut and Dubizzle',
-        'Manage documents',
-        'Download images to get permit number',
-        'Bulk options',
-        'Adding new listing for agent/owner',
-        'Analytics',
-        'Permission management'
-      ]
-    },
-    {
-      id: 'super_admin',
-      name: 'Super Admin',
-      price: 5000,
-      description: 'Full control with advanced administrative features.',
-      features: [
-        'All from Admin plan',
-        'Full access to all listings and modifications',
-        'Advanced bulk listing management',
-        'Complete permission and role management',
-        'Company-wide analytics and reporting',
-        'Custom branding options',
-        'Priority support and dedicated account manager'
+        "Create secondary listing",
+        "View offplan and secondary listing",
+        "Interactive map",
+        "Online presentations",
+        "Developer contacts",
+        "Fixing partner leads",
+        "Educational materials",
+        "PDF download options to share property details",
+        "Access to multiple offplan properties and distress deals",
       ],
-      popular: true
-    }
-  ]
+    },
+    {
+      id: "admin",
+      name: "Admin",
+      price: 3000,
+      description: "Includes all Agent features plus admin tools.",
+      features: [
+        "All from Agent plan",
+        "Publish secondary listing on Bayut and Dubizzle",
+        "Manage documents",
+        "Download images to get permit number",
+        "Bulk options",
+        "Adding new listing for agent/owner",
+        "Analytics",
+        "Permission management",
+      ],
+    },
+    {
+      id: "super_admin",
+      name: "Super Admin",
+      price: 5000,
+      description: "Full control with advanced administrative features.",
+      features: [
+        "All from Admin plan",
+        "Full access to all listings and modifications",
+        "Advanced bulk listing management",
+        "Complete permission and role management",
+        "Company-wide analytics and reporting",
+        "Custom branding options",
+        "Priority support and dedicated account manager",
+      ],
+      popular: true,
+    },
+  ],
 };

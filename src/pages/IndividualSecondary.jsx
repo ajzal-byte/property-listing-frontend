@@ -34,14 +34,14 @@ const propertyData = {
     availableFrom: "2025-02-25",
   },
   specifications: {
-    propertyType: "Apartment",
-    offeringType: "Residential Rent",
+    property_type: "Apartment",
+    category: "Residential Rent",
     size: 1200,
     noOfBedrooms: 2,
     noOfBathrooms: 2,
     noOfParkingSpaces: 1,
     furnished: "Furnished",
-    totalPlotSize: 1200,
+    total_plot_size: 1200,
   },
   pricing: {
     price: 75000,
@@ -175,13 +175,13 @@ export default function IndividualSecondary() {
                     <div className="space-y-1">
                       <p className="text-sm text-gray-500">Property Type</p>
                       <p className="font-medium">
-                        {propertyData.specifications.propertyType}
+                        {propertyData.specifications.property_type}
                       </p>
                     </div>
                     <div className="space-y-1">
-                      <p className="text-sm text-gray-500">Offering Type</p>
+                      <p className="text-sm text-gray-500">Category</p>
                       <p className="font-medium">
-                        {propertyData.specifications.offeringType}
+                        {propertyData.specifications.category}
                       </p>
                     </div>
                     <div className="space-y-1">
@@ -324,7 +324,7 @@ export default function IndividualSecondary() {
                   <div>
                     <p className="text-sm text-gray-500">Total Plot Size</p>
                     <p className="font-medium">
-                      {propertyData.specifications.totalPlotSize} sq.ft
+                      {propertyData.specifications.total_plot_size} sq.ft
                     </p>
                   </div>
                   <div>

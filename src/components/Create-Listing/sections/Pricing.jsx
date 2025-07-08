@@ -15,21 +15,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 
-const paymentMethods = ["Cash", "Bank Transfer", "Cheque", "Credit Card"];
+const paymentMethods = ["Cash", "Installments"];
 const chequeOptions = Array.from({ length: 12 }, (_, i) => (i + 1).toString());
+const amountTypeOptions = ["Sale", "Yearly", "Monthly", "Weekly", "Daily"];
 
 const Pricing = ({ formData, setField }) => {
-  // grab shared form context
   const { control, setValue, trigger, getValues } = useFormContext();
 
-  const offeringType = getValues("offeringType");
-  const isSale =
-    offeringType === "Sale" || offeringType === "RS" || offeringType === "CS";
-  const isRent =
-    offeringType === "Rent" || offeringType === "RR" || offeringType === "CR";
+  const category = getValues("category");
+  const isSale = category === "Sale" || category === "RS" || category === "CS";
+  const isRent = category === "Rent" || category === "RR" || category === "CR";
 
   const handleChange = (name, value) => {
     setValue(name, value);
@@ -38,256 +35,239 @@ const Pricing = ({ formData, setField }) => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8 rounded-lg bg-background p-6 shadow-sm">
       <div className="border-b pb-4">
-        <h2 className="text-xl font-semibold">Pricing Information</h2>
-        <p className="text-muted-foreground text-sm">
-          Enter pricing details for your property.
+        <h2 className="text-2xl font-semibold">Pricing Information</h2>
+        <p className="mt-1 text-base text-muted-foreground">
+          Provide pricing details for your property
         </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-6 gap-y-4">
-        {isSale && (
-          <>
-            {/* Price */}
-            <FormField
-              control={control}
-              name="price"
-              rules={{
-                required: "Price is required.",
-                min: { value: 1, message: "Price must be greater than 0." },
-              }}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="flex items-center gap-1">
-                    Price <span className="text-red-500">*</span>
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      placeholder="Enter price"
-                      value={field.value}
-                      onChange={(e) => handleChange("price", e.target.value)}
-                      onBlur={() => trigger("price")}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {/* Price */}
+        <FormField
+          control={control}
+          name="price"
+          rules={{
+            required: "Please enter a price",
+            min: { value: 1, message: "Price must be greater than 0" },
+          }}
+          render={({ field }) => (
+            <FormItem className="w-full">
+              <FormLabel className="text-base font-medium">
+                Price <span className="text-red-500">*</span>
+              </FormLabel>
+              <FormControl>
+                <Input
+                  type="number"
+                  placeholder="Enter price"
+                  value={field.value || ""}
+                  onChange={(e) => handleChange("price", e.target.value)}
+                  className="h-10 w-full text-base"
+                />
+              </FormControl>
+              <FormMessage className="text-base" />
+            </FormItem>
+          )}
+        />
 
-            {/* Hide Price */}
-            <FormField
-              control={control}
-              name="hidePrice"
-              render={({ field }) => (
-                <FormItem className="flex items-center space-x-3 mt-8">
-                  <FormControl>
-                    <Checkbox
-                      checked={field.value}
-                      onCheckedChange={(checked) =>
-                        handleChange("hidePrice", checked)
-                      }
-                    />
-                  </FormControl>
-                  <FormLabel className="font-normal">
-                    Hide Price? (Property Finder Only)
-                  </FormLabel>
-                </FormItem>
-              )}
-            />
+        {/* Hide Price */}
+        <FormField
+          control={control}
+          name="hide_price"
+          render={({ field }) => (
+            <FormItem className="flex w-full items-center gap-4">
+              <FormLabel className="text-base font-medium">
+                Hide Price? (Property Finder Only)
+              </FormLabel>
+              <FormControl>
+                <Checkbox
+                  checked={field.value}
+                  onCheckedChange={(checked) =>
+                    handleChange("hide_price", checked)
+                  }
+                />
+              </FormControl>
+              <FormMessage className="text-base" />
+            </FormItem>
+          )}
+        />
 
-            {/* Payment Method */}
-            <FormField
-              control={control}
-              name="paymentMethod"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Payment Method</FormLabel>
-                  <Select
-                    value={field.value}
-                    onValueChange={(val) => handleChange("paymentMethod", val)}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select payment method" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {paymentMethods.map((method) => (
-                        <SelectItem key={method} value={method}>
-                          {method}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </FormItem>
-              )}
-            />
-
-            {/* Down Payment */}
-            <FormField
-              control={control}
-              name="downPayment"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Down Payment</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      placeholder="Enter down payment amount"
-                      value={field.value}
-                      onChange={(e) =>
-                        handleChange("downPayment", e.target.value)
-                      }
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-          </>
-        )}
-
-        {isRent && (
-          <>
-            {/* Rent Frequency */}
-            <FormField
-              control={control}
-              name="rentFrequency"
-              rules={{ required: "Rent Frequency is required." }}
-              render={({ field }) => (
-                <FormItem className="col-span-full">
-                  <FormLabel className="flex items-center gap-1">
-                    Rent Frequency <span className="text-red-500">*</span>
-                  </FormLabel>
-                  <FormControl>
-                    <RadioGroup
-                      className="flex flex-wrap gap-4"
-                      value={field.value}
-                      onValueChange={(val) =>
-                        handleChange("rentFrequency", val)
-                      }
+        {/* Payment Method */}
+        <FormField
+          control={control}
+          name="paymentMethod"
+          render={({ field }) => (
+            <FormItem className="w-full">
+              <FormLabel className="text-base font-medium">
+                Payment Method
+              </FormLabel>
+              <Select
+                value={field.value}
+                onValueChange={(val) => handleChange("paymentMethod", val)}
+              >
+                <FormControl>
+                  <SelectTrigger className="h-10 w-full text-base">
+                    <SelectValue placeholder="Select payment method" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {paymentMethods.map((method) => (
+                    <SelectItem
+                      key={method}
+                      value={method.toLocaleLowerCase()}
+                      className="text-base"
                     >
-                      {["Yearly", "Monthly", "Weekly", "Daily"].map((freq) => (
-                        <div key={freq} className="flex items-center space-x-2">
-                          <RadioGroupItem
-                            id={freq.toLowerCase()}
-                            value={freq}
-                          />
-                          <label
-                            htmlFor={freq.toLowerCase()}
-                            className="cursor-pointer"
-                          >
-                            {freq}
-                          </label>
-                        </div>
-                      ))}
-                    </RadioGroup>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                      {method}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage className="text-base" />
+            </FormItem>
+          )}
+        />
 
-            {/* Rent Amount */}
-            <FormField
-              control={control}
-              name="rentAmount"
-              rules={{ required: "Rent Amount is required.", min: { value: 1, message: "Rent must be greater than 0." } }}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="flex items-center gap-1">
-                    Rent Amount <span className="text-red-500">*</span>
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      placeholder="Enter rent amount"
-                      value={field.value}
-                      onChange={(e) =>
-                        handleChange("rentAmount", e.target.value)
-                      }
-                      onBlur={() => trigger("rentAmount")}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </>
-        )}
+        {/* Down Payment */}
+        <FormField
+          control={control}
+          name="downPayment"
+          render={({ field }) => (
+            <FormItem className="w-full">
+              <FormLabel className="text-base font-medium">
+                Down Payment
+              </FormLabel>
+              <FormControl>
+                <Input
+                  type="number"
+                  placeholder="Enter down payment amount"
+                  value={field.value || ""}
+                  onChange={(e) => handleChange("downPayment", e.target.value)}
+                  className="h-10 w-full text-base"
+                />
+              </FormControl>
+              <FormMessage className="text-base" />
+            </FormItem>
+          )}
+        />
 
-        {/* Common Fields */}
+        {/* Amount Type */}
+        <FormField
+          control={control}
+          name="amountType"
+          rules={{ required: "Please select an amount type" }}
+          render={({ field }) => (
+            <FormItem className="w-full">
+              <FormLabel className="text-base font-medium">
+                Amount Type <span className="text-red-500">*</span>
+              </FormLabel>
+              <Select
+                value={field.value}
+                onValueChange={(val) => handleChange("amountType", val)}
+              >
+                <FormControl>
+                  <SelectTrigger className="h-10 w-full text-base">
+                    <SelectValue placeholder="Select amount type" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {amountTypeOptions.map((type) => (
+                    <SelectItem key={type} value={type} className="text-base">
+                      {type}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage className="text-base" />
+            </FormItem>
+          )}
+        />
+
+        {/* Cheques */}
         <FormField
           control={control}
           name="cheques"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel>Cheques</FormLabel>
+            <FormItem className="w-full">
+              <FormLabel className="text-base font-medium">Cheques</FormLabel>
               <Select
                 value={field.value}
                 onValueChange={(val) => handleChange("cheques", val)}
               >
                 <FormControl>
-                  <SelectTrigger>
+                  <SelectTrigger className="h-10 w-full text-base">
                     <SelectValue placeholder="Select number of cheques" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
                   {chequeOptions.map((opt) => (
-                    <SelectItem key={opt} value={opt}>
+                    <SelectItem key={opt} value={opt} className="text-base">
                       {opt}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
+              <FormMessage className="text-base" />
             </FormItem>
           )}
         />
 
+        {/* Service Charges */}
         <FormField
           control={control}
-          name="serviceCharges"
+          name="service_charges"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel>Service Charges</FormLabel>
+            <FormItem className="w-full">
+              <FormLabel className="text-base font-medium">
+                Service Charges
+              </FormLabel>
               <FormControl>
                 <Input
                   type="number"
                   placeholder="Enter service charges"
                   value={field.value}
                   onChange={(e) =>
-                    handleChange("serviceCharges", e.target.value)
+                    handleChange("service_charges", e.target.value)
                   }
+                  className="h-10 w-full text-base"
                 />
               </FormControl>
+              <FormMessage className="text-base" />
             </FormItem>
           )}
         />
 
+        {/* Financial Status */}
         <FormField
           control={control}
           name="financialStatus"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel>Financial Status</FormLabel>
+            <FormItem className="w-full">
+              <FormLabel className="text-base font-medium">
+                Financial Status
+              </FormLabel>
               <Select
                 value={field.value}
                 onValueChange={(val) => handleChange("financialStatus", val)}
               >
                 <FormControl>
-                  <SelectTrigger>
+                  <SelectTrigger className="h-10 w-full text-base">
                     <SelectValue placeholder="Select financial status" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
                   {["Mortgaged", "Cash"].map((status) => (
-                    <SelectItem key={status} value={status}>
+                    <SelectItem
+                      key={status}
+                      value={status}
+                      className="text-base"
+                    >
                       {status}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
+              <FormMessage className="text-base" />
             </FormItem>
           )}
         />

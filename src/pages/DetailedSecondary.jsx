@@ -116,12 +116,12 @@ const DetailedSecondary = () => {
 
       {/* Property Header (Price, Title, Description) */}
       <PropertyHeader
-        offeringType={listing.offering_type}
+        category={listing.offering_type}
         price={listing.price}
         rentAmount={listing.price} // Adjust based on your data structure
         rentFrequency="year" // Adjust based on your data structure
         titleEn={listing.title_en}
-        titleDeed={listing.title_deed}
+        title_deed={listing.title_deed}
         descriptionEn={listing.desc_en}
         formatPrice={formatPrice}
         showEdit={false}
