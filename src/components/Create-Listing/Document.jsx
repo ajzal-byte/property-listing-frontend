@@ -1,4 +1,4 @@
-import React, { useRef, useState, useCallback } from "react";
+import React, { useRef, useState, useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Form as FormProvider } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
@@ -14,9 +14,20 @@ const DocumentsForm = ({ formData, setField, nextStep, prevStep }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [uploadError, setUploadError] = useState("");
 
+  // clean up any stale/non‑File entries on mount
+  useEffect(() => {
+    const docs = formData.documents;
+    if (!Array.isArray(docs)) return;
+
+    const valid = docs.every((f) => f instanceof File || f instanceof Blob);
+    if (!valid) {
+      setField("documents", []);
+    }
+  }, []);
+
   const handleFileChange = useCallback(
     (newFiles) => {
-      const updatedFiles = [...formData.documents, ...newFiles];
+      const updatedFiles = [...(formData.documents || []), ...newFiles];
       setField("documents", updatedFiles);
       setUploadError("");
     },
@@ -32,43 +43,19 @@ const DocumentsForm = ({ formData, setField, nextStep, prevStep }) => {
     ];
     const maxSizeMB = 10;
 
-    const readFileAsDataUrl = (file) =>
-      new Promise((resolve, reject) => {
-        if (!validFileTypes.includes(file.type)) {
-          reject("Only JPG, PNG, WEBP images and PDF files are allowed");
-          return;
-        }
-        if (file.size > maxSizeMB * 1024 * 1024) {
-          reject(`File size exceeds ${maxSizeMB}MB limit`);
-          return;
-        }
-        const reader = new FileReader();
-        reader.onload = () => {
-          const dataUrl = reader.result;
-          resolve({
-            name: file.name,
-            type: file.type.includes("image") ? "image" : "pdf",
-            file: dataUrl,
-            preview: file.type.includes("image") ? dataUrl : null,
-            size: file.size,
-          });
-        };
-        reader.onerror = () => reject("Failed to read file");
-        reader.readAsDataURL(file);
-      });
+    const uploadedFiles = Array.from(files).map((file) => {
+      if (!validFileTypes.includes(file.type)) {
+        throw new Error("Only JPG, PNG, WEBP images and PDF files are allowed");
+      }
 
-    const fileArray = Array.from(files);
-    const readPromises = fileArray.map((file) => readFileAsDataUrl(file));
+      if (file.size > maxSizeMB * 1024 * 1024) {
+        throw new Error(`File size exceeds ${maxSizeMB}MB limit`);
+      }
 
-    Promise.all(readPromises)
-      .then((uploadedFiles) => {
-        if (uploadedFiles.length > 0) {
-          handleFileChange(uploadedFiles);
-        }
-      })
-      .catch((errMsg) => {
-        setUploadError(errMsg);
-      });
+      return file;
+    });
+
+    handleFileChange(uploadedFiles);
   };
 
   const handleDragOver = (e) => {
@@ -85,7 +72,11 @@ const DocumentsForm = ({ formData, setField, nextStep, prevStep }) => {
     setIsDragging(false);
 
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      handleFileUpload(e.dataTransfer.files);
+      try {
+        handleFileUpload(e.dataTransfer.files);
+      } catch (error) {
+        setUploadError(error.message);
+      }
     }
   };
 
@@ -99,13 +90,14 @@ const DocumentsForm = ({ formData, setField, nextStep, prevStep }) => {
     setField("documents", updatedFiles);
   };
 
-  const getFileIcon = (type) => {
-    if (type === "pdf") return <FileText className="w-5 h-5 text-red-500" />;
+  const getFileIcon = (file) => {
+    if (file.type === "application/pdf")
+      return <FileText className="w-5 h-5 text-red-500" />;
     return <Image className="w-5 h-5 text-blue-500" />;
   };
 
-  const getFileType = (type) => {
-    if (type === "pdf") return "PDF Document";
+  const getFileType = (file) => {
+    if (file.type === "application/pdf") return "PDF Document";
     return "Image File";
   };
 
@@ -161,7 +153,13 @@ const DocumentsForm = ({ formData, setField, nextStep, prevStep }) => {
                 className="hidden"
                 accept=".jpg,.jpeg,.png,.webp,.pdf"
                 multiple
-                onChange={(e) => handleFileUpload(e.target.files)}
+                onChange={(e) => {
+                  try {
+                    if (e.target.files) handleFileUpload(e.target.files);
+                  } catch (error) {
+                    setUploadError(error.message);
+                  }
+                }}
               />
             </div>
 
@@ -178,12 +176,12 @@ const DocumentsForm = ({ formData, setField, nextStep, prevStep }) => {
                     className="border rounded-lg p-4 flex items-start hover:bg-muted/50 transition-colors relative"
                   >
                     <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-2 mr-3">
-                      {getFileIcon(file.type)}
+                      {getFileIcon(file)}
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="font-medium truncate">{file.name}</div>
                       <div className="text-sm text-muted-foreground">
-                        {getFileType(file.type)}
+                        {getFileType(file)}
                       </div>
                       <div className="text-xs text-muted-foreground mt-1">
                         {Math.round(file.size / 1024)} KB

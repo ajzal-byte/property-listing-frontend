@@ -214,9 +214,6 @@ export function useCreateListingData() {
           amenRes.json(),
         ]);
 
-        console.log("propTypeData", propTypeData);
-        
-
         setFormData((f) => ({
           ...f,
           developers: devData,

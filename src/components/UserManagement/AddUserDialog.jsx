@@ -144,6 +144,18 @@ const AddUserDialog = ({ onUserAdded }) => {
       }
 
       toast.success("User created successfully");
+      setFormData({
+        name: "",
+        email: "",
+        password: "",
+        company_id: currentUserCompanyId || "",
+        role_id: "",
+        phone: "",
+        rera_number: "",
+        profile_url: "",
+      });
+      setSelectedRole("");
+      setSelectedFile(null);
       setOpen(false);
       onUserAdded?.(); // Refresh user list
     } catch (error) {

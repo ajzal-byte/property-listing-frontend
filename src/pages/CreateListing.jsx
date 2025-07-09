@@ -76,7 +76,7 @@ const CreateListing = () => {
         duration: 3000,
         position: "bottom-right",
       });
-      window.location.href = "/secondary";
+      // window.location.href = "/secondary";
     } catch (err) {
       toast.error("Failed to Create Listing", {
         description: err.message,

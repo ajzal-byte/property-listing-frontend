@@ -35,6 +35,25 @@ import { role } from "../../utils/getUserRole";
 const PreviewForm = ({ formData, prevStep, goToStep, onSubmit, isLoading }) => {
   const [resolvedData, setResolvedData] = useState({});
   const [loading, setLoading] = useState(true);
+  const [photoUrls, setPhotoUrls] = useState([]);
+
+  useEffect(() => {
+    if (formData.photo_urls?.length > 0) {
+      setLoading(true);
+      
+      // Create object URLs for preview
+      const urls = formData.photo_urls.map(file => URL.createObjectURL(file));
+      setPhotoUrls(urls);
+      
+      setLoading(false);
+      
+      // Cleanup function
+      return () => {
+        urls.forEach(url => URL.revokeObjectURL(url));
+      };
+    }
+  }, [formData.photo_urls]);
+
 
   // API base URL
   const API_BASE_URL = "https://backend.myemirateshome.com/api";
@@ -205,9 +224,9 @@ const PreviewForm = ({ formData, prevStep, goToStep, onSubmit, isLoading }) => {
         </p>
       </div>
       {/* Property Images */}
-      {photoCount > 0 && (
+      {photoUrls.length > 0 && (
         <ImageGallery
-          photos={photos}
+          photos={photoUrls}
           goToStep={goToStep}
           watermark={formData.watermark}
           publishingStatus={formData.publishingStatus}

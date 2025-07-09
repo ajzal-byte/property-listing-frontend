@@ -89,10 +89,10 @@ const Description = ({ setField }) => {
               name="descriptionEn"
               rules={{
                 required: "Please enter a description in English",
-                minLength: {
-                  value: 750,
-                  message: "Description must be at least 750 characters",
-                },
+                // minLength: {
+                //   value: 750,
+                //   message: "Description must be at least 750 characters",
+                // },
                 maxLength: {
                   value: 2000,
                   message: "Description must not exceed 2000 characters",

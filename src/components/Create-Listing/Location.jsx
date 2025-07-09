@@ -4,7 +4,7 @@ import { Form as FormProvider } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Camera, Upload, X } from "lucide-react";
+import { Camera, FileText, Upload, X } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -48,6 +48,7 @@ const LocationForm = ({ formData, setField, nextStep, prevStep }) => {
   const [filteredBayut, setFilteredBayut] = useState([]);
 
   // Floor plan file upload (unchanged)
+  const [previewFloorPlanUrls, setPreviewFloorPlanUrls] = useState([]);
   const floorPlanFileInputRef = useRef(null);
   const [draggingFloorPlan, setDraggingFloorPlan] = useState(false);
   const [floorPlanError, setFloorPlanError] = useState("");
@@ -110,7 +111,35 @@ const LocationForm = ({ formData, setField, nextStep, prevStep }) => {
     setFilteredBayut(formData.bayutLocations);
   }, [formData.bayutLocations]);
 
-  // ――― Floor Plan handlers (unchanged from your original) ―――
+  useEffect(() => {
+    if (!Array.isArray(formData.floor_plan_urls)) {
+      setPreviewFloorPlanUrls([]);
+      return;
+    }
+
+    const validFiles = [];
+    const urls = [];
+
+    for (const file of formData.floor_plan_urls) {
+      try {
+        if (file instanceof File || file instanceof Blob) {
+          const url = URL.createObjectURL(file);
+          urls.push(url);
+          validFiles.push(file);
+        }
+      } catch {
+        // skip invalid entries
+      }
+    }
+
+    if (validFiles.length !== formData.floor_plan_urls.length) {
+      setField("floor_plan_urls", validFiles);
+    }
+
+    setPreviewFloorPlanUrls(urls);
+    return () => urls.forEach(URL.revokeObjectURL);
+  }, [formData.floor_plan_urls, setField]);
+
   const handleFloorPlanChange = useCallback(
     (newImages) => {
       const updated = [...formData.floor_plan_urls, ...newImages];
@@ -121,33 +150,33 @@ const LocationForm = ({ formData, setField, nextStep, prevStep }) => {
   );
 
   const handleFloorPlanFileUpload = (files) => {
-    const uploadedImages = [];
-    const validImageTypes = ["image/jpeg", "image/png", "image/webp"];
+    const validTypes = [
+      "image/jpeg",
+      "image/png",
+      "image/webp",
+      "application/pdf",
+    ];
     const maxSizeMB = 10;
     let hasError = false;
+    const uploaded = [];
 
     Array.from(files).forEach((file) => {
-      if (!validImageTypes.includes(file.type)) {
-        setFloorPlanError("Only JPG, PNG, or WEBP images are allowed");
+      if (!validTypes.includes(file.type)) {
+        setFloorPlanError("Only JPG, PNG, WEBP or PDF files are allowed");
         hasError = true;
         return;
       }
-
       if (file.size > maxSizeMB * 1024 * 1024) {
         setFloorPlanError(`File size exceeds ${maxSizeMB}MB limit`);
         hasError = true;
         return;
       }
-
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        uploadedImages.push(e.target.result);
-        if (uploadedImages.length === files.length && !hasError) {
-          handleFloorPlanChange(uploadedImages);
-        }
-      };
-      reader.readAsDataURL(file);
+      uploaded.push(file);
     });
+
+    if (!hasError && uploaded.length) {
+      handleFloorPlanChange(uploaded);
+    }
   };
 
   const handleFloorPlanDragOver = (e) => {
@@ -172,9 +201,18 @@ const LocationForm = ({ formData, setField, nextStep, prevStep }) => {
   };
 
   const removeFloorPlanImage = (index) => {
-    const updatedImages = [...formData.floor_plan_urls];
-    updatedImages.splice(index, 1);
-    setField("floor_plan_urls", updatedImages);
+    const updated = [...formData.floor_plan_urls];
+    updated.splice(index, 1);
+    setField("floor_plan_urls", updated);
+
+    if (previewFloorPlanUrls[index]) {
+      URL.revokeObjectURL(previewFloorPlanUrls[index]);
+    }
+    setPreviewFloorPlanUrls((urls) => {
+      const copy = [...urls];
+      copy.splice(index, 1);
+      return copy;
+    });
   };
 
   // 4) When user selects a PF location, fill in the related fields automatically
@@ -468,7 +506,7 @@ const LocationForm = ({ formData, setField, nextStep, prevStep }) => {
                 type="file"
                 ref={floorPlanFileInputRef}
                 className="hidden"
-                accept="image/jpeg, image/png, image/webp"
+                accept="image/jpeg, image/png, image/webp, application/pdf"
                 multiple
                 onChange={(e) => handleFloorPlanFileUpload(e.target.files)}
               />
@@ -480,24 +518,41 @@ const LocationForm = ({ formData, setField, nextStep, prevStep }) => {
 
             {formData.floor_plan_urls?.length > 0 && (
               <div className="mt-6 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                {formData.floor_plan_urls.map((url, index) => (
-                  <div key={index} className="relative group">
-                    <div className="aspect-square overflow-hidden rounded-lg border">
-                      <img
-                        src={url}
-                        alt={`Floor Plan ${index + 1}`}
-                        className="w-full h-full object-cover"
-                      />
+                {formData.floor_plan_urls.map((file, index) => {
+                  const url = previewFloorPlanUrls[index];
+                  return (
+                    <div key={index} className="relative group">
+                      <div className="aspect-square overflow-hidden rounded-lg border">
+                        {file.type === "application/pdf" ? (
+                          // PDF preview: link out to open/download
+                          <a
+                            href={url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex flex-col items-center justify-center w-full h-full p-4 text-sm text-center text-gray-700 bg-gray-100"
+                          >
+                            <FileText size={32} className="mb-2" />
+                            <span className="truncate">{file.name}</span>
+                          </a>
+                        ) : (
+                          // Image preview
+                          <img
+                            src={url}
+                            alt={`Floor Plan ${index + 1}`}
+                            className="w-full h-full object-cover"
+                          />
+                        )}
+                      </div>
+                      <button
+                        type="button"
+                        className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                        onClick={() => removeFloorPlanImage(index)}
+                      >
+                        <X size={16} />
+                      </button>
                     </div>
-                    <button
-                      type="button"
-                      className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
-                      onClick={() => removeFloorPlanImage(index)}
-                    >
-                      <X size={16} />
-                    </button>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </CardContent>

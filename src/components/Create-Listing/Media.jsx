@@ -1,4 +1,4 @@
-import React, { useRef, useState, useCallback } from "react";
+import React, { useRef, useState, useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Form as FormProvider } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
@@ -16,14 +16,48 @@ const MediaForm = ({ formData, setField, nextStep, prevStep }) => {
   const fileInputRef = useRef(null);
   const [isDragging, setIsDragging] = useState(false);
   const [imageError, setImageError] = useState("");
+  const [previewUrls, setPreviewUrls] = useState([]);
+
+  // Generate preview URLs when images change, and drop invalid entries
+  useEffect(() => {
+    if (!Array.isArray(formData.photo_urls)) {
+      setPreviewUrls([]);
+      return;
+    }
+    let cleanedFiles = [];
+    const urls = formData.photo_urls.reduce((acc, file) => {
+      try {
+        // only Files/Blobs are valid
+        if (file instanceof File || file instanceof Blob) {
+          const url = URL.createObjectURL(file);
+          acc.push(url);
+          cleanedFiles.push(file);
+        }
+      } catch (err) {
+        // skip invalid entries
+      }
+      return acc;
+    }, []);
+
+    // if some files were invalid, update formData
+    if (cleanedFiles.length !== formData.photo_urls.length) {
+      setField("photo_urls", cleanedFiles);
+    }
+
+    setPreviewUrls(urls);
+
+    // Cleanup object URLs
+    return () => {
+      urls.forEach((url) => URL.revokeObjectURL(url));
+    };
+  }, [formData.photo_urls, setField]);
 
   const handleImageChange = useCallback(
-    (newImages) => {
-      const updatedImages = [...formData.photo_urls, ...newImages];
-      setField("photo_urls", updatedImages);
+    (newFiles) => {
+      const updatedFiles = [...(formData.photo_urls || []), ...newFiles];
+      setField("photo_urls", updatedFiles);
 
-      // Clear error when adding images
-      if (updatedImages.length >= 3) {
+      if (updatedFiles.length >= 3) {
         setImageError("");
       }
     },
@@ -31,9 +65,9 @@ const MediaForm = ({ formData, setField, nextStep, prevStep }) => {
   );
 
   const handleFileUpload = (files) => {
-    const uploadedImages = [];
     const validImageTypes = ["image/jpeg", "image/png", "image/webp"];
     const maxSizeMB = 10;
+    const uploadedFiles = [];
     let hasError = false;
 
     Array.from(files).forEach((file) => {
@@ -49,15 +83,12 @@ const MediaForm = ({ formData, setField, nextStep, prevStep }) => {
         return;
       }
 
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        uploadedImages.push(e.target.result);
-        if (uploadedImages.length === files.length && !hasError) {
-          handleImageChange(uploadedImages);
-        }
-      };
-      reader.readAsDataURL(file);
+      uploadedFiles.push(file);
     });
+
+    if (!hasError && uploadedFiles.length > 0) {
+      handleImageChange(uploadedFiles);
+    }
   };
 
   const handleDragOver = (e) => {
@@ -83,34 +114,38 @@ const MediaForm = ({ formData, setField, nextStep, prevStep }) => {
   };
 
   const removeImage = (index) => {
-    const updatedImages = [...formData.photo_urls];
-    updatedImages.splice(index, 1);
-    setField("photo_urls", updatedImages);
+    const updatedFiles = [...(formData.photo_urls || [])];
+    const [removed] = updatedFiles.splice(index, 1);
+    setField("photo_urls", updatedFiles);
 
-    // Clear error when removing images below threshold
-    if (imageError && updatedImages.length === 0) {
+    // Revoke the object URL immediately
+    if (previewUrls[index]) URL.revokeObjectURL(previewUrls[index]);
+    const newPreviewUrls = [...previewUrls];
+    newPreviewUrls.splice(index, 1);
+    setPreviewUrls(newPreviewUrls);
+
+    if (imageError && updatedFiles.length === 0) {
       setImageError("");
     }
   };
 
   const onSubmit = () => {
-    const photoUrls = formData.photo_urls;
+    const photoFiles = formData.photo_urls || [];
 
-    // Check for duplicate images
-    if (new Set(photoUrls).size !== photoUrls.length) {
+    // Check for duplicates (basic check)
+    const uniqueFiles = new Set(
+      photoFiles.map((file) => file.name + file.size)
+    );
+    if (uniqueFiles.size !== photoFiles.length) {
       setImageError("Duplicate images detected. Please remove duplicates.");
       return;
     }
 
-    const photoCount = photoUrls.length;
-
-    // Validate image count (either 0 or >=3)
-    if (photoCount < 3) {
+    if (photoFiles.length < 3) {
       setImageError("Please select at least 3 images to continue");
       return;
     }
 
-    // Clear any existing error and proceed
     setImageError("");
     nextStep();
   };
@@ -132,7 +167,7 @@ const MediaForm = ({ formData, setField, nextStep, prevStep }) => {
               <Camera className="mr-2" size={20} />
               <span>Property Photos</span>
               <span className="ml-2 bg-muted text-muted-foreground text-xs px-2 py-1 rounded-full">
-                {formData.photo_urls.length || 0}
+                {formData.photo_urls?.length || 0}
               </span>
             </CardTitle>
           </CardHeader>
@@ -192,9 +227,9 @@ const MediaForm = ({ formData, setField, nextStep, prevStep }) => {
             )}
 
             {/* Photo Previews */}
-            {formData.photo_urls.length > 0 && (
+            {previewUrls.length > 0 && (
               <div className="mt-6 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                {formData.photo_urls.map((url, index) => (
+                {previewUrls.map((url, index) => (
                   <div key={index} className="relative group">
                     <div className="aspect-square overflow-hidden rounded-lg border">
                       <img

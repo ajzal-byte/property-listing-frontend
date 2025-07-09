@@ -1,3 +1,4 @@
+// src/components/Amenities.jsx
 import React, { useEffect, useMemo } from "react";
 import { useFormContext, useWatch } from "react-hook-form";
 import { Card, CardContent } from "@/components/ui/card";
@@ -5,13 +6,23 @@ import { Card, CardContent } from "@/components/ui/card";
 const Amenities = ({ formData, setField }) => {
   const { control, setValue } = useFormContext();
 
-  // Watch the selected property_type
+  // Watch the selected amenities and property type
+  const selectedAmenities = useWatch({
+    control,
+    name: "selectedAmenities",
+  });
   const propertyType = useWatch({
     control,
     name: "property_type",
   });
 
-  // List out your amenity codes by type
+  // On initial mount, populate RHF with any saved amenities
+  useEffect(() => {
+    const saved = formData.selectedAmenities || [];
+    setValue("selectedAmenities", saved);
+  }, [formData.selectedAmenities, setValue]);
+
+  // Define amenity code groups
   const residentialCodes = [
     "central-ac",
     "built-in-wardrobes",
@@ -54,72 +65,87 @@ const Amenities = ({ formData, setField }) => {
 
   const noAmenityTypes = ["farm", "land"];
 
-  // Compute the allowed codes based on selected propertyType
+  // Compute which amenity codes are allowed for the current property type
   const allowedAmenityCodes = useMemo(() => {
     if (!propertyType || noAmenityTypes.includes(propertyType)) {
       return [];
     }
-    if (
-      residentialCodes &&
-      [
-        "apartment",
-        "bulk-rent-unit",
-        "bulk-sale-unit",
-        "bungalow",
-        "compound",
-        "duplex",
-        "full-floor",
-        "half-floor",
-        "hotel-apartment",
-        "penthouse",
-        "townhouse",
-        "villa",
-        "whole-building",
-      ].includes(propertyType)
-    ) {
+
+    const residentialTypes = [
+      "apartment",
+      "bulk-rent-unit",
+      "bulk-sale-unit",
+      "bungalow",
+      "compound",
+      "duplex",
+      "full-floor",
+      "half-floor",
+      "hotel-apartment",
+      "penthouse",
+      "townhouse",
+      "villa",
+      "whole-building",
+    ];
+
+    const commercialTypes = [
+      "business-center",
+      "co-working-space",
+      "factory",
+      "labor-camp",
+      "office-space",
+      "retail",
+      "shop",
+      "show-room",
+      "staff-accommodation",
+      "warehouse",
+    ];
+
+    if (residentialTypes.includes(propertyType)) {
       return residentialCodes;
     }
-    if (
-      [
-        "business-center",
-        "co-working-space",
-        "factory",
-        "labor-camp",
-        "office-space",
-        "retail",
-        "shop",
-        "show-room",
-        "staff-accommodation",
-        "warehouse",
-      ].includes(propertyType)
-    ) {
+
+    if (commercialTypes.includes(propertyType)) {
       return commercialCodes;
     }
-    // default—if it’s something new, show none
+
     return [];
   }, [propertyType]);
 
-  // Filter the incoming amenity list by amenity_code
+  // Whenever propertyType changes, clear out any selected amenities
+  // that are no longer in the allowed list
+  useEffect(() => {
+    const current = selectedAmenities || [];
+    const filtered = current.filter((code) =>
+      allowedAmenityCodes.includes(code)
+    );
+
+    if (filtered.length !== current.length) {
+      setValue("selectedAmenities", filtered);
+      setField("selectedAmenities", filtered);
+    }
+  }, [
+    propertyType,
+    allowedAmenityCodes,
+    selectedAmenities,
+    setValue,
+    setField,
+  ]);
+
+  // Filter the full amenitiesList down to only allowed codes
   const filteredAmenities = formData.amenitiesList.filter((amenity) =>
     allowedAmenityCodes.includes(amenity.amenity_code.toLowerCase())
   );
-  console.log("filteredAmenities", filteredAmenities);
 
-  // Sync RHF on mount
-  useEffect(() => {
-    const saved = formData.selectedAmenities || [];
-    setValue("selectedAmenities", saved);
-  }, [formData.selectedAmenities, setValue]);
-
-  const selectedAmenities = useWatch({
-    control,
-    name: "selectedAmenities",
-  });
-
+  // Toggle handler (with duplicate protection)
   const handleAmenityToggle = (code) => {
-    const updated = selectedAmenities?.includes(code)
-      ? selectedAmenities.filter((c) => c !== code)
-      : [...(selectedAmenities || []), code];
+    if (!allowedAmenityCodes.includes(code)) {
+      return;
+    }
+
+    const current = selectedAmenities || [];
+    const updated = current.includes(code)
+      ? current.filter((c) => c !== code)
+      : Array.from(new Set([...current, code]));
 
     setValue("selectedAmenities", updated);
     setField("selectedAmenities", updated);
@@ -141,13 +167,13 @@ const Amenities = ({ formData, setField }) => {
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
           {filteredAmenities.map((amenity) => {
-            const code = amenity.amenity_code;
+            const code = amenity.amenity_code.toLowerCase();
             const name = amenity.amenity_name;
             const isSelected = selectedAmenities?.includes(code);
 
             return (
               <Card
-                key={code}
+                key={amenity.amenity_id}
                 className={`cursor-pointer border ${
                   isSelected
                     ? "border-primary bg-primary/10"
