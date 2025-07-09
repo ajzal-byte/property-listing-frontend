@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { Form as FormProvider } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { FileText, Image, X, File, UploadCloud } from "lucide-react";
+import { FileText, Image, X, File as FileIcon, UploadCloud } from "lucide-react";
 
 const DocumentsForm = ({ formData, setField, nextStep, prevStep }) => {
   const form = useForm({
@@ -116,7 +116,7 @@ const DocumentsForm = ({ formData, setField, nextStep, prevStep }) => {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center">
-              <File className="mr-2" size={20} />
+              <FileIcon className="mr-2" size={20} />
               <span>Property Documents</span>
               <span className="ml-2 bg-muted text-muted-foreground text-xs px-2 py-1 rounded-full">
                 {formData.documents?.length || 0}

@@ -138,11 +138,6 @@ export async function uploadFilesAndCreateListing(formData) {
   const payload = {
     ...formData,
 
-    // Remove the temporary file fields from the payload
-    photo_files: undefined,
-    floor_plan_files: undefined,
-    document_files: undefined,
-
     // Add the processed URLs
     photo_urls,
     floor_plan,
@@ -164,11 +159,11 @@ export async function uploadFilesAndCreateListing(formData) {
       sub_community: formData.property_finder_sub_community,
       building: formData.property_finder_tower,
       street_direction: formData.property_finder_street_direction,
-      uaeEmirates: formData.property_finder_uae_emirate,
+      uae_emirate: formData.property_finder_uae_emirate,
     },
 
     size: Number(formData.size),
-    total_plot_size: Number(formData.total_plot_size),
+    total_plot_size: Number(formData.total_plot_size),  
     built_up_area: formData.built_up_area,
     plot_size: Number(formData.lotSize),
     parking: Number(formData.parking),
@@ -176,6 +171,9 @@ export async function uploadFilesAndCreateListing(formData) {
     down_payment_amount: Number(formData.downPayment) || 0,
     emirate_amount: Number(formData.service_charges),
     contract_charges: Number(formData.service_charges),
+    amount_type: formData.amountType,
+    uae_emirate: formData.property_finder_uae_emirate,
+    listing_advertisement_number: "ADV-999",
 
     payment_option: formData.numberOfCheques
       ? `${formData.numberOfCheques} cheques`
