@@ -23,18 +23,19 @@ import {
   bathroomOptions,
   furnishing_typeEnum,
   finishingTypeEnum,
+  projectStautusEnum,
 } from "../../../enums/createListingsEnums";
 
 const Specifications = ({ formData, setField }) => {
   const { control, setValue, trigger } = useFormContext();
 
   // Define residential and commercial property types based on offering type
-const residentialTypes = formData.propertyTypes.filter((type) =>
-  type.category.includes("residential")
-);
-const commercialTypes = formData.propertyTypes.filter((type) =>
-  type.category.includes("commercial")
-);
+  const residentialTypes = formData.propertyTypes.filter((type) =>
+    type.category.includes("residential")
+  );
+  const commercialTypes = formData.propertyTypes.filter((type) =>
+    type.category.includes("commercial")
+  );
 
   const handleChange = (name, value) => {
     setValue(name, value);
@@ -67,7 +68,7 @@ const commercialTypes = formData.propertyTypes.filter((type) =>
           rules={{ required: "Please select a category" }}
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-base font-medium">
+              <FormLabel className="text-base font-medium flex items-center gap-1">
                 Category <span className="text-red-500">*</span>
               </FormLabel>
               <Select
@@ -99,8 +100,12 @@ const commercialTypes = formData.propertyTypes.filter((type) =>
           rules={{ required: "Please select a property type" }}
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-base font-medium">
-                Property Type <span className="text-red-500">*</span>
+              <FormLabel className="text-base font-medium flex items-center gap-1">
+                Property Type{" "}
+                <span className="text-sm text-stone-500">
+                  (Select a Category first)
+                </span>{" "}
+                <span className="text-red-500">*</span>
               </FormLabel>
               <Select
                 value={field.value}
@@ -162,7 +167,7 @@ const commercialTypes = formData.propertyTypes.filter((type) =>
           }}
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-base font-medium">
+              <FormLabel className="text-base font-medium flex items-center gap-1">
                 Size (sq.ft) <span className="text-red-500">*</span>
               </FormLabel>
               <FormControl>
@@ -188,7 +193,7 @@ const commercialTypes = formData.propertyTypes.filter((type) =>
           rules={{ required: "Please select no. of bedrooms" }}
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-base font-medium">
+              <FormLabel className="text-base font-medium flex items-center gap-1">
                 Bedrooms <span className="text-red-500">*</span>
               </FormLabel>
               <Select
@@ -220,7 +225,7 @@ const commercialTypes = formData.propertyTypes.filter((type) =>
           rules={{ required: "Please select no. of bathrooms" }}
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-base font-medium">
+              <FormLabel className="text-base font-medium flex items-center gap-1">
                 Bathrooms <span className="text-red-500">*</span>
               </FormLabel>
               <Select
@@ -252,7 +257,7 @@ const commercialTypes = formData.propertyTypes.filter((type) =>
           rules={{ required: "Please select furnishing type" }}
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-base font-medium">
+              <FormLabel className="text-base font-medium flex items-center gap-1">
                 Furnishing Type <span className="text-red-500">*</span>
               </FormLabel>
               <Select
@@ -504,6 +509,136 @@ const commercialTypes = formData.propertyTypes.filter((type) =>
                   ))}
                 </SelectContent>
               </Select>
+              <FormMessage className="text-base" />
+            </FormItem>
+          )}
+        />
+
+        {/* Project Name */}
+        <FormField
+          control={control}
+          name="project_name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-base font-medium">
+                Project Name
+              </FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="Enter project name"
+                  value={field.value || ""}
+                  onChange={(e) => handleChange("project_name", e.target.value)}
+                  className="h-10 text-base"
+                />
+              </FormControl>
+              <FormMessage className="text-base" />
+            </FormItem>
+          )}
+        />
+
+        {/* Project Status */}
+        <FormField
+          control={control}
+          name="project_status"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-base font-medium flex items-center gap-1">
+                Project Status
+              </FormLabel>
+              <Select
+                value={field.value}
+                onValueChange={(val) => handleChange("project_status", val)}
+              >
+                <FormControl>
+                  <SelectTrigger className="h-10 text-base w-full">
+                    <SelectValue placeholder="Project Status" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {projectStautusEnum.map(({ value, name }) => (
+                    <SelectItem key={value} value={value} className="text-base">
+                      {name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage className="text-base" />
+            </FormItem>
+          )}
+        />
+
+        {/* Build Year */}
+        <FormField
+          control={control}
+          name="build_year"
+          rules={{
+            min: {
+              value: 1900,
+              message: "Build year must be greater than 1900",
+            },
+            max: {
+              value: new Date().getFullYear(),
+              message: "Build year must be less than current year",
+            },
+          }}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-base font-medium">
+                Build Year
+              </FormLabel>
+              <FormControl>
+                <Input
+                  type="number"
+                  placeholder="Enter build year"
+                  value={field.value || ""}
+                  onChange={(e) => handleChange("build_year", e.target.value)}
+                  className="h-10 text-base"
+                />
+              </FormControl>
+              <FormMessage className="text-base" />
+            </FormItem>
+          )}
+        />
+
+        {/* Floor Number */}
+        <FormField
+          control={control}
+          name="floor_number"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-base font-medium">
+                Floor Number
+              </FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="Enter floor number"
+                  value={field.value || ""}
+                  onChange={(e) => handleChange("floor_number", e.target.value)}
+                  className="h-10 text-base"
+                />
+              </FormControl>
+              <FormMessage className="text-base" />
+            </FormItem>
+          )}
+        />
+
+        {/* Plot Number */}
+        <FormField
+          control={control}
+          name="plot_number"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-base font-medium">
+                Plot Number
+              </FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="Enter plot number"
+                  value={field.value || ""}
+                  onChange={(e) => handleChange("plot_number", e.target.value)}
+                  className="h-10 text-base"
+                />
+              </FormControl>
               <FormMessage className="text-base" />
             </FormItem>
           )}

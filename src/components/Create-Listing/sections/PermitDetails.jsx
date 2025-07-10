@@ -50,7 +50,7 @@ const PermitDetails = ({ formData, setField, isDubai = true }) => {
               }}
               render={({ field }) => (
                 <FormItem className="w-full">
-                  <FormLabel className="text-base font-medium">
+                  <FormLabel className="text-base font-medium flex items-center gap-1">
                     RERA Permit Number{" "}
                     {isDubai && <span className="text-red-500">*</span>}
                   </FormLabel>
@@ -128,7 +128,7 @@ const PermitDetails = ({ formData, setField, isDubai = true }) => {
               rules={{ required: "Please enter a DTCM permit number" }}
               render={({ field }) => (
                 <FormItem className="w-full">
-                  <FormLabel className="text-base font-medium">
+                  <FormLabel className="text-base font-medium flex items-center gap-1">
                     DTCM Permit Number <span className="text-red-500">*</span>
                   </FormLabel>
                   <FormControl>

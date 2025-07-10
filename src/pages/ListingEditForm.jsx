@@ -44,7 +44,7 @@ export default function ListingEditForm({
     rera_permit_number: "",
     rera_issue_date: "",
     rera_expiration_date: "",
-    contract_expiry_date: "",
+    contract_expiry: "",
     available_from: "",
     status: "",
     amenities: [],
@@ -715,8 +715,8 @@ export default function ListingEditForm({
               </label>
               <input
                 type="date"
-                name="contract_expiry_date"
-                value={formData.contract_expiry_date || ""}
+                name="contract_expiry"
+                value={formData.contract_expiry || ""}
                 onChange={handleChange}
                 className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />

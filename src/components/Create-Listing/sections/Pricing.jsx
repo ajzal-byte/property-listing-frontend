@@ -54,7 +54,7 @@ const Pricing = ({ formData, setField }) => {
           }}
           render={({ field }) => (
             <FormItem className="w-full">
-              <FormLabel className="text-base font-medium">
+              <FormLabel className="text-base font-medium flex items-center gap-1">
                 Price <span className="text-red-500">*</span>
               </FormLabel>
               <FormControl>
@@ -158,7 +158,7 @@ const Pricing = ({ formData, setField }) => {
           rules={{ required: "Please select an amount type" }}
           render={({ field }) => (
             <FormItem className="w-full">
-              <FormLabel className="text-base font-medium">
+              <FormLabel className="text-base font-medium flex items-center gap-1">
                 Amount Type <span className="text-red-500">*</span>
               </FormLabel>
               <Select

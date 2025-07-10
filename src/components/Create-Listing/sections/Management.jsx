@@ -101,7 +101,7 @@ const Management = ({ formData, setField }) => {
           rules={{ required: "Please enter a reference number" }}
           render={({ field }) => (
             <FormItem className="w-full">
-              <FormLabel className="text-base font-medium">
+              <FormLabel className="text-base font-medium flex items-center gap-1">
                 Reference Number <span className="text-red-500">*</span>
               </FormLabel>
               <FormControl>
@@ -125,7 +125,7 @@ const Management = ({ formData, setField }) => {
             rules={{ required: "Please select a company" }}
             render={({ field }) => (
               <FormItem className="w-full">
-                <FormLabel className="text-base font-medium">
+                <FormLabel className="text-base font-medium flex items-center gap-1">
                   Company <span className="text-red-500">*</span>
                 </FormLabel>
                 <Select
@@ -162,7 +162,7 @@ const Management = ({ formData, setField }) => {
           rules={{ required: "Please select a listing agent" }}
           render={({ field }) => (
             <FormItem className="w-full">
-              <FormLabel className="text-base font-medium">
+              <FormLabel className="text-base font-medium flex items-center gap-1">
                 Listing Agent <span className="text-red-500">*</span>
               </FormLabel>
               <Select
@@ -335,7 +335,7 @@ const Management = ({ formData, setField }) => {
           rules={{ required: "Please select a listing owner" }}
           render={({ field }) => (
             <FormItem className="w-full">
-              <FormLabel className="text-base font-medium">
+              <FormLabel className="text-base font-medium flex items-center gap-1">
                 Listing Owner <span className="text-red-500">*</span>
               </FormLabel>
               <Select
@@ -443,7 +443,7 @@ const Management = ({ formData, setField }) => {
           rules={{ required: "Please select an availability date" }}
           render={({ field }) => (
             <FormItem className="w-full">
-              <FormLabel className="text-base font-medium">
+              <FormLabel className="text-base font-medium flex items-center gap-1">
                 Available From <span className="text-red-500">*</span>
               </FormLabel>
               <FormControl>
@@ -452,6 +452,57 @@ const Management = ({ formData, setField }) => {
                   value={field.value || ""}
                   onChange={(e) =>
                     handleChange("availableFrom", e.target.value)
+                  }
+                  className="h-10 w-full text-base"
+                />
+              </FormControl>
+              <FormMessage className="text-base" />
+            </FormItem>
+          )}
+        />
+
+        {/* Contract Expiry Date */}
+        <FormField
+          control={control}
+          name="contract_expiry"
+          render={({ field }) => (
+            <FormItem className="w-full">
+              <FormLabel className="text-base font-medium flex items-center gap-1">
+                Contract Expiry Date
+              </FormLabel>
+              <FormControl>
+                <Input
+                  type="datetime-local"
+                  value={field.value || ""}
+                  onChange={(e) =>
+                    handleChange("contract_expiry", e.target.value)
+                  }
+                  className="h-10 w-full text-base"
+                />
+              </FormControl>
+              <FormMessage className="text-base" />
+            </FormItem>
+          )}
+        />
+
+        {/* Contract Charges */}
+        <FormField
+          control={control}
+          name="contract_charges"
+          render={({ field }) => (
+            <FormItem className="w-full">
+              <FormLabel className="text-base font-medium flex items-center gap-1">
+                Contract Charges
+              </FormLabel>
+              <FormControl>
+                <Input
+                  type="number"
+                  placeholder="Enter contract charges"
+                  step="0.01"
+                  min="0"
+                  value={field.value || ""}
+                  onChange={(e) =>
+                    handleChange("contract_charges", e.target.value)
                   }
                   className="h-10 w-full text-base"
                 />

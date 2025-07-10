@@ -27,6 +27,9 @@ const Description = ({ setField }) => {
   const titleAr = watch("titleAr") || "";
   const descriptionAr = watch("descriptionAr") || "";
 
+  const moj_deed_location_description =
+    watch("moj_deed_location_description") || "";
+
   return (
     <div className="space-y-8 rounded-lg bg-background p-6 shadow-sm">
       <div className="border-b pb-4">
@@ -36,7 +39,11 @@ const Description = ({ setField }) => {
         </p>
       </div>
 
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
+      <Tabs
+        value={activeTab}
+        onValueChange={setActiveTab}
+        className="border-b pb-3"
+      >
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="english" className="text-base">
             English
@@ -64,7 +71,7 @@ const Description = ({ setField }) => {
               }}
               render={({ field }) => (
                 <FormItem className="w-full">
-                  <FormLabel className="text-base font-medium">
+                  <FormLabel className="text-base font-medium flex items-center gap-1">
                     Title <span className="text-red-500">*</span>
                   </FormLabel>
                   <FormControl>
@@ -100,7 +107,7 @@ const Description = ({ setField }) => {
               }}
               render={({ field }) => (
                 <FormItem className="w-full">
-                  <FormLabel className="text-base font-medium">
+                  <FormLabel className="text-base font-medium flex items-center gap-1">
                     Description <span className="text-red-500">*</span>
                   </FormLabel>
                   <FormControl>
@@ -108,7 +115,9 @@ const Description = ({ setField }) => {
                       placeholder="Enter description in English (750–2000 characters)"
                       className="min-h-[200px] w-full text-base"
                       value={field.value || ""}
-                      onChange={(e) => handleChange("descriptionEn", e.target.value)}
+                      onChange={(e) =>
+                        handleChange("descriptionEn", e.target.value)
+                      }
                     />
                   </FormControl>
                   <div className="text-base text-muted-foreground">
@@ -172,13 +181,17 @@ const Description = ({ setField }) => {
               }}
               render={({ field }) => (
                 <FormItem className="w-full">
-                  <FormLabel className="text-base font-medium">Description</FormLabel>
+                  <FormLabel className="text-base font-medium">
+                    Description
+                  </FormLabel>
                   <FormControl>
                     <Textarea
                       placeholder="Enter description in Arabic (750–2000 characters)"
                       className="min-h-[200px] w-full text-base"
                       value={field.value || ""}
-                      onChange={(e) => handleChange("descriptionAr", e.target.value)}
+                      onChange={(e) =>
+                        handleChange("descriptionAr", e.target.value)
+                      }
                       dir="rtl"
                     />
                   </FormControl>
@@ -192,6 +205,43 @@ const Description = ({ setField }) => {
           </div>
         </TabsContent>
       </Tabs>
+
+      {/* MOJ Deed Location Description */}
+      <FormField
+        control={control}
+        name="moj_deed_location_description"
+        rules={{
+          // minLength: {
+          //   value: 200,
+          //   message: "Description must be at least 200 characters",
+          // },
+          maxLength: {
+            value: 1000,
+            message: "Description must not exceed 1000 characters",
+          },
+        }}
+        render={({ field }) => (
+          <FormItem className="w-full">
+            <FormLabel className="text-base font-medium flex items-center gap-1">
+              MOJ Deed Location Description
+            </FormLabel>
+            <FormControl>
+              <Textarea
+                placeholder="Enter description in English (200–1000 characters)"
+                className="min-h-[200px] w-full text-base"
+                value={field.value || ""}
+                onChange={(e) =>
+                  handleChange("moj_deed_location_description", e.target.value)
+                }
+              />
+            </FormControl>
+            <div className="text-base text-muted-foreground">
+              {moj_deed_location_description.length}/1000 characters
+            </div>
+            <FormMessage className="text-base" />
+          </FormItem>
+        )}
+      />
     </div>
   );
 };

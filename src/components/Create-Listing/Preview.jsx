@@ -40,20 +40,22 @@ const PreviewForm = ({ formData, prevStep, goToStep, onSubmit, isLoading }) => {
   useEffect(() => {
     if (formData.photo_urls?.length > 0) {
       setLoading(true);
-      
+
       // Create object URLs for preview
-      const urls = formData.photo_urls.map(file => URL.createObjectURL(file));
+      const urls =
+        formData.photo_urls && Array.isArray(formData.photo_urls)
+          ? formData.photo_urls.map((file) => URL?.createObjectURL(file))
+          : [];
       setPhotoUrls(urls);
-      
+
       setLoading(false);
-      
+
       // Cleanup function
       return () => {
-        urls.forEach(url => URL.revokeObjectURL(url));
+        urls.forEach((url) => URL.revokeObjectURL(url));
       };
     }
   }, [formData.photo_urls]);
-
 
   // API base URL
   const API_BASE_URL = "https://backend.myemirateshome.com/api";

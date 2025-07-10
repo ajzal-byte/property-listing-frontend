@@ -47,7 +47,7 @@ const EditListingForm = ({
         rera_permit_number: listing.rera_permit_number || "",
         rera_issue_date: listing.rera_issue_date || "",
         rera_expiration_date: listing.rera_expiration_date || "",
-        contract_expiry_date: listing.contract_expiry_date || "",
+        contract_expiry: listing.contract_expiry || "",
         amount_type: listing.amount_type || "",
         price: listing.price || "",
         payment_method: listing.payment_method || "",
@@ -224,7 +224,7 @@ const EditListingForm = ({
       "available_from",
       "rera_issue_date",
       "rera_expiration_date",
-      "contract_expiry_date",
+      "contract_expiry",
       "contract_expiry",
     ],
     permits: ["rera_permit_number", "dtcm_permit_number"],
@@ -416,8 +416,8 @@ const EditListingForm = ({
                   </label>
                   <input
                     type="date"
-                    name="contract_expiry_date"
-                    value={formData.contract_expiry_date || ""}
+                    name="contract_expiry"
+                    value={formData.contract_expiry || ""}
                     onChange={handleChange}
                     className="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
                   />

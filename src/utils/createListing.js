@@ -136,23 +136,99 @@ export async function uploadFilesAndCreateListing(formData) {
       : "available";
 
   const payload = {
-    ...formData,
+    // Property details
+    category: formData.category,
+    property_type: formData.property_type,
+    title_deed: formData.title_deed,
+    size: formData.size ? Number(formData.size) : null,
+    bedrooms: formData.bedrooms,
+    bathrooms: formData.bathrooms,
+    furnishing_type: formData.furnishing_type,
+    finishing_type: formData.finishingType,
+    parking: formData.parking ? Number(formData.parking) : null,
+    unit_no: formData.unit_no,
+    // total_plot_size: formData.total_plot_size
+    //   ? Number(formData.total_plot_size)
+    //   : null,
+    plot_size: formData.total_plot_size
+      ? Number(formData.total_plot_size)
+      : null,
+    built_up_area: formData.built_up_area,
+    layout_type: formData.layout_type,
+    ownership: formData.ownership,
+    developer_id: formData.developer ? Number(formData.developer) : null,
+    has_garden: formData.hasGarden || false,
+    has_kitchen: formData.hasKitchen || false,
+    project_name: formData.project_name,
+    project_status: formData.project_status,
+    build_year: formData.build_year,
+    floor_number: formData.floor_number,
+    plot_number: formData.plot_number,
 
-    // Add the processed URLs
-    photo_urls,
-    floor_plan,
-    documents,
+    // Management
+    reference_no: formData.reference_no,
+    company_id: formData.company ? Number(formData.company) : null,
+    agent_id: Number(formData.agent_id) ? Number(formData.agent_id) : null,
+    pf_agent_id: Number(formData.pfAgent) ? Number(formData.pfAgent) : null,
+    bayut_dubizzle_agent_id: Number(formData.bayutAgent)
+      ? Number(formData.bayutAgent)
+      : null,
+    website_agent_id: Number(formData.websiteAgent)
+      ? Number(formData.websiteAgent)
+      : null,
+    owner_id: Number(formData.listingOwner)
+      ? Number(formData.listingOwner)
+      : null,
+    landlord_name: formData.landlordName,
+    landlord_email: formData.landlordEmail,
+    landlord_contact: formData.landlordContact,
+    available_from: formData.availableFrom,
+    contract_expiry: formData.contract_expiration_date,
+    contract_charges: formData.contract_charges
+      ? Number(formData.contract_charges)
+      : null,
 
-    // Rest of your payload fields
+    // Permit details
+    rera_permit_number: formData.rera_permit_number,
+    rera_issue_date: formData.rera_issue_date,
+    rera_expiration_date: formData.reraExpirationDate,
+    dtcm_permit_number: formData.dtcm_permit_number,
+    dtcm_expiry_date: formData.dtcm_expiry_date,
+
+    // Pricing
+    price: formData.price ? Number(formData.price) : null,
+    hide_price: formData.hide_price,
+    payment_method: formData.paymentMethod,
+    down_payment_amount: formData.downPayment
+      ? Number(formData.downPayment)
+      : null,
+    service_charges: formData.service_charges
+      ? Number(formData.service_charges)
+      : null,
+    cheques: formData.cheques,
+    financial_status: formData.financialStatus,
+    amount_type: formData.amountType?.toLowerCase(),
+
+    // Description
     title_en: formData.titleEn,
     title_ar: formData.titleAr,
     desc_en: formData.descriptionEn,
     desc_ar: formData.descriptionAr,
-    company_id: formData.company,
-    developer_id: formData.developer,
-    listing_owner: formData.listingOwner || "",
+    moj_deed_location_description: formData.moj_deed_location_description,
+    title: formData.titleEn || formData.titleAr || null,
 
-    collectionpf_location: {
+    // Amenities
+    amenities: formData.selectedAmenities,
+
+    // Media
+    watermark: formData.watermark ? "1" : "0",
+    video_url: formData.video_tour_url,
+    "360_view_url": formData.view_360_url,
+    qr_code: formData.qr_code_property_booster,
+    qr_code_image: formData.qr_code_image_websites,
+
+    // Location
+    collection_pf_location: {
       id: formData.property_finder_location_id,
       city: formData.property_finder_city,
       community: formData.property_finder_community,
@@ -161,29 +237,37 @@ export async function uploadFilesAndCreateListing(formData) {
       street_direction: formData.property_finder_street_direction,
       uae_emirate: formData.property_finder_uae_emirate,
     },
+    collection_bayut_location: {
+      city: formData.bayut_city,
+      community: formData.bayut_community,
+      sub_community: formData.bayut_sub_community,
+      tower: formData.bayut_tower,
+    },
+    bayut_location: formData.bayut_location,
+    geopoints:
+      formData.latitude && formData.longitude
+        ? `${formData.latitude},${formData.longitude}`
+        : undefined,
 
-    size: Number(formData.size),
-    total_plot_size: Number(formData.total_plot_size),  
-    built_up_area: formData.built_up_area,
-    plot_size: Number(formData.lotSize),
-    parking: Number(formData.parking),
-    price: Number(formData.price),
-    down_payment_amount: Number(formData.downPayment) || 0,
-    emirate_amount: Number(formData.service_charges),
-    contract_charges: Number(formData.service_charges),
-    amount_type: formData.amountType,
-    uae_emirate: formData.property_finder_uae_emirate,
-    listing_advertisement_number: "ADV-999",
+    // Publishing
+    pf_enable: formData.pf_enable,
+    bayut_enable: formData.bayut_enable,
+    dubizzle_enable: formData.dubizzle_enable,
+    website_enable: formData.publishWebsite,
 
-    payment_option: formData.numberOfCheques
-      ? `${formData.numberOfCheques} cheques`
-      : "Upfront",
+    //  Notes
+    notes: formData.notes,
 
-    watermark: formData.watermark ? "1" : "0",
+    // Publishing Status
+    status: formData.publishingStatus,
 
-    contract_expiry_date: "",
-    contract_expiry: "",
-    brochure: "",
+    // Files URLs
+    photo_urls,
+    floor_plan,
+    documents,
+
+    // Other
+    created_by: Number(JSON.parse(localStorage.getItem("userData")).id),
   };
 
   // Clean up the payload

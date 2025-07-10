@@ -298,6 +298,7 @@ const MediaForm = ({ formData, setField, nextStep, prevStep }) => {
                 <Input
                   id="qr_code_property_booster"
                   value={formData.qr_code_property_booster}
+                  type="url"
                   onChange={(e) =>
                     setField("qr_code_property_booster", e.target.value)
                   }
@@ -312,6 +313,7 @@ const MediaForm = ({ formData, setField, nextStep, prevStep }) => {
                 <Input
                   id="qr_code_image_websites"
                   value={formData.qr_code_image_websites}
+                  type="url"
                   onChange={(e) =>
                     setField("qr_code_image_websites", e.target.value)
                   }
