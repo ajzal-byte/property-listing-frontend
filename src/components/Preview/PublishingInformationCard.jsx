@@ -130,7 +130,7 @@ const PublishingInfoCard = ({ formData, goToStep, showEdit = true }) => {
             enabled={formData.publishWebsite}
             title="Website"
             icon={{
-              bg: "bg-purple-600",
+              bg: "bg-blue-500",
               content: <Globe className="text-white w-4 h-4" />,
             }}
             description={

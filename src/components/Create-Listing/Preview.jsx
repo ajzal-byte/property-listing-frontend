@@ -238,8 +238,8 @@ const PreviewForm = ({ formData, prevStep, goToStep, onSubmit, isLoading }) => {
       <PropertyHeader
         category={formData.category}
         price={formData.price}
-        rentAmount={formData.rentAmount}
-        rentFrequency={formData.rentFrequency}
+        // rentAmount={formData.rentAmount}
+        amountType={formData.amountType}
         titleEn={formData.titleEn}
         title_deed={formData.title_deed}
         descriptionEn={formData.descriptionEn}

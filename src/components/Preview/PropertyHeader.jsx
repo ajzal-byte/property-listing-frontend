@@ -12,8 +12,7 @@ import { Edit } from "lucide-react";
 const PropertyHeader = ({
   category,
   price,
-  rentAmount,
-  rentFrequency,
+  amountType,
   titleEn,
   title_deed,
   descriptionEn,
@@ -26,14 +25,10 @@ const PropertyHeader = ({
       {/* Pricing Section */}
       <div className="mb-6">
         <h1 className="text-3xl font-bold">
-          {["RS", "CS"].includes(category) ? (
-            formatPrice(price)
-          ) : (
-            <>
-              {formatPrice(rentAmount)}
-              <span className="text-lg font-normal"> / {rentFrequency}</span>
-            </>
-          )}
+          AED {price}
+          {amountType.toLowerCase() == "sale"
+            ? ""
+            : ` / ${amountType.amount_type}`}
         </h1>
       </div>
 

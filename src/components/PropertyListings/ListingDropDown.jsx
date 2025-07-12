@@ -19,6 +19,8 @@ import {
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import axios from "axios";
+import getAuthHeaders from "@/utils/getAuthHeader";
+import { role } from "../../utils/getUserRole";
 
 const API_BASE_URL = "https://backend.myemirateshome.com/api";
 
@@ -52,10 +54,16 @@ const ActionDialog = ({
   const handleAction = async () => {
     setIsLoading(true);
     try {
-      await axios.post(`${API_BASE_URL}/listing/action`, {
-        action,
-        propertyId: [listingId],
-      });
+      await axios.post(
+        `${API_BASE_URL}/listing/action`,
+        {
+          action,
+          propertyId: [listingId],
+        },
+        {
+          headers: getAuthHeaders(),
+        }
+      );
       toast.success(`${actionTitles[action]} successful`);
       refreshList();
     } catch (error) {
@@ -92,7 +100,12 @@ const ActionDialog = ({
   );
 };
 
-const ListingDropDown = ({ listingId, refreshList, isApprovalPage }) => {
+const ListingDropDown = ({
+  listingId,
+  refreshList,
+  isApprovalPage,
+  isDraft = false,
+}) => {
   const [dialogAction, setDialogAction] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -127,72 +140,89 @@ const ListingDropDown = ({ listingId, refreshList, isApprovalPage }) => {
           ) : (
             <>
               <DropdownMenuItem disabled>Download PDF</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleActionClick("publish_pf")}>
-                Publish to PF
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => handleActionClick("publish_bayut")}
-              >
-                Publish to Bayut
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => handleActionClick("publish_dubizzle")}
-              >
-                Publish to Dubizzle
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => handleActionClick("publish_website")}
-              >
-                Publish to Website
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => handleActionClick("publish_all")}
-              >
-                Publish to All
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => handleActionClick("unpublish_pf")}
-              >
-                Unpublish from PF
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => handleActionClick("unpublish_bayut")}
-              >
-                Unpublish from Bayut
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => handleActionClick("unpublish_dubizzle")}
-              >
-                Unpublish from Dubizzle
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => handleActionClick("unpublish_website")}
-              >
-                Unpublish from Website
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => handleActionClick("unpublish_all")}
-              >
-                Unpublish from All
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleActionClick("archived")}>
-                Archive
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleActionClick("draft")}>
-                Make it Draft
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleActionClick("live")}>
-                Make it Live
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleActionClick("pocket")}>
-                Make it Pocket
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                className="text-destructive"
-                onClick={() => handleActionClick("deleted")}
-              >
-                Delete
-              </DropdownMenuItem>
+
+              {/* Everything except Delete only for super_admin and admin */}
+              {["super_admin", "admin"].includes(role) && (
+                <>
+                  <DropdownMenuItem
+                    onClick={() => handleActionClick("publish_pf")}
+                  >
+                    Publish to PF
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => handleActionClick("publish_bayut")}
+                  >
+                    Publish to Bayut
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => handleActionClick("publish_dubizzle")}
+                  >
+                    Publish to Dubizzle
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => handleActionClick("publish_website")}
+                  >
+                    Publish to Website
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => handleActionClick("publish_all")}
+                  >
+                    Publish to All
+                  </DropdownMenuItem>
+
+                  <DropdownMenuItem
+                    onClick={() => handleActionClick("unpublish_pf")}
+                  >
+                    Unpublish from PF
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => handleActionClick("unpublish_bayut")}
+                  >
+                    Unpublish from Bayut
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => handleActionClick("unpublish_dubizzle")}
+                  >
+                    Unpublish from Dubizzle
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => handleActionClick("unpublish_website")}
+                  >
+                    Unpublish from Website
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => handleActionClick("unpublish_all")}
+                  >
+                    Unpublish from All
+                  </DropdownMenuItem>
+
+                  <DropdownMenuItem
+                    onClick={() => handleActionClick("archived")}
+                  >
+                    Archive
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleActionClick("draft")}>
+                    Make it Draft
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleActionClick("live")}>
+                    Make it Live
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleActionClick("pocket")}>
+                    Make it Pocket
+                  </DropdownMenuItem>
+                </>
+              )}
+
+              {/* Delete: super_admin & admin always, plus agents when isDraft */}
+              {(["super_admin", "admin"].includes(role) ||
+                (role === "agent" && isDraft)) && (
+                <DropdownMenuItem
+                  className="text-destructive"
+                  onClick={() => handleActionClick("deleted")}
+                >
+                  Delete
+                </DropdownMenuItem>
+              )}
             </>
           )}
         </DropdownMenuContent>

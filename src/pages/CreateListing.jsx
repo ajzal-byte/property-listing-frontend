@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import { useCreateListingData } from "@/hooks/useCreateListingData";
 import {
   ProgressBar,
@@ -29,6 +30,7 @@ import MainTabContext from "../contexts/TabContext";
 import { tabs } from "../enums/sidebarTabsEnums";
 
 const CreateListing = () => {
+  const location = useLocation();
   const { setMainTab } = useContext(MainTabContext);
   const {
     formData,
@@ -41,8 +43,36 @@ const CreateListing = () => {
   } = useCreateListingData();
 
   useEffect(() => {
-    setMainTab(tabs.HIDDEN); // Hide the main tab when on User Management page
+    setMainTab(tabs.HIDDEN);
+    // Preserve draft during page refresh
+    const handleBeforeUnload = () => {
+      localStorage.setItem("preserveDraft", "true");
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+
+      // Clear draft only during SPA navigation (not refresh)
+      if (!localStorage.getItem("preserveDraft")) {
+        localStorage.removeItem("draftListing");
+      }
+      localStorage.removeItem("preserveDraft");
+    };
   }, [setMainTab]);
+
+  // Add route change detection
+  useEffect(() => {
+    const currentPath = location.pathname;
+
+    return () => {
+      // Clear draft when navigating away from create-listing
+      if (currentPath === "/create-listing") {
+        localStorage.removeItem("draftListing");
+      }
+    };
+  }, [location.pathname]);
 
   const [isLoading, setIsLoading] = useState(false);
 

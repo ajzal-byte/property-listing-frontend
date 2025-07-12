@@ -136,11 +136,12 @@ const PropertyCards = ({
 
               {/* Property Details */}
               <CardContent className="pt-4">
-                <CardTitle className="text-lg mb-2">{listing.title}</CardTitle>
+                <CardTitle className="text-lg mb-2">
+                  {listing.title_en}
+                </CardTitle>
                 <CardTitle className="text-md mb-2">
                   AED {listing.price}
-                  {listing.offering_type === "RS" ||
-                  listing.offering_type === "CS"
+                  {listing.amount_type.toLowerCase() == "sale"
                     ? ""
                     : ` / ${listing.amount_type}`}
                 </CardTitle>

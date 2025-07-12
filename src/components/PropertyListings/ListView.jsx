@@ -125,13 +125,12 @@ const ListView = ({
               <div className="w-full md:w-2/3 flex flex-col">
                 <div className="flex justify-between items-start">
                   <div>
-                    <h3 className="font-medium text-lg">{listing.title}</h3>
+                    <h3 className="font-medium text-lg">{listing.title_en}</h3>
                     <p className="text-md font-medium">
                       AED {listing.price}
-                      {listing.offering_type === "RS" ||
-                      listing.offering_type === "CS"
+                      {listing.amount_type.toLowerCase() == "sale"
                         ? ""
-                        : ` / ${listing.rental_period}`}
+                        : ` / ${listing.amount_type}`}
                     </p>
                     <p className="text-sm text-muted-foreground">
                       Ref: {listing.reference_no}

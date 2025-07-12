@@ -188,6 +188,7 @@ const Description = ({ setField }) => {
                     <Textarea
                       placeholder="Enter description in Arabic (750–2000 characters)"
                       className="min-h-[200px] w-full text-base"
+                      maxLength={10}
                       value={field.value || ""}
                       onChange={(e) =>
                         handleChange("descriptionAr", e.target.value)
