@@ -116,13 +116,13 @@ const DetailedSecondary = () => {
 
       {/* Property Header (Price, Title, Description) */}
       <PropertyHeader
-        category={listing.offering_type}
+        category={listing.category}
         price={listing.price}
-        rentAmount={listing.price} // Adjust based on your data structure
-        rentFrequency="year" // Adjust based on your data structure
+        amountType={listing.amount_type}
         titleEn={listing.title_en}
         title_deed={listing.title_deed}
         descriptionEn={listing.desc_en}
+        onEdit={null}
         formatPrice={formatPrice}
         showEdit={false}
       />
@@ -136,7 +136,10 @@ const DetailedSecondary = () => {
           showEdit={false}
           items={[
             { label: "Reference No", value: listing.reference_no },
-            { label: "Property Type", value: listing.property_type },
+            {
+              label: "Property Type",
+              value: listing?.property_type?.toUpperCase(),
+            },
             { label: "Size", value: `${listing.size} sq.ft` },
             { label: "Unit No", value: listing.unit_no },
             { label: "Bedrooms", value: listing.bedrooms },
@@ -173,8 +176,8 @@ const DetailedSecondary = () => {
 
       {/* Location Card with Map */}
       <LocationCard
-        pfLocationDetails={listing.pf_location}
-        bayutLocationDetails={listing.bayut_location}
+        pfLocationDetails={listing.collection_pf_location}
+        bayutLocationDetails={listing.collection_bayut_location}
         showEdit={false}
         formData={{
           latitude: listing.geopoints?.split(",")[0],
@@ -224,9 +227,12 @@ const DetailedSecondary = () => {
           <ContactCard
             profileUrl={listing.owner.profile_url}
             name={listing.owner.name}
+            reraNumber={listing.owner?.rera_number}
             email={listing.owner.email}
             phone={listing.owner.phone}
-            showEdit={false}
+            onEdit={null}
+            stepNumber={null}
+            isAgent={false}
           />
         )}
 
@@ -236,7 +242,9 @@ const DetailedSecondary = () => {
           reraNumber={listing.agent?.rera_number}
           email={listing.agent?.email}
           phone={listing.agent?.phone}
-          showEdit={false}
+          onEdit={null}
+          stepNumber={null}
+          isAgent={true}
         />
       </div>
 

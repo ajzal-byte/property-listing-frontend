@@ -282,9 +282,9 @@ const EditUserDialog = ({ user, onUserUpdated }) => {
                 {roles.map((role) => (
                   <SelectItem
                     key={role.role_id}
-                    value={role.role_id.toString()}
+                    value={role?.role_id.toString()}
                   >
-                    {role.role_name.toUpperCase()}
+                    {role?.role_name?.toUpperCase()}
                   </SelectItem>
                 ))}
               </SelectContent>

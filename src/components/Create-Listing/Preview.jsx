@@ -238,7 +238,6 @@ const PreviewForm = ({ formData, prevStep, goToStep, onSubmit, isLoading }) => {
       <PropertyHeader
         category={formData.category}
         price={formData.price}
-        // rentAmount={formData.rentAmount}
         amountType={formData.amountType}
         titleEn={formData.titleEn}
         title_deed={formData.title_deed}
@@ -335,10 +334,12 @@ const PreviewForm = ({ formData, prevStep, goToStep, onSubmit, isLoading }) => {
         <ContactCard
           profileUrl={resolvedData.listingOwnerProfileUrl}
           name={resolvedData.listingOwnerName}
+          reraNumber={null}
           email={resolvedData.listingOwnerEmail}
           phone={resolvedData.listingOwnerPhone}
           onEdit={goToStep}
           stepNumber={0}
+          isAgent={false}
         />
 
         <ContactCard
@@ -349,6 +350,7 @@ const PreviewForm = ({ formData, prevStep, goToStep, onSubmit, isLoading }) => {
           phone={resolvedData.listingAgentPhone}
           onEdit={goToStep}
           stepNumber={0}
+          isAgent={true}
         />
       </div>
 

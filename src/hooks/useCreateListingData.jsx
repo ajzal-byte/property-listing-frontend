@@ -37,7 +37,7 @@ export function useCreateListingData() {
     bedrooms: "",
     bathrooms: "",
     parking: "",
-    furnishing_type: false,
+    furnishing_type: "",
     total_plot_size: "",
     lotSize: "",
     built_up_area: "",

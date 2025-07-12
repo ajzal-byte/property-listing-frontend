@@ -190,11 +190,19 @@ const Specifications = ({ formData, setField }) => {
         <FormField
           control={control}
           name="bedrooms"
-          rules={{ required: "Please select no. of bedrooms" }}
+          rules={{
+            validate: (value) =>
+              formData.category === "commercial" || value
+                ? true
+                : "Please select no. of bedrooms",
+          }}
           render={({ field }) => (
             <FormItem>
               <FormLabel className="text-base font-medium flex items-center gap-1">
-                Bedrooms <span className="text-red-500">*</span>
+                Bedrooms{" "}
+                {formData.category !== "commercial" && (
+                  <span className="text-red-500">*</span>
+                )}
               </FormLabel>
               <Select
                 value={field.value}
@@ -222,11 +230,19 @@ const Specifications = ({ formData, setField }) => {
         <FormField
           control={control}
           name="bathrooms"
-          rules={{ required: "Please select no. of bathrooms" }}
+          rules={{
+            validate: (value) =>
+              formData.category === "commercial" || value
+                ? true
+                : "Please select no. of bathrooms",
+          }}
           render={({ field }) => (
             <FormItem>
               <FormLabel className="text-base font-medium flex items-center gap-1">
-                Bathrooms <span className="text-red-500">*</span>
+                Bathrooms{" "}
+                {formData.category !== "commercial" && (
+                  <span className="text-red-500">*</span>
+                )}
               </FormLabel>
               <Select
                 value={field.value}

@@ -96,10 +96,10 @@ const Description = ({ setField }) => {
               name="descriptionEn"
               rules={{
                 required: "Please enter a description in English",
-                // minLength: {
-                //   value: 750,
-                //   message: "Description must be at least 750 characters",
-                // },
+                minLength: {
+                  value: 750,
+                  message: "Description must be at least 750 characters",
+                },
                 maxLength: {
                   value: 2000,
                   message: "Description must not exceed 2000 characters",
@@ -170,10 +170,10 @@ const Description = ({ setField }) => {
               control={control}
               name="descriptionAr"
               rules={{
-                // minLength: {
-                //   value: 750,
-                //   message: "Description must be at least 750 characters",
-                // },
+                minLength: {
+                  value: 750,
+                  message: "Description must be at least 750 characters",
+                },
                 maxLength: {
                   value: 2000,
                   message: "Description must not exceed 2000 characters",
@@ -188,7 +188,6 @@ const Description = ({ setField }) => {
                     <Textarea
                       placeholder="Enter description in Arabic (750–2000 characters)"
                       className="min-h-[200px] w-full text-base"
-                      maxLength={10}
                       value={field.value || ""}
                       onChange={(e) =>
                         handleChange("descriptionAr", e.target.value)

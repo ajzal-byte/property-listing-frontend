@@ -64,6 +64,20 @@ const LocationCard = ({
                   pfLocationDetails?.building || formData.property_finder_tower
                 }
               />
+              <DetailItem
+                label="UAE Emirates"
+                value={
+                  pfLocationDetails?.uae_emirate?.toUpperCase() ||
+                  formData.property_finder_uae_emirate?.toUpperCase()
+                }
+              />
+              <DetailItem
+                label="Street Direction"
+                value={
+                  pfLocationDetails?.street_direction ||
+                  formData.property_finder_street_direction
+                }
+              />
             </div>
           </div>
 
@@ -90,7 +104,7 @@ const LocationCard = ({
               />
               <DetailItem
                 label="Tower/Building"
-                value={bayutLocationDetails?.building || formData.bayut_tower}
+                value={bayutLocationDetails?.tower || formData.bayut_tower}
               />
             </div>
           </div>

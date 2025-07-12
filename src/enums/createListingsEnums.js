@@ -194,6 +194,7 @@ export const portalOptions = [
 ];
 
 export const bedroomOptions = [
+  "none",
   "studio",
   "1",
   "2",

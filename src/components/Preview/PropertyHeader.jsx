@@ -23,12 +23,12 @@ const PropertyHeader = ({
   return (
     <div className="space-y-8 mt-4">
       {/* Pricing Section */}
-      <div className="mb-6">
+      <div className="mb-4">
         <h1 className="text-3xl font-bold">
           AED {price}
-          {amountType.toLowerCase() == "sale"
+          {amountType?.toLowerCase() == "sale"
             ? ""
-            : ` / ${amountType.amount_type}`}
+            : ` / ${amountType?.toLowerCase()}`}
         </h1>
       </div>
 
@@ -43,6 +43,9 @@ const PropertyHeader = ({
               </Button>
             )}
           </div>
+          <p className="text-sm font-extrabold text-muted-foreground mt-2 mb-2">
+            Category: {category.toUpperCase()}
+          </p>
           {title_deed && (
             <p className="text-sm text-muted-foreground">
               Title Deed: {title_deed}

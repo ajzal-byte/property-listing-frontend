@@ -169,7 +169,7 @@ const ListView = ({
                   <div className="flex items-center gap-2">
                     <CheckCircle className="h-4 w-4 text-primary" />
                     <span>
-                      {listing.furnished ? "Furnished" : "Unfurnished"}
+                      {listing?.furnishing_type?.toUpperCase()}
                     </span>
                   </div>
                 </div>

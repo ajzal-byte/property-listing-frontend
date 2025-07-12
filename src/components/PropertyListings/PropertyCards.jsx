@@ -181,7 +181,7 @@ const PropertyCards = ({
                 {/* Status */}
                 <div className="flex items-center gap-2 text-sm mb-4">
                   <CheckCircle className="h-4 w-4 text-primary" />
-                  <span>{listing.furnished ? "Furnished" : "Unfurnished"}</span>
+                  <span>{listing?.furnishing_type?.toUpperCase()}</span>
                 </div>
 
                 {(listing.owner || listing.agent) && (

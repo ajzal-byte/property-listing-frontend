@@ -12,14 +12,21 @@ const ContactCard = ({
   phone,
   onEdit,
   stepNumber,
-  showEdit = true,
+  isAgent = false,
 }) => {
   return (
     <Card>
       <CardHeader>
         <div className="flex justify-between items-center">
-          <CardTitle>Contact Info</CardTitle>
-          {showEdit && (
+          <div className="flex justify-between items-center">
+            <CardTitle>
+              Contact Info:{" "}
+              <span className="text-muted-foreground font-extralight">
+                {isAgent ? "Listing Agent" : "Listing Owner"}
+              </span>
+            </CardTitle>
+          </div>
+          {onEdit && (
             <Button
               variant="ghost"
               size="icon"
@@ -33,7 +40,7 @@ const ContactCard = ({
       <CardContent>
         <div className="flex items-center gap-4 mb-4">
           <Avatar className="h-16 w-16">
-            <AvatarImage src={profileUrl} alt={name || "Listing Agent"} />
+            <AvatarImage src={profileUrl} alt={name} />
             <AvatarFallback>
               <User className="h-8 w-8" />
             </AvatarFallback>
