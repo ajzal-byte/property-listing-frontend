@@ -28,7 +28,6 @@ const ManageApprovals = () => {
       if (!response.ok) throw new Error("Failed to fetch approvals");
 
       const data = await response.json();
-      console.log("Fetched approvals:", data);
       
       setListings(data || []);
       setTotalItems(data.length || 0);

@@ -4,107 +4,34 @@ import {
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import { MoreVertical } from "lucide-react";
-import { AcceptDialog, RejectDialog } from "../ManageApprovals";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-  DialogClose,
-} from "@/components/ui/dialog";
-import { toast } from "sonner";
-import axios from "axios";
-import getAuthHeaders from "@/utils/getAuthHeader";
+  MoreVertical,
+  Edit2,
+  Copy,
+  RefreshCw,
+  FileText,
+  Share2,
+  Globe,
+  Layers,
+  EyeOff,
+  Archive,
+  FilePlus,
+  Play,
+  Pocket,
+  Trash2,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { AcceptDialog, RejectDialog } from "../ManageApprovals";
 import { role } from "../../utils/getUserRole";
-
-const API_BASE_URL = "https://backend.myemirateshome.com/api";
-
-const ActionDialog = ({
-  open,
-  onOpenChange,
-  action,
-  listingId,
-  refreshList,
-}) => {
-  const [isLoading, setIsLoading] = useState(false);
-
-  const actionTitles = {
-    publish_pf: "Publish to Property Finder",
-    publish_bayut: "Publish to Bayut",
-    publish_dubizzle: "Publish to Dubizzle",
-    publish_website: "Publish to Website",
-    publish_all: "Publish to All Platforms",
-    unpublish_pf: "Unpublish from Property Finder",
-    unpublish_bayut: "Unpublish from Bayut",
-    unpublish_dubizzle: "Unpublish from Dubizzle",
-    unpublish_website: "Unpublish from Website",
-    unpublish_all: "Unpublish from All Platforms",
-    archived: "Archive",
-    draft: "Move to Draft",
-    live: "Make Live",
-    pocket: "Move to Pocket",
-    deleted: "Delete",
-  };
-
-  const handleAction = async () => {
-    setIsLoading(true);
-    try {
-      await axios.post(
-        `${API_BASE_URL}/listing/action`,
-        {
-          action,
-          propertyId: [listingId],
-        },
-        {
-          headers: getAuthHeaders(),
-        }
-      );
-      toast.success(`${actionTitles[action]} successful`);
-      refreshList();
-    } catch (error) {
-      toast.error(
-        `Failed to perform action: ${
-          error.response?.data?.message || error.message
-        }`
-      );
-    } finally {
-      setIsLoading(false);
-      onOpenChange(false);
-    }
-  };
-
-  return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>{actionTitles[action]}</DialogTitle>
-          <DialogDescription>
-            Are you sure you want to perform this action?
-          </DialogDescription>
-        </DialogHeader>
-        <DialogFooter>
-          <DialogClose asChild>
-            <Button variant="outline">Cancel</Button>
-          </DialogClose>
-          <Button onClick={handleAction} disabled={isLoading}>
-            {isLoading ? "Processing..." : "Confirm"}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-  );
-};
 
 const ListingDropDown = ({
   listingId,
   refreshList,
   isApprovalPage,
   isDraft = false,
+  isPocket = false,
 }) => {
   const [dialogAction, setDialogAction] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -127,100 +54,127 @@ const ListingDropDown = ({
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
+          {/* Edit / Duplicate / Refresh (all users see duplicate & refresh; edit visible to admins/superadmins, and agents if draft or pocket) */}
+          {(["super_admin", "admin"].includes(role) ||
+            (role === "agent" && (isDraft || isPocket))) && (
+            <DropdownMenuItem onClick={() => handleActionClick("edit")}>
+              <Edit2 className="mr-2 h-4 w-4" /> Edit Listing
+            </DropdownMenuItem>
+          )}
+          <DropdownMenuItem onClick={() => handleActionClick("duplicate")}>
+            <Copy className="mr-2 h-4 w-4" /> Duplicate Listing
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => refreshList()}>
+            <RefreshCw className="mr-2 h-4 w-4" /> Refresh Listing
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+
+          {/* Download */}
+          <DropdownMenuItem disabled>
+            <FileText className="mr-2 h-4 w-4" /> Download PDF
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+
           {/* Approval-specific actions */}
           {isApprovalPage ? (
             <>
               <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                <AcceptDialog listingId={listingId} refreshList={refreshList} />
+                <AcceptDialog listingId={listingId} refreshList={refreshList}>
+                  <Play className="mr-2 h-4 w-4" /> Approve
+                </AcceptDialog>
               </DropdownMenuItem>
               <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                <RejectDialog listingId={listingId} refreshList={refreshList} />
+                <RejectDialog listingId={listingId} refreshList={refreshList}>
+                  <EyeOff className="mr-2 h-4 w-4" /> Reject
+                </RejectDialog>
               </DropdownMenuItem>
+              <DropdownMenuSeparator />
             </>
           ) : (
             <>
-              <DropdownMenuItem disabled>Download PDF</DropdownMenuItem>
-
-              {/* Everything except Delete only for super_admin and admin */}
+              {/* Publish / Unpublish (admins only) */}
               {["super_admin", "admin"].includes(role) && (
                 <>
                   <DropdownMenuItem
                     onClick={() => handleActionClick("publish_pf")}
                   >
-                    Publish to PF
+                    <Globe className="mr-2 h-4 w-4" /> Publish to PF
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     onClick={() => handleActionClick("publish_bayut")}
                   >
-                    Publish to Bayut
+                    <Share2 className="mr-2 h-4 w-4" /> Publish to Bayut
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     onClick={() => handleActionClick("publish_dubizzle")}
                   >
-                    Publish to Dubizzle
+                    <Layers className="mr-2 h-4 w-4" /> Publish to Dubizzle
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     onClick={() => handleActionClick("publish_website")}
                   >
-                    Publish to Website
+                    <FilePlus className="mr-2 h-4 w-4" /> Publish to Website
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     onClick={() => handleActionClick("publish_all")}
                   >
-                    Publish to All
+                    <Archive className="mr-2 h-4 w-4" /> Publish to All
                   </DropdownMenuItem>
 
+                  <DropdownMenuSeparator />
                   <DropdownMenuItem
                     onClick={() => handleActionClick("unpublish_pf")}
                   >
-                    Unpublish from PF
+                    <Globe className="mr-2 h-4 w-4" /> Unpublish from PF
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     onClick={() => handleActionClick("unpublish_bayut")}
                   >
-                    Unpublish from Bayut
+                    <Share2 className="mr-2 h-4 w-4" /> Unpublish from Bayut
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     onClick={() => handleActionClick("unpublish_dubizzle")}
                   >
-                    Unpublish from Dubizzle
+                    <Layers className="mr-2 h-4 w-4" /> Unpublish from Dubizzle
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     onClick={() => handleActionClick("unpublish_website")}
                   >
-                    Unpublish from Website
+                    <FilePlus className="mr-2 h-4 w-4" /> Unpublish from Website
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     onClick={() => handleActionClick("unpublish_all")}
                   >
-                    Unpublish from All
+                    <Archive className="mr-2 h-4 w-4" /> Unpublish from All
                   </DropdownMenuItem>
 
+                  <DropdownMenuSeparator />
                   <DropdownMenuItem
                     onClick={() => handleActionClick("archived")}
                   >
-                    Archive
+                    <Archive className="mr-2 h-4 w-4" /> Archive
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => handleActionClick("draft")}>
-                    Make it Draft
+                    <FilePlus className="mr-2 h-4 w-4" /> Make Draft
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => handleActionClick("live")}>
-                    Make it Live
+                    <Play className="mr-2 h-4 w-4" /> Make Live
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => handleActionClick("pocket")}>
-                    Make it Pocket
+                    <Pocket className="mr-2 h-4 w-4" /> Make Pocket
                   </DropdownMenuItem>
                 </>
               )}
 
-              {/* Delete: super_admin & admin always, plus agents when isDraft */}
+              {/* Delete */}
+              <DropdownMenuSeparator />
               {(["super_admin", "admin"].includes(role) ||
-                (role === "agent" && isDraft)) && (
+                (role === "agent" && (isDraft || isPocket))) && (
                 <DropdownMenuItem
                   className="text-destructive"
                   onClick={() => handleActionClick("deleted")}
                 >
-                  Delete
+                  <Trash2 className="mr-2 h-4 w-4" /> Delete
                 </DropdownMenuItem>
               )}
             </>
