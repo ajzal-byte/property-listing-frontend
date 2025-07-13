@@ -88,41 +88,42 @@ const PropertyCards = ({
               key={listing.id}
               className="hover:shadow-lg transition-shadow"
             >
-              {/* Property Image or Map */}
+              {/* Property Image */}
               <CardHeader className="relative">
-                {/* dropdown menu */}
                 <ListingDropDown
                   listingId={listing.id}
                   refreshList={refreshList}
                   isApprovalPage={isApprovalPage}
                 />
+
                 {listing.photos?.length > 0 ? (
-                  <Carousel className="w-full h-full">
-                    <CarouselContent className="w-full h-full">
-                      {listing.photos.map((photo, index) => (
-                        <CarouselItem key={index}>
-                          <img
-                            src={photo.image_url}
-                            alt={`Property ${index + 1}`}
-                            className="w-full h-full object-cover"
-                          />
-                        </CarouselItem>
-                      ))}
-                    </CarouselContent>
-                    {listing.photos.length > 1 && (
-                      <>
-                        <CarouselPrevious className="left-2" />
-                        <CarouselNext className="right-2" />
-                      </>
-                    )}
-                  </Carousel>
+                  <div className="w-full aspect-[4/3] relative overflow-hidden rounded-t-lg">
+                    <Carousel className="absolute inset-0 w-full h-full">
+                      <CarouselContent className="w-full h-full -ml-0 flex">
+                        {listing.photos.map((photo, index) => (
+                          <CarouselItem key={index} className="pl-0 h-full">
+                            <img
+                              src={photo.image_url}
+                              alt={`Property ${index + 1}`}
+                              className="w-full h-full object-cover"
+                            />
+                          </CarouselItem>
+                        ))}
+                      </CarouselContent>
+                      {listing.photos.length > 1 && (
+                        <>
+                          <CarouselPrevious className="left-2" />
+                          <CarouselNext className="right-2" />
+                        </>
+                      )}
+                    </Carousel>
+                  </div>
                 ) : (
-                  <div className="w-full h-full bg-muted flex items-center justify-center rounded-t-lg">
+                  <div className="w-full aspect-[4/3] bg-muted flex items-center justify-center rounded-t-lg">
                     <Home className="h-12 w-12 text-muted-foreground" />
                   </div>
                 )}
 
-                {/* Status Badge */}
                 {listing.status && statusMap[listing.status] && (
                   <Badge
                     className={`absolute top-1 left-2 ${

@@ -76,7 +76,7 @@ const ListView = ({
               className="flex flex-col md:flex-row gap-4 p-4 border rounded-lg hover:shadow-md transition-shadow overflow-hidden"
             >
               {/* Image + Dropdown Overlay */}
-              <div className="relative w-full md:w-1/4 h-58 flex-shrink-0 rounded-lg overflow-hidden">
+              <div className="relative w-full md:w-1/4 flex-shrink-0 rounded-lg overflow-hidden">
                 <ListingDropDown
                   listingId={listing.id}
                   refreshList={refreshList}
@@ -85,15 +85,17 @@ const ListView = ({
                 />
 
                 {listing.photos?.length > 0 ? (
-                  <Carousel className="w-full h-full">
-                    <CarouselContent className="w-full h-full">
+                  <Carousel className="w-full overflow-hidden">
+                    <CarouselContent className="w-full -ml-0">
                       {listing.photos.map((photo, idx) => (
-                        <CarouselItem key={idx}>
-                          <img
-                            src={photo.image_url}
-                            alt={`Property ${idx + 1}`}
-                            className="w-full h-full object-cover rounded-lg"
-                          />
+                        <CarouselItem key={idx} className="pl-0">
+                          <div className="w-full aspect-[4/3] relative overflow-hidden rounded-lg">
+                            <img
+                              src={photo.image_url}
+                              alt={`Property ${idx + 1}`}
+                              className="absolute inset-0 w-full h-full object-cover"
+                            />
+                          </div>
                         </CarouselItem>
                       ))}
                     </CarouselContent>
@@ -105,7 +107,7 @@ const ListView = ({
                     )}
                   </Carousel>
                 ) : (
-                  <div className="w-full h-full bg-muted flex items-center justify-center">
+                  <div className="w-full aspect-[4/3] bg-muted flex items-center justify-center rounded-lg">
                     <Home className="h-12 w-12 text-muted-foreground" />
                   </div>
                 )}
@@ -168,9 +170,7 @@ const ListView = ({
                   </div>
                   <div className="flex items-center gap-2">
                     <CheckCircle className="h-4 w-4 text-primary" />
-                    <span>
-                      {listing?.furnishing_type?.toUpperCase()}
-                    </span>
+                    <span>{listing?.furnishing_type?.toUpperCase()}</span>
                   </div>
                 </div>
 

@@ -1,5 +1,15 @@
 import React, { useState, useContext } from "react";
-import { Building, GraduationCap, ChevronDown, BadgeHelp, ChartNoAxesCombined, Signature, ClipboardCheck } from "lucide-react";
+import {
+  Building,
+  GraduationCap,
+  ChevronDown,
+  BadgeHelp,
+  ChartNoAxesCombined,
+  Signature,
+  ClipboardCheck,
+  PenLine,
+  Pocket,
+} from "lucide-react";
 import TabContext from "./../contexts/TabContext";
 import { tabs } from "../enums/sidebarTabsEnums";
 
@@ -24,6 +34,10 @@ const PageHeader = () => {
           ? "bg-gradient-to-r from-blue-600 to-blue-800 "
           : mainTab == tabs.SECONDARY
           ? "bg-gradient-to-r from-blue-300 to-blue-500 "
+          : mainTab == tabs.DRAFTS
+          ? "bg-gradient-to-r from-gray-600 to-gray-800"
+          : mainTab == tabs.POCKET
+          ? "bg-gradient-to-r from-purple-600 to-purple-800"
           : mainTab == tabs.ACADEMY
           ? "bg-gradient-to-r from-green-600 to-green-800 "
           : mainTab == tabs.ANALYTICS
@@ -55,6 +69,22 @@ const PageHeader = () => {
                   transition-all duration-300
                   ${isHovered ? "animate-pulse" : ""}
                 `}
+                  />
+                ) : mainTab == tabs.DRAFTS ? (
+                  <PenLine
+                    className={`
+                        w-8 h-8 text-white
+                        transition-all duration-300
+                        ${isHovered ? "animate-pulse" : ""}
+                      `}
+                  />
+                ) : mainTab == tabs.POCKET ? (
+                  <Pocket
+                    className={`
+                        w-8 h-8 text-white
+                        transition-all duration-300
+                        ${isHovered ? "animate-pulse" : ""}
+                      `}
                   />
                 ) : mainTab == tabs.ACADEMY ? (
                   <GraduationCap
@@ -111,6 +141,10 @@ const PageHeader = () => {
                     ? "Off Plan Listings"
                     : mainTab == tabs.SECONDARY
                     ? "Listings"
+                    : mainTab == tabs.DRAFTS
+                    ? "Drafts"
+                    : mainTab == tabs.POCKET
+                    ? "Pocket"
                     : mainTab == tabs.ACADEMY
                     ? "Welcome to our Academy"
                     : mainTab == tabs.ANALYTICS
@@ -139,6 +173,10 @@ const PageHeader = () => {
                       "Browse our top Offplan Listings "
                     ) : mainTab == tabs.SECONDARY ? (
                       "Browse our top Property Listings "
+                    ) : mainTab == tabs.DRAFTS ? (
+                      "Review and edit your draft listings"
+                    ) : mainTab == tabs.POCKET ? (
+                      "Access your pocket listings and saved properties"
                     ) : mainTab == tabs.ACADEMY ? (
                       "Explore our platform to discover new opportunities for growth and learning"
                     ) : mainTab == tabs.ANALYTICS ? (

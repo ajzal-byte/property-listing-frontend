@@ -146,14 +146,14 @@ export function useCreateListingData() {
     typeof draft.currentStep === "number" ? draft.currentStep : 0
   );
 
+  const API_BASE_URL = "https://backend.myemirateshome.com/api";
   // 5) Fetch dropdown data once on mount
   useEffect(() => {
     async function loadOptions() {
-      const API_BASE_URL = "https://backend.myemirateshome.com/api";
       const headers = getAuthHeaders();
       const user = JSON.parse(localStorage.getItem("userData") || "{}");
       try {
-        // a) Companies & agents logic (unchanged)
+        // a) Companies & agents logic
         if (user.role.name === "super_admin") {
           // fetch both companies + each company’s agents
           const res = await fetch(`${API_BASE_URL}/listing/create-info`, {
@@ -200,26 +200,34 @@ export function useCreateListingData() {
           }));
         }
 
-        // b) Developers, owners, amenities
-        const [devRes, ownerRes, propTypeRes, amenRes] = await Promise.all([
+        // b) Developers, property‐types & amenities (and owners for non‐super_admin)
+        const [devRes, propTypeRes, amenRes] = await Promise.all([
           fetch(`${API_BASE_URL}/developers`, { headers }),
-          fetch(`${API_BASE_URL}/listOwners`, { headers }),
           fetch(`${API_BASE_URL}/property-types`, { headers }),
           fetch(`${API_BASE_URL}/amenities`, { headers }),
         ]);
-        const [devData, ownerData, propTypeData, amenData] = await Promise.all([
+        const [devData, propTypeData, amenData] = await Promise.all([
           devRes.json(),
-          ownerRes.json(),
           propTypeRes.json(),
           amenRes.json(),
         ]);
 
+        // determine owners list
+        let ownersList = [];
+        if (user.role.name === "super_admin") {
+          // super_admin: start empty, will load when company is selected
+          ownersList = [];
+        } else {
+          // admin, agent, owner: fetch your company’s users
+          const myCoRes = await fetch(`${API_BASE_URL}/mycompany`, { headers });
+          const { users } = await myCoRes.json();
+          ownersList = users;
+        }
+
         setFormData((f) => ({
           ...f,
           developers: devData,
-          // keep full owner list for filtering, but only populate owners[] for non-superadmins
-          allOwners: ownerData.owners,
-          owners: user.role.name === "super_admin" ? [] : ownerData.owners,
+          owners: ownersList,
           propertyTypes: propTypeData.property_types || [],
           amenitiesList: amenData,
         }));
@@ -246,6 +254,22 @@ export function useCreateListingData() {
     }
     loadOptions();
   }, []);
+
+  // Update Owner list for superadmin accordingly
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("userData") || "{}");
+    if (user.role.name === "super_admin" && formData.company) {
+      const headers = getAuthHeaders();
+      (async () => {
+        const res = await fetch(
+          `${API_BASE_URL}/companies/${formData.company}`,
+          { headers }
+        );
+        const { users } = await res.json();
+        setFormData((f) => ({ ...f, owners: users }));
+      })();
+    }
+  }, [formData.company]);
 
   // 6) Persist draft to localStorage on every change
   useEffect(() => {

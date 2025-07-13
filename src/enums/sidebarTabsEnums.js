@@ -1,14 +1,15 @@
 export const tabs = {
-    HIDDEN: "Hidden",
-    ACADEMY: 'Academy',
-    OFFPLAN: 'Offplan', 
-    ANALYTICS: 'Analytics', 
-    SECONDARY: 'Secondary', 
-    APPROVALS: "Approvals",
-    MY_REQUESTS: "My Requests",
-    MORTGAGE: 'Mortgage',
-    CRM: 'CRM', 
-    SUBSCRIPTIONS: 'Subscriptions', 
-    SUPPORT: 'Support', 
-}
-
+  HIDDEN: "Hidden",
+  ACADEMY: "Academy",
+  OFFPLAN: "Offplan",
+  ANALYTICS: "Analytics",
+  SECONDARY: "Secondary",
+  DRAFTS: "Drafts",
+  POCKET: "Pocket",
+  APPROVALS: "Approvals",
+  MY_REQUESTS: "My Requests",
+  MORTGAGE: "Mortgage",
+  CRM: "CRM",
+  SUBSCRIPTIONS: "Subscriptions",
+  SUPPORT: "Support",
+};

@@ -21,6 +21,8 @@ import {
   Subscription,
   SupportPage,
   UserManagement,
+  DraftListings,
+  PocketListings,
 } from "./pages";
 import CompanyList from "./components/CompanyManagement/CompanyList";
 import DeveloperDirectory from "./components/UserManagement/DeveloperDirectory";
@@ -59,6 +61,8 @@ export default function ProtectedRoutes() {
       />
       <Route path="/company" element={<MyCompany />} />
       <Route path="/analytics" element={<AnalyticsDashboard />} />
+      <Route path="/draft-listings" element={<DraftListings />} />
+      <Route path="/pocket-listings" element={<PocketListings />} />
       <Route path="/manage-approvals" element={<ManageApprovals />} />
       <Route path="/my-requests" element={<AgentApprovals />} />
       <Route path="/permissions" element={<CurrentUserRoles />} />

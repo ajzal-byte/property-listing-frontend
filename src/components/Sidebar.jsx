@@ -17,6 +17,8 @@ import {
   LogOut,
   Settings,
   LaptopMinimalCheck,
+  PenLine,
+  Pocket,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -93,15 +95,14 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
           link: "/secondary",
         },
         {
-          icon: GraduationCap,
-          label: "Academy",
-          link: "/academy",
+          icon: PenLine,
+          label: "Draft Listings",
+          link: "/draft-listings",
         },
         {
-          roles: ["super_admin", "admin"],
-          icon: BarChart3,
-          label: "Analytics",
-          link: "/analytics",
+          icon: Pocket,
+          label: "Pocket Listings",
+          link: "/pocket-listings",
         },
         {
           roles: ["admin"],
@@ -114,6 +115,17 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
           icon: LaptopMinimalCheck,
           label: "My Listing Requests",
           link: "/my-requests",
+        },
+        {
+          icon: GraduationCap,
+          label: "Academy",
+          link: "/academy",
+        },
+        {
+          roles: ["super_admin", "admin"],
+          icon: BarChart3,
+          label: "Analytics",
+          link: "/analytics",
         },
         {
           roles: ["super_admin", "admin"],

@@ -40,7 +40,7 @@ const Management = ({ formData, setField }) => {
       setValue("agents", agentsForCompany);
 
       // Filter owners by company
-      const ownersForCompany = formData.allOwners.filter(
+      const ownersForCompany = formData?.allOwners?.filter(
         (o) => o.company_id === selected.id
       );
       // Reset listingOwner
@@ -68,7 +68,7 @@ const Management = ({ formData, setField }) => {
         setValue("agents", agentsForCompany);
 
         // Set owners for this company
-        const ownersForCompany = formData.allOwners.filter(
+        const ownersForCompany = formData?.allOwners?.filter(
           (o) => o.company_id === selected.id
         );
         setField("owners", ownersForCompany);
@@ -138,7 +138,7 @@ const Management = ({ formData, setField }) => {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {formData.companies.map((c) => (
+                    {formData?.companies?.map((c) => (
                       <SelectItem
                         key={c.id}
                         value={String(c.id)}
@@ -175,7 +175,7 @@ const Management = ({ formData, setField }) => {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {agents.map((agent) => (
+                  {agents?.map((agent) => (
                     <SelectItem
                       key={agent.id}
                       value={String(agent.id)}
@@ -240,7 +240,7 @@ const Management = ({ formData, setField }) => {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {agents.map((agent) => (
+                      {agents?.map((agent) => (
                         <SelectItem
                           key={agent.id}
                           value={String(agent.id)}
@@ -275,7 +275,7 @@ const Management = ({ formData, setField }) => {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {agents.map((agent) => (
+                      {agents?.map((agent) => (
                         <SelectItem
                           key={agent.id}
                           value={String(agent.id)}
@@ -310,7 +310,7 @@ const Management = ({ formData, setField }) => {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {agents.map((agent) => (
+                      {agents?.map((agent) => (
                         <SelectItem
                           key={agent.id}
                           value={String(agent.id)}
@@ -348,7 +348,7 @@ const Management = ({ formData, setField }) => {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {formData.owners.map((owner) => (
+                  {formData?.owners?.map((owner) => (
                     <SelectItem
                       key={owner.id}
                       value={String(owner.id)}
