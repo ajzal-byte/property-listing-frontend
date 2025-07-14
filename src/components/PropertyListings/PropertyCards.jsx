@@ -52,6 +52,8 @@ const PropertyCards = ({
   totalItems,
   isApprovalPage = false,
   refreshList,
+  isDraft,
+  isPocket,
 }) => {
   const navigate = useNavigate();
 
@@ -94,6 +96,8 @@ const PropertyCards = ({
                   listingId={listing.id}
                   refreshList={refreshList}
                   isApprovalPage={isApprovalPage}
+                  isDraft={isDraft}
+                  isPocket={isPocket}
                 />
 
                 {listing.photos?.length > 0 ? (

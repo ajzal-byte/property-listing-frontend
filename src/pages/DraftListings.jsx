@@ -66,6 +66,8 @@ const DraftListings = () => {
         totalItems={totalItems}
         isApprovalPage={false}
         refreshList={fetchDrafts}
+        isDraft={true}
+        isPocket={false}
       />
     </div>
   );

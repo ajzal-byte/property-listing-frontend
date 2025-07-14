@@ -2,7 +2,6 @@ import { useState, useEffect, useContext } from "react";
 import { Building2, Users, Globe, Phone, Mail, Edit } from "lucide-react";
 import MainTabContext from "../../contexts/TabContext";
 import { tabs } from "../../enums/sidebarTabsEnums";
-// import CompanyEditModal from "./EditCompany";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -16,15 +15,13 @@ import { Skeleton } from "@/components/ui/skeleton";
 import getAuthHeaders from "@/utils/getAuthHeader";
 import { toast } from "sonner";
 import { CompanyCard } from ".";
-
+import AddCompanyDialog from "./AddCompany";
 
 export default function CompanyList() {
   const [companies, setCompanies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const [openEditCompaniesModal, setOpenEditCompaniesModal] = useState(false);
-  const [selectedCompany, setSelectedCompany] = useState(null);
   const [refreshTrigger, setRefreshTrigger] = useState(false);
   const { setMainTab } = useContext(MainTabContext);
 
@@ -54,11 +51,6 @@ export default function CompanyList() {
 
     fetchCompanies();
   }, [refreshTrigger, setMainTab, toast]);
-
-  const handleEditAssign = (company) => {
-    setSelectedCompany(company);
-    setOpenEditCompaniesModal(true);
-  };
 
   const handleRefresh = () => {
     setRefreshTrigger((prev) => !prev);
@@ -128,12 +120,15 @@ export default function CompanyList() {
             Manage and assign company profiles
           </p>
         </div>
-        <Input
-          placeholder="Search companies..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="max-w-md"
-        />
+        <div className="flex gap-2">
+          <Input
+            placeholder="Search companies..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="max-w-md"
+          />
+          <AddCompanyDialog onCompanyAdded={handleRefresh} />
+        </div>
       </div>
 
       <div className="mb-4">
@@ -142,7 +137,6 @@ export default function CompanyList() {
           {filteredCompanies.length === 1 ? "company" : "companies"} found
         </p>
       </div>
-
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {filteredCompanies.map((company) => (

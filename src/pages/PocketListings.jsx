@@ -66,6 +66,8 @@ const PocketListings = () => {
         totalItems={totalItems}
         isApprovalPage={false}
         refreshList={fetchPockets}
+        isDraft={false}
+        isPocket={true}
       />
     </div>
   );

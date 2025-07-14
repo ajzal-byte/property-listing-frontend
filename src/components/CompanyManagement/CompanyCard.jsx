@@ -6,7 +6,6 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Building2, Edit, Globe, Mail, Phone, Users } from "lucide-react";
 import EditCompanyDialog from "./EditCompany";
