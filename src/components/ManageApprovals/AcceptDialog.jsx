@@ -12,7 +12,7 @@ import {
 import { toast } from "sonner";
 import getAuthHeaders from "@/utils/getAuthHeader";
 
-const AcceptDialog = ({ listingId, refreshList }) => {
+const AcceptDialog = ({ listingId, companySlug, refreshList }) => {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -24,6 +24,9 @@ const AcceptDialog = ({ listingId, refreshList }) => {
         {
           method: "POST",
           headers: getAuthHeaders(),
+          body: JSON.stringify({
+            portal_slug: companySlug,
+          }),
         }
       );
 

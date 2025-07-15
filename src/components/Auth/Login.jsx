@@ -58,11 +58,10 @@ const LoginForm = ({ isLoggedIn, setIsLoggedIn }) => {
 
       const data = await response.json();
 
-      console.log("login gives token:", data.token);
-
       // Save token to localStorage
       localStorage.setItem("authToken", data.token);
       localStorage.setItem("userData", JSON.stringify(data.user));
+      localStorage.setItem("companyData", JSON.stringify(data.company))
       setIsLoggedIn(true);
       console.log("in login page:", isLoggedIn);
 

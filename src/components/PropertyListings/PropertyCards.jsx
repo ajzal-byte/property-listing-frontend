@@ -94,6 +94,7 @@ const PropertyCards = ({
               <CardHeader className="relative">
                 <ListingDropDown
                   listingId={listing.id}
+                  companySlug={listing.company.slug}
                   refreshList={refreshList}
                   isApprovalPage={isApprovalPage}
                   isDraft={isDraft}

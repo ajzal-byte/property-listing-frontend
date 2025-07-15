@@ -20,6 +20,7 @@ const ActionDialog = ({
   onOpenChange,
   action,
   listingId,
+  companySlug,
   refreshList,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -45,16 +46,28 @@ const ActionDialog = ({
   const handleAction = async () => {
     setIsLoading(true);
     try {
-      await axios.post(
-        `${API_BASE_URL}/listing/action`,
-        {
-          action,
-          propertyId: [listingId],
-        },
-        {
-          headers: getAuthHeaders(),
-        }
-      );
+      if (action === "deleted") {
+        // DELETE API for delete action
+        await axios.delete(
+          `${API_BASE_URL}/listings/${listingId}?portal_slug=${companySlug}`,
+          {
+            headers: getAuthHeaders(),
+          }
+        );
+      } else {
+        // POST API for all other actions
+        await axios.post(
+          `${API_BASE_URL}/listing/action`,
+          {
+            action,
+            propertyId: [listingId],
+            portal_slug: companySlug, // Include portal_slug in the request body
+          },
+          {
+            headers: getAuthHeaders(),
+          }
+        );
+      }
       toast.success(`${actionTitles[action]} successful`);
       refreshList();
     } catch (error) {

@@ -1,8 +1,35 @@
 import getAuthHeaders from "./getAuthHeader";
+import { role } from "@/utils/getUserRole";
 
 export async function uploadFilesAndCreateListing(formData) {
   const API_BASE_URL = "https://backend.myemirateshome.com/api";
   const headers = getAuthHeaders();
+  let companySlug;
+  // For superadmin - get company ID from formData and find corresponding slug
+  if (role === "superadmin") {
+    if (!formData?.company) {
+      throw new Error("Company ID not found in form data");
+    }
+
+    if (!formData?.companies || !Array.isArray(formData.companies)) {
+      throw new Error("Companies data not available or invalid");
+    }
+
+    const company = formData.companies.find((c) => c.id === formData.company);
+    if (!company) {
+      throw new Error(`Company with ID ${formData.company} not found`);
+    }
+
+    companySlug = company.slug;
+  }
+
+  // For non-superadmin users - get from localStorage
+  const companyData = JSON.parse(localStorage.getItem("companyData") || "{}");
+  if (!companyData?.slug) {
+    throw new Error("Company slug not found in local storage");
+  }
+
+  companySlug = companyData.slug;
 
   // 1) Gather all files (all as File objects now)
   const items = [];
@@ -268,6 +295,7 @@ export async function uploadFilesAndCreateListing(formData) {
 
     // Other
     created_by: Number(JSON.parse(localStorage.getItem("userData")).id),
+    portal_slug: companySlug,
   };
 
   // Clean up the payload

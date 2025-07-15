@@ -79,6 +79,7 @@ const ListView = ({
               <div className="relative w-full md:w-1/4 flex-shrink-0 rounded-lg overflow-hidden">
                 <ListingDropDown
                   listingId={listing.id}
+                  companySlug={listing.company.slug}
                   refreshList={refreshList}
                   isApprovalPage={isApprovalPage}
                   className="absolute top-2 right-2 z-10"
